@@ -1,0 +1,50 @@
+<div id="newsList">
+    <ol class="breadcrumb">
+        <li><a href="/">首页</a></li>
+        <li class="active">{{.col.Title}}</li>
+    </ol>
+    <ul class="news-list">
+        {{ range .news.List }}
+        <li>
+            <div>
+                <div class="title">{{.Title}}</div><div class="date">{{.CreateTime.Format "2006-01-02 15:04:05"}}</div>
+            </div>
+            <div class="clearfix">
+                <div class=""></div>
+            </div>
+            <div class="content"></div>
+        </li>
+        {{end}}
+    </ul>
+    <div class="clearfix"></div>
+    <br/>
+    <nav>
+        <ul class="pagination">
+            {{if eq .news.Page 1}}
+            <li class="disabled">
+                <span aria-hidden="true">&laquo;</span>
+            </li>
+            {{else}}
+            <li>
+                <a href="/admin/news/list/{{sub .news.Page 1}}" aria-label="上一页">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+            {{end}}
+            {{ range loop .news.PageCount 1 }}
+            <li {{if eq . $.news.Page }}class="active"{{end}}><a href="/admin/news/list/{{.}}">{{.}}</a></li>
+            {{ end }}
+            {{if eq .news.Page .news.PageCount}}
+            <li class="disabled">
+                <span aria-hidden="true">&raquo;</span>
+            </li>
+            {{else}}
+            <li>
+                <a href="/admin/news/list/{{add .news.Page 1}}" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+            {{end}}
+        </ul>
+    </nav>
+</div>

@@ -1,0 +1,94 @@
+<script type="text/javascript">
+$(function () {
+    $('#newsTypeManager').addClass('active').append('<div class="arrow arrow-right"></div>')
+            .append('<ul class="left-sub-menu"><li><a id="addRootType" href="#">添加栏目</a></li></ul>');
+    $('#newsTypePage').on('click','a.add-subtype',function (e) {
+        var li = $(this).closest('li');
+        li.before('<li class="list-group-item"><span class="editable subtype"></span><button type="button" class="close subtype" aria-label="Close"><span aria-hidden="true">&times;</span></button></li>');
+        li.prev().find('.editable').editable({closeOnEnter:true,event: 'click',emptyMessage:'点击编辑',callback:editFunc});
+        return false;
+    });
+    // 子栏目删除
+    $('#newsTypePage').on('click','button.close.subtype',function () {
+        var tid = $(this).data('id');
+        // 未保存的子栏目
+        if(!tid){
+            $(this).closest('li').remove();
+        }
+        else{
+            $.ajax('/admin/news/type/' + tid,{
+                type: 'DELETE',
+                success:$.proxy(function (ret) {
+                    $(this).closest('li').remove();
+                },this)
+            });
+        }
+    });
+    // 父类删除
+    $('#newsTypePage').on('click','button.close.root',function () {
+        var tid = $(this).data('id');
+        // 未保存的父类
+        if(!tid){
+            $(this).closest('div.news-type-box').remove();
+        }
+        else{
+            $.ajax('/admin/news/type/' + tid,{
+                type: 'DELETE',
+                success:$.proxy(function (ret) {
+                    $(this).closest('div.news-type-box').remove();
+                },this)
+            });
+        }
+    });
+    // 点击编辑
+    if($('#newsTypePage .editable').length > 0){
+        $('#newsTypePage .editable').editable({closeOnEnter:true,event: 'click',emptyMessage:'点击编辑',callback:editFunc});
+    }
+    // 编辑完成
+    function editFunc (data) {
+        if(!data.content) return;
+        var newType = {id:data.$el.data('id'),title:data.content};
+        if(data.$el.hasClass('subtype')){
+            newType.parentId = data.$el.closest('.news-type-box').data('id');
+        }
+        $.post('/admin/news/type',newType,$.proxy(function(result){
+            $(this).data("id", result.Id_);
+            $(this).siblings('button.close').data("id",result.Id_);
+            if($(this).hasClass("root")){
+                $(this).closest(".news-type-box").data("id",result.Id_);
+            }
+        },data.$el));
+    }
+    // 新增栏目
+    function addRootType(){
+         $('#newsTypePage').append('<div class="news-type-box">' +
+            '<div class="panel panel-default">' +
+                '<div class="panel-heading"><span class="editable root"></span><button class="close root" aria-label="Close"><span aria-hidden="true">&times;</span></button> </div>' +
+                '<ul class="list-group"><li class="list-group-item"><a class="add-subtype" href="#"><span class="glyphicon glyphicon-plus"></span>添加子栏目</a></li></ul>' +
+            '</div>' +
+        '</div>\n');
+        $('#newsTypePage').children(":last").find(".editable").editable({closeOnEnter:true,event: 'click',emptyMessage:'点击编辑',callback:editFunc});
+        return false;
+    }
+    $('#addRootType').click(addRootType);
+    $('.page-box-right').dblclick(addRootType);
+});
+</script>
+<div id="newsTypePage">
+    {{$subMap := .subTypes}}
+    {{range  .rootTypes}}
+    <!-- 一级分类  -->
+    <div class="news-type-box" data-id="{{.Id_.Hex}}">
+        <div class="panel panel-default">
+            <div class="panel-heading"><span data-id="{{.Id_.Hex}}" class="editable root">{{.Title}}</span><button data-id="{{.Id_.Hex}}" type="button" class="close root" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>
+            <!-- 二级分类 -->
+            <ul class="list-group">
+                {{range index $subMap .Id_.Hex}}
+                <li class="list-group-item sub-type"><span data-id="{{.Id_.Hex}}" class="editable subtype">{{.Title}}</span><button data-id="{{.Id_.Hex}}" type="button" class="close subtype" aria-label="Close"><span aria-hidden="true">&times;</span></button></li>
+                {{end}}
+                <li class="list-group-item"><a class="add-subtype" href="#"><span class="glyphicon glyphicon-plus"></span>添加子栏目</a></li>
+            </ul>
+        </div>
+     </div>
+    {{end}}
+</div>

@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script type="text/javascript">
+    $(function () {
+        $('#newsManager').addClass('active').append('<div class="arrow arrow-right"></div>');
+        $('#containerInitHtml').appendTo('#container');
+        // 初始化ueditor
+        var ue = UE.getEditor('container',{initialFrameHeight :500,scaleEnabled:true});
+        // 选择大类
+        $('#newTypeSelect').change(function(){
+            $.get("/admin/news/type/" + $(this).val() + "/subtypes",function(list){
+                $('#subTypeSelect').empty()
+                if(list.length > 0){
+                    for(i in list){
+                        $('#subTypeSelect').append('<option value="' + list[i].Id_ + '">' + list[i].Title + '</option>');
+                    }
+                }
+                else{
+                    $('#subTypeSelect').append('<option>未找到小类</option>');
+                }
+            });
+        });
+        // 保存草稿
+        $('#saveNews').click(function () {
+            $('#newsStatus').val('草稿');
+            if($('#newTypeSelect').val().length == 0 || $('#subTypeSelect').val().length == 0){
+               alert('大类和小类是必选项,如果这里没有可项,可到“内容分类”中新增。');
+               return false;
+            }
+            $('#newsForm').attr("target","_self");
+        });
+        $('#releaseNews').click(function () {
+            $('#newsForm').attr("target","_self");
+            $('#newsStatus').val('发布');
+            if($('#newTypeSelect').val().length == 0 || $('#subTypeSelect').val().length == 0){
+                alert('大类和小类是必选项,如果这里没有可项,可到“内容分类”中新增。');
+                return false;
+            }
+        });
+        // 预览
+        $('#previewNews').click(function(){
+            $('#newsForm').attr("target","_blank");
+            $('#newsStatus').val('预览');
+        });
+        $('#newsForm').submit(function(){
+            $('#newsContent').val(ue.getContent());
+            $('.btn-group-sm .btn').prop('disabled',true);
+        });
+        $('#tagGroup').on('click','.label',function(e){
+            var s = $('#newsTags').val();
+            var t = $(this).text();
+            var reg = new RegExp('(^\\s*\\b'+ t +'\\b\\s*,?)|(\\s*,\\s*\\b' + t + '\\b\\s*)',"gi");
+            var match =  reg.test(s);
+            if(match){
+                $('#newsTags').val(s.replace(reg, ''));
+            }
+            else{
+                $('#newsTags').val(s +  (/(^\s*$)|(^.*,\s*$)/.test(s)?"":",") + t);
+            }
+            toggleTags($('#newsTags').val())
+            $('#newsTags').focus();
+            return false;
+        });
+        $('#newsTags').on('input',function () {
+            toggleTags($(this).val());
+        });
+        function  toggleTags(val) {
+            var tag = val.split(",");
+            $('#tagGroup .label').removeClass('label-primary');
+            for(idx in tag){
+                if(tag[idx].trim().length == 0) continue;
+               $('#tagGroup .label.' + tag[idx].trim().toLowerCase()).addClass('label-primary');
+            }
+        }
+        toggleTags($('#newsTags').val());
+    });
+</script>
+</head>
+    <body>
+<div id="newsManagerPage" class="container-fluid">
+    <form id="newsForm" action="/admin/news" method="post">
+        <input name="Id" value="{{.news.Id.Hex}}" type="hidden" />
+        <input id="newsContent" name="Content" type="hidden" />
+        <input id="newsStatus" value="{{.news.Status}}" name="Status" type="hidden" />
+        <div class="row">
+        <div class="form-group col-md-2">
+            <label>选择大类：</label>
+            <select class="form-control"  name="Type" id="newTypeSelect" required="required">
+                {{range .types}}
+                {{if eq $.news.Type .Id_.Hex }}
+                <option selected="selected" value="{{.Id_.Hex}}">{{.Title}}</option>
+                {{else}}
+                <option value="{{.Id_.Hex}}">{{.Title}}</option>
+                {{end}}
+                {{else}}
+                <option>未找找到大类</option>
+                {{end}}
+            </select>
+        </div>
+        <div class="form-group col-md-2">
+            <label>选择子类：</label>
+            <select class="form-control" name="SubType" id="subTypeSelect" required="required">
+                {{ range .subTypes}}
+                {{if eq $.news.SubType .Id_.Hex }}
+                    <option selected="selected" value="{{.Id_.Hex}}">{{.Title}}</option>
+                {{else}}
+                    <option value="{{.Id_.Hex}}">{{.Title}}</option>
+                {{end}}
+                {{else}}
+                <option>未找到小类</option>
+                {{end}}
+            </select>
+        </div>
+        <div class="form-group col-md-8">
+            <label>标题：</label>
+            <input class="form-control" value="{{.news.Title}}" maxlength="32" required="required" name="Title" type="text" placeholder="文章标题" />
+        </div>
+        </div>
+    <div class="row">
+        <div class="col-md-12 form-group">
+            <label>设置标签：</label>
+            <input value="{{.news.Tags}}" class="form-control" maxlength="32" required="required" id="newsTags" name="Tags" type="text" placeholder="选择或输入标签，用逗号分隔多个标签" />
+        </div>
+    </div>
+    <div class="row">
+        <div id="tagGroup" class="col-md-12 form-group">
+            {{range .tags}}
+            <a href="#" class="label label-default {{toLower .Tag}}">{{.Tag}}</a>
+            {{end}}
+        </div>
+    </div>
+    <!-- 加载编辑器的容器 -->
+    <div class="row">
+    <div class="col-md-12">
+        <script id="container" name="content" type="text/plain">
+        </script>
+        <div id="containerInitHtml">{{HTML .news.Content}}</div>
+    </div>
+    </div>
+    <br/>
+    <div class="row">
+        <div class="col-md-12 text-right btn-group-sm">
+            <button id="saveNews" class="btn btn-warning">保存草稿</button>
+            <button id="previewNews" class="btn btn-success">预览</button>
+            <button id="releaseNews" class="btn btn-primary">发布</button>
+        </div>
+    </div>
+    </form>
+
+    <!-- 配置文件 -->
+    <script type="text/javascript" src="/ueditor/ueditor.config.js"></script>
+    <!-- 编辑器源码文件 -->
+    <script type="text/javascript" src="/ueditor/ueditor.all.js"></script>
+</div>
+    </body>
+</html>

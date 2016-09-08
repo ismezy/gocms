@@ -1,0 +1,13 @@
+<ol class="breadcrumb">
+    <li><a href="/">首页</a></li>
+    <li><a href="/column/{{.col.Id_.Hex}}">{{.col.Title}}</a></li>
+    <li class="active">{{.subCol.Title}}</li>
+</ol>
+<div id="newsPage">
+    <div class="news-title">{{.news.Title}}</div>
+    <div class="news-info"><span class="news-info-time">时间：{{.news.CreateTime.Format "2006-01-02"}}</span></div>
+    <div class="clearfix"></div>
+    <div class="news-content">
+        {{HTML .news.Content}}
+    </div>
+</div>

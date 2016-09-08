@@ -1,0 +1,51 @@
+<script type="text/javascript">
+    $(function () {
+        $('#newsManager').addClass('active').append('<div class="arrow arrow-right"></div>');
+    })
+</script>
+<div id="newsManagerPage">
+    <div>
+        <table class="table">
+            <thead><th style="width:300px">标题</th><th>大类</th><th>小类</th><th>状态</th><th>标签</th><th>创建时间</th><th></th></thead>
+            <tbody>
+            {{ range .newspage.list }}
+                <tr>
+                    <td>{{.Title}}</td><td>{{index $.typemap .Type}}</td><td>{{index $.typemap .SubType}}</td><td>{{.Status}}</td>
+                    <td>{{range split .Tags ","}}<span class="label label-primary">{{.}}</span> {{end}}</td>
+                    <td>{{.CreateTime.Format "01-02 15:04"}}</td>
+                    <td><a href="/admin/news?id={{.Id.Hex}}">编辑</a> <a href="/admin/news/preview?id={{.Id.Hex}}">预览</a></td>
+                </tr>
+            {{end}}
+            </tbody>
+        </table>
+        <nav>
+            <ul class="pagination">
+                {{if eq .newspage.page 1}}
+                <li class="disabled">
+                    <span aria-hidden="true">&laquo;</span>
+                </li>
+                {{else}}
+                <li>
+                    <a href="/admin/news/list/{{sub .newspage.page 1}}" aria-label="上一页">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+                {{end}}
+                {{ range loop .newspage.pageCount 1 }}
+                <li {{if eq . $.newspage.page }}class="active"{{end}}><a href="/admin/news/list/{{.}}">{{.}}</a></li>
+                {{ end }}
+                {{if eq .newspage.page .newspage.pageCount}}
+                <li class="disabled">
+                    <span aria-hidden="true">&raquo;</span>
+                </li>
+                {{else}}
+                <li>
+                    <a href="/admin/news/list/{{add .newspage.page 1.0}}" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+                {{end}}
+            </ul>
+        </nav>
+    </div>
+</div>
