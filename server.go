@@ -3,6 +3,8 @@ package main
 import (
 	"github.com/go-martini/martini"
 	"github.com/martini-contrib/render"
+	"github.com/martini-contrib/sessions"
+	"github.com/martini-contrib/sessionauth"
 	r "./router"
 	dbw "./db"
 	//"container/list"
@@ -10,7 +12,7 @@ import (
 	"html/template"
 	"fmt"
 	"strings"
-	"net/http"
+	"regexp"
 )
 
 /* 模板自定义方法 start */
@@ -42,11 +44,30 @@ func templateHTML(html string) template.HTML{
 func templateToLower(str string) string{
 	return strings.ToLower(str)
 }
+func templateHtml2Txt(html string) string {
+	re, _ := regexp.Compile("\\<[\\S\\s]+?\\>")
+	text := re.ReplaceAllString(html , " ")
+	return text
+}
+func templateLimitText(text string, limit int,suffix string) string{
+	r := []rune(text)
+	if(len(r) > limit){
+		fmt.Println(r[0:limit])
+		return string(r[0:limit]) + suffix
+	}else{
+		return text
+	}
+}
 /* end 自定义方法 */
 
 func main() {
 	var m = martini.Classic()
 	m.Use(martini.Static("assets"))
+	store := sessions.NewCookieStore([]byte("secret123"))
+	m.Use(sessions.Sessions("my_session", store))
+	m.Use(sessionauth.SessionUser(func () sessionauth.User{
+		return &dbw.LoginUser{}
+	}))
 	m.Use(render.Renderer(render.Options{
 		Directory: "templates", // Specify what path to load the templates from.
 		Layout: "layout/default/layout", // Specify a layout template. Layouts can call {{ yield }} to render the current template.
@@ -54,16 +75,15 @@ func main() {
 		//Delims: render.Delims{"{[{", "}]}"}, // Sets delimiters to the specified strings.
 		Charset: "UTF-8", // Sets encoding for json and html content-types. Default is "UTF-8".
 		Funcs:[]template.FuncMap{{"loop":templateLoop,"sub":templateSub,"add":templateAdd,"toLower":templateToLower,
-			"split":strings.Split,"isNil":templateIsNil,"HTML":templateHTML, "MainMenu":func()string{return ""}}},
+			"split":strings.Split,"isNil":templateIsNil,"HTML":templateHTML, "MainMenu":func()string{return ""},
+			"Html2Txt":templateHtml2Txt,"textLimit":templateLimitText}},
 //		IndentJSON: true, // Output human readable JSON
 //		IndentXML: true, // Output human readable XML
 	}))
+
 	// mongo数据库
 	m.Use(dbw.Mongoer("localhost","cms"))
-	m.Get("/test",func(r render.Render, res http.ResponseWriter,newsDao dbw.NewsDao,){
 
-		//r.Text(200,"test")
-	})
 	var routers *list.List = r.GetRouters();
 	// 初始化router
 	for rl := routers.Front(); rl != nil; rl = rl.Next() {

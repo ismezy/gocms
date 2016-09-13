@@ -40,7 +40,7 @@ func (md *menuDaoImpl) All() ([]Menu,error){
 	var menu []Menu
 	err := md.d.C("Menu").Find(nil).Sort("Index").All(&menu)
 	if(err != nil){
-		md.logger.Fatalln("FindAll Menu Error ", err)
+		md.logger.Println("FindAll Menu Error ", err)
 		return menu,err
 	}
 	return menu,nil
@@ -50,7 +50,7 @@ func (md *menuDaoImpl) FindOne(id string) (Menu,error){
 	var menu Menu
 	err := md.d.C("Menu").FindId(bson.ObjectIdHex(id)).One(&menu)
 	if(err != nil){
-		md.logger.Fatalln("FindOne Menu Error ", err)
+		md.logger.Println("FindOne Menu Error ", err)
 		return menu,err
 	}
 	return menu,nil
@@ -59,13 +59,13 @@ func (md *menuDaoImpl) Save(menu Menu) error {
 	if(menu.Id.Valid()){	// 更新
 		err := md.d.C("Menu").Update(menu.Id,menu)
 		if(err != nil){
-			md.logger.Fatalln("Update Menu Error ", err)
+			md.logger.Println("Update Menu Error ", err)
 			return err
 		}
 	}else{		// 新增
 		err := md.d.C("Menu").Insert(menu)
 		if(err != nil){
-			md.logger.Fatalln("Insert Menu Update Error ", err)
+			md.logger.Println("Insert Menu Update Error ", err)
 			return err
 		}
 	}
@@ -74,7 +74,7 @@ func (md *menuDaoImpl) Save(menu Menu) error {
 func (md *menuDaoImpl) Remove(id string) error{
 	err := md.d.C("Menu").RemoveId(bson.ObjectIdHex(id))
 	if(err != nil){
-		md.logger.Fatalln("Remove MenuId Error.", id, err)
+		md.logger.Println("Remove MenuId Error.", id, err)
 		return err
 	}
 	return nil

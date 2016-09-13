@@ -40,6 +40,7 @@ func columnRouter(m *martini.ClassicMartini){
 			newsType,_ = columnDao.FindOne(bson.ObjectIdHex(newsType.ParentId))
 		}
 		model["col"] = newsType
+		model["id"] = id
 		newspage := newsDao.FindPageByType(ipage, 20, id, "-CreateTime")
 		model["news"] = newspage
 		r.HTML(200, "column", model,"column")

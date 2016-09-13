@@ -14,6 +14,7 @@ import (
 	"strings"
 	"path/filepath"
 	"encoding/base64"
+	"github.com/martini-contrib/sessionauth"
 )
 
 func init() {
@@ -21,7 +22,7 @@ func init() {
 	routers.PushFront(ueditorRouter)
 }
 func ueditorRouter(m *martini.ClassicMartini){
-	m.Get("/admin/ueditor", func(r render.Render, req *http.Request, res http.ResponseWriter,params martini.Params, logger *log.Logger) {
+	m.Get("/admin/ueditor",sessionauth.LoginRequired, func(r render.Render, req *http.Request, res http.ResponseWriter,params martini.Params, logger *log.Logger) {
 		fmt.Println(req.URL.Query())
 		action := req.URL.Query()["action"][0]
 		switch action{
@@ -32,7 +33,7 @@ func ueditorRouter(m *martini.ClassicMartini){
 			r.JSON(200,map[string]interface{}{"msg":"no action"})
 		}
 	})
-	m.Post("/admin/ueditor",func(r render.Render, req *http.Request, res http.ResponseWriter,params martini.Params, logger *log.Logger){
+	m.Post("/admin/ueditor",sessionauth.LoginRequired,func(r render.Render, req *http.Request, res http.ResponseWriter,params martini.Params, logger *log.Logger){
 		action := req.URL.Query()["action"][0]
 		fmt.Println("action:",action)
 		switch action{

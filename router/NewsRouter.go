@@ -11,6 +11,7 @@ import (
 	"github.com/martini-contrib/binding"
 	"strconv"
 	"strings"
+	"github.com/martini-contrib/sessionauth"
 )
 
 func init() {
@@ -18,7 +19,7 @@ func init() {
 	routers.PushFront(NewsRouter)
 }
 func NewsRouter(m *martini.ClassicMartini){
-	m.Get("/admin/news/list/:page", func(r LayoutWrapper, d *mgo.Database, logger *log.Logger,params martini.Params, newsDao dbw.NewsDao, newsTypeDao dbw.NewsTypeDao) {
+	m.Get("/admin/news/list/:page",sessionauth.LoginRequired, func(r LayoutWrapper, d *mgo.Database, logger *log.Logger,params martini.Params, newsDao dbw.NewsDao, newsTypeDao dbw.NewsTypeDao) {
 		// 分页数据
 		page,ok := params["page"]
 		ipage := 1
@@ -42,7 +43,7 @@ func NewsRouter(m *martini.ClassicMartini){
 		fmt.Println(ret)
 		r.HTML(200,"admin/newslist", ret, "admin")
 	})
-	m.Get("/admin/news", func(r LayoutWrapper, logger *log.Logger,params martini.Params, newsTypeDao dbw.NewsTypeDao,
+	m.Get("/admin/news",sessionauth.LoginRequired, func(r LayoutWrapper, logger *log.Logger,params martini.Params, newsTypeDao dbw.NewsTypeDao,
 		newsTagDao dbw.NewsTagDao,newsDao dbw.NewsDao,req *http.Request) {
 		types := newsTypeDao.Parents()
 		subTypes :=[]dbw.NewsType{}
@@ -61,7 +62,7 @@ func NewsRouter(m *martini.ClassicMartini){
 		model["subTypes"] = subTypes
 		r.HTML(200,"admin/news", model, "admin")
 	})
-	m.Post("/admin/news",binding.Bind(dbw.News{}),func(r LayoutWrapper, newsDao dbw.NewsDao,newsTypeDao dbw.NewsTypeDao, newsTagDao dbw.NewsTagDao,
+	m.Post("/admin/news",sessionauth.LoginRequired,binding.Bind(dbw.News{}),func(r LayoutWrapper, newsDao dbw.NewsDao,newsTypeDao dbw.NewsTypeDao, newsTagDao dbw.NewsTagDao,
 		logger *log.Logger, req *http.Request, res http.ResponseWriter, news dbw.News){
 		fmt.Println(news)
 		if(news.Status == "预览"){
@@ -87,7 +88,7 @@ func NewsRouter(m *martini.ClassicMartini){
 			http.Redirect(res,req,"/admin/news/list/1?msg=success",302)
 		}
 	})
-	m.Get("/admin/news/preview", func(r LayoutWrapper,newsDao dbw.NewsDao, newsTagDao dbw.NewsTagDao, newsTypeDao dbw.NewsTypeDao,req *http.Request,res http.ResponseWriter) {
+	m.Get("/admin/news/preview",sessionauth.LoginRequired, func(r LayoutWrapper,newsDao dbw.NewsDao, newsTagDao dbw.NewsTagDao, newsTypeDao dbw.NewsTypeDao,req *http.Request,res http.ResponseWriter) {
 		id,ok := req.URL.Query()["id"]
 		if(!ok){
 			http.Redirect(res,req,"/admin/news/list/1?msg=error",302)

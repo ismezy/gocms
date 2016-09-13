@@ -9,6 +9,7 @@ import (
 	"gopkg.in/mgo.v2/bson"
 	"github.com/martini-contrib/render"
 	"net/http"
+	"github.com/martini-contrib/sessionauth"
 )
 
 func init() {
@@ -18,7 +19,7 @@ func init() {
 
 func typeManagerRouter(m *martini.ClassicMartini){
 	// 类别页面
-	m.Get("/admin/news/type",func(r LayoutWrapper, d *mgo.Database, logger *log.Logger ){
+	m.Get("/admin/news/type",sessionauth.LoginRequired,func(r LayoutWrapper, d *mgo.Database, logger *log.Logger ){
 		ret := make(map[string] interface{})
 		subMap := make(map[string] interface{})
 		ret["subTypes"] = subMap
@@ -41,7 +42,7 @@ func typeManagerRouter(m *martini.ClassicMartini){
 		fmt.Println(ret)
 		r.HTML(200,"admin/newstype",ret,"admin")
 	})
-	m.Get("/admin/news/type/:id/subtypes", func(r render.Render,d *mgo.Database, logger *log.Logger,params martini.Params) {
+	m.Get("/admin/news/type/:id/subtypes",sessionauth.LoginRequired,func(r render.Render,d *mgo.Database, logger *log.Logger,params martini.Params) {
 		id,ok := params["id"]
 		if(!ok){
 			r.Text(405,"id cannot be empty")
@@ -52,7 +53,7 @@ func typeManagerRouter(m *martini.ClassicMartini){
 		r.JSON(200,list)
 	})
 	// 保存类别
-	m.Post("/admin/news/type",func(r render.Render,d *mgo.Database, logger *log.Logger,params martini.Params,req *http.Request ){
+	m.Post("/admin/news/type",sessionauth.LoginRequired,func(r render.Render,d *mgo.Database, logger *log.Logger,params martini.Params,req *http.Request ){
 		title := req.FormValue("title")
 		id := req.FormValue("id")
 		parentId := req.FormValue("parentId")
@@ -84,7 +85,7 @@ func typeManagerRouter(m *martini.ClassicMartini){
 		r.JSON(200,newType)
 	})
 	// 删除类别
-	m.Delete("/admin/news/type/:id", func(r render.Render,d *mgo.Database, logger *log.Logger,params martini.Params,req *http.Request) {
+	m.Delete("/admin/news/type/:id",sessionauth.LoginRequired, func(r render.Render,d *mgo.Database, logger *log.Logger,params martini.Params,req *http.Request) {
 		id,ok := params["id"]
 		if(!ok){
 			r.JSON(405,"id cannot be empty")

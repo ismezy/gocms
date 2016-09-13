@@ -1,104 +1,11 @@
 <component name="libraryTable">
   <library name="GOPATH &lt;cms&gt;">
     <CLASSES>
-      <root url="file://$PROJECT_DIR$/../../app/src/log" />
-      <root url="file://$PROJECT_DIR$/../../app/src/sort" />
-      <root url="file://$PROJECT_DIR$/../../app/src/expvar" />
-      <root url="file://$PROJECT_DIR$/../../app/src/encoding" />
-      <root url="file://$PROJECT_DIR$/../../app/src/errors" />
-      <root url="file://$PROJECT_DIR$/../../app/src/archive" />
-      <root url="file://$PROJECT_DIR$/../../app/src/context" />
-      <root url="file://$PROJECT_DIR$/../../app/src/gopkg.in" />
-      <root url="file://$PROJECT_DIR$/../../app/src/text" />
-      <root url="file://$PROJECT_DIR$/../../app/src/vendor" />
-      <root url="file://$PROJECT_DIR$/../../app/src/testing" />
-      <root url="file://$PROJECT_DIR$/../../app/src/compress" />
-      <root url="file://$PROJECT_DIR$/../../app/src/github.com" />
-      <root url="file://$PROJECT_DIR$/../../app/src/time" />
-      <root url="file://$PROJECT_DIR$/../../app/src/container" />
-      <root url="file://$PROJECT_DIR$/../../app/src/cmd" />
-      <root url="file://$PROJECT_DIR$/../../app/src/image" />
-      <root url="file://$PROJECT_DIR$/../../app/src/crypto" />
-      <root url="file://$PROJECT_DIR$/../../app/src/index" />
-      <root url="file://$PROJECT_DIR$/../../app/src/internal" />
-      <root url="file://$PROJECT_DIR$/../../app/src/reflect" />
-      <root url="file://$PROJECT_DIR$/../../app/src/io" />
-      <root url="file://$PROJECT_DIR$/../../app/src/regexp" />
-      <root url="file://$PROJECT_DIR$/../../app/src/runtime" />
-      <root url="file://$PROJECT_DIR$/../../MyGO/src/github.com" />
-      <root url="file://$PROJECT_DIR$/../../app/src/net" />
-      <root url="file://$PROJECT_DIR$/../../app/src/fmt" />
-      <root url="file://$PROJECT_DIR$/../../app/src/html" />
-      <root url="file://$PROJECT_DIR$/../../app/src/flag" />
-      <root url="file://$PROJECT_DIR$/../../app/src/mime" />
-      <root url="file://$PROJECT_DIR$/../../app/src/hash" />
-      <root url="file://$PROJECT_DIR$/../../app/src/path" />
-      <root url="file://$PROJECT_DIR$/../../app/src/math" />
-      <root url="file://$PROJECT_DIR$/../../app/src/bytes" />
-      <root url="file://$PROJECT_DIR$/../../app/src/go" />
-      <root url="file://$PROJECT_DIR$/../../app/src/builtin" />
-      <root url="file://$PROJECT_DIR$/../../app/src/os" />
-      <root url="file://$PROJECT_DIR$/../../app/src/bufio" />
-      <root url="file://$PROJECT_DIR$/../../app/src/debug" />
-      <root url="file://$PROJECT_DIR$/../../app/src/database" />
-      <root url="file://$PROJECT_DIR$/../../app/src/unicode" />
-      <root url="file://$PROJECT_DIR$/../../app/src/unsafe" />
-      <root url="file://$PROJECT_DIR$/../../app/src/strconv" />
-      <root url="file://$PROJECT_DIR$/../../app/src/strings" />
-      <root url="file://$PROJECT_DIR$/../../app/src/sync" />
-      <root url="file://$PROJECT_DIR$/../../app/src/syscall" />
+      <root url="file://$PROJECT_DIR$/../../MyGO/pkg" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>
-      <root url="file://$PROJECT_DIR$/../../app/src/log" />
-      <root url="file://$PROJECT_DIR$/../../app/src/sort" />
-      <root url="file://$PROJECT_DIR$/../../app/src/expvar" />
-      <root url="file://$PROJECT_DIR$/../../app/src/encoding" />
-      <root url="file://$PROJECT_DIR$/../../app/src/errors" />
-      <root url="file://$PROJECT_DIR$/../../app/src/archive" />
-      <root url="file://$PROJECT_DIR$/../../app/src/context" />
-      <root url="file://$PROJECT_DIR$/../../app/src/gopkg.in" />
-      <root url="file://$PROJECT_DIR$/../../app/src/text" />
-      <root url="file://$PROJECT_DIR$/../../app/src/vendor" />
-      <root url="file://$PROJECT_DIR$/../../app/src/testing" />
-      <root url="file://$PROJECT_DIR$/../../app/src/compress" />
-      <root url="file://$PROJECT_DIR$/../../app/src/github.com" />
-      <root url="file://$PROJECT_DIR$/../../app/src/time" />
-      <root url="file://$PROJECT_DIR$/../../app/src/container" />
-      <root url="file://$PROJECT_DIR$/../../app/src/cmd" />
-      <root url="file://$PROJECT_DIR$/../../app/src/image" />
-      <root url="file://$PROJECT_DIR$/../../app/src/crypto" />
-      <root url="file://$PROJECT_DIR$/../../app/src/index" />
-      <root url="file://$PROJECT_DIR$/../../app/src/internal" />
-      <root url="file://$PROJECT_DIR$/../../app/src/reflect" />
-      <root url="file://$PROJECT_DIR$/../../app/src/io" />
-      <root url="file://$PROJECT_DIR$/../../app/src/regexp" />
-      <root url="file://$PROJECT_DIR$/../../app/src/runtime" />
-      <root url="file://$PROJECT_DIR$/../../MyGO/src/github.com" />
-      <root url="file://$PROJECT_DIR$/../../app/src/net" />
-      <root url="file://$PROJECT_DIR$/../../app/src/fmt" />
-      <root url="file://$PROJECT_DIR$/../../app/src/html" />
-      <root url="file://$PROJECT_DIR$/../../app/src/flag" />
-      <root url="file://$PROJECT_DIR$/../../app/src/mime" />
-      <root url="file://$PROJECT_DIR$/../../app/src/hash" />
-      <root url="file://$PROJECT_DIR$/../../app/src/path" />
-      <root url="file://$PROJECT_DIR$/../../app/src/math" />
-      <root url="file://$PROJECT_DIR$/../../app/src/bytes" />
-      <root url="file://$PROJECT_DIR$/../../app/src/go" />
-      <root url="file://$PROJECT_DIR$/../../app/src/builtin" />
-      <root url="file://$PROJECT_DIR$/../../app/src/os" />
-      <root url="file://$PROJECT_DIR$/../../app/src/bufio" />
-      <root url="file://$PROJECT_DIR$/../../app/src/debug" />
-      <root url="file://$PROJECT_DIR$/../../app/src/database" />
-      <root url="file://$PROJECT_DIR$/../../app/src/unicode" />
-      <root url="file://$PROJECT_DIR$/../../app/src/unsafe" />
-      <root url="file://$PROJECT_DIR$/../../app/src/strconv" />
-      <root url="file://$PROJECT_DIR$/../../app/src/strings" />
-      <root url="file://$PROJECT_DIR$/../../app/src/sync" />
-      <root url="file://$PROJECT_DIR$/../../app/src/syscall" />
+      <root url="file://$PROJECT_DIR$/../../MyGO/src" />
     </SOURCES>
-    <excluded>
-      <root url="file://$PROJECT_DIR$" />
-    </excluded>
   </library>
 </component>

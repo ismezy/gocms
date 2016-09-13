@@ -5,7 +5,10 @@
 </ol>
 <div id="newsPage">
     <div class="news-title">{{.news.Title}}</div>
-    <div class="news-info"><span class="news-info-time">时间：{{.news.CreateTime.Format "2006-01-02"}}</span></div>
+    <div class="news-info">
+        <span class="news-info-time">时间：{{.news.CreateTime.Format "2006-01-02"}}</span>
+        {{range split .news.Tags ","}}<span class="label label-default">{{.}}</span> {{end}}
+    </div>
     <div class="clearfix"></div>
     <div class="news-content">
         {{HTML .news.Content}}

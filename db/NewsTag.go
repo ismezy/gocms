@@ -34,7 +34,7 @@ func (nd *newsTagDao) FindAll() ([]NewsTag,error){
 	var tags []NewsTag
 	err := nd.d.C("NewsTag").Find(nil).All(&tags)
 	if(err != nil){
-		nd.logger.Fatalln("FindAll NewsTags error", err)
+		nd.logger.Println("FindAll NewsTags error", err)
 		return tags,err
 	}
 	return tags,nil

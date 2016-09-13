@@ -42,20 +42,20 @@ func (bd *bannerDaoImpl) Save(banner *Banner) error{
 		var old Banner
 		err := bd.d.C("Banner").FindId(banner.Id).One(&old)
 		if(err != nil){
-			bd.logger.Fatalln("Banner update error, ", banner.Id , " not found", err)
+			bd.logger.Println("Banner update error, ", banner.Id , " not found", err)
 			return err
 		}
 		banner.CreateTime = old.CreateTime
 		err = bd.d.C("Banner").Update(bson.M{"_id":banner.Id}, banner)
 		if(err != nil){
-			bd.logger.Fatalln("Banner update error, ", banner,  err)
+			bd.logger.Println("Banner update error, ", banner,  err)
 			return err
 		}
 	}else{	// 新增
 		banner.CreateTime = time.Now()
 		err := bd.d.C("Banner").Insert(banner);
 		if(err != nil){
-			bd.logger.Fatalln("Banner insert error.", banner, err)
+			bd.logger.Println("Banner insert error.", banner, err)
 			return err
 		}
 	}

@@ -70,7 +70,7 @@ func (nd *newsTypeDao) FindByParent(parentId string) []NewsType{
 	parents := []NewsType{}
 	err := nd.d.C("NewsType").Find(bson.M{"ParentId":parentId}).All(&parents)
 	if(err != nil){
-		nd.logger.Fatal("NewsTypeDao findByParentId error", err)
+		nd.logger.Println("NewsTypeDao findByParentId error", err)
 	}
 	return  parents
 }
@@ -79,7 +79,7 @@ func (nd *newsTypeDao) FindOne(id bson.ObjectId) (NewsType,error){
 	var newsType NewsType
 	err := nd.d.C("NewsType").FindId(id).One(&newsType)
 	if(err != nil){
-		log.Fatalln("NewsTypeDao FindOne error", id, err)
+		log.Println("NewsTypeDao FindOne error", id, err)
 	}
 	return newsType,err
 }
