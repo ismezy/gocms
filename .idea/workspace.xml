@@ -2,6 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="50c660e2-c289-411c-af49-4aee180313bc" name="Default" comment="">
+      <change type="DELETED" beforePath="$PROJECT_DIR$/Dockerfile" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/daocloud.yml" afterPath="" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="cms.iws" />
@@ -54,8 +56,8 @@
       <file leaf-file-name="Index.go" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/router/Index.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="242">
-              <caret line="50" column="36" selection-start-line="50" selection-start-column="36" selection-end-line="50" selection-end-column="36" />
+            <state relative-caret-position="166">
+              <caret line="46" column="54" selection-start-line="46" selection-start-column="54" selection-end-line="46" selection-end-column="54" />
               <folding>
                 <element signature="e#16#227#0" expanded="true" />
               </folding>
@@ -203,11 +205,11 @@
         <option value="$PROJECT_DIR$/db/NewsTag.go" />
         <option value="$PROJECT_DIR$/db/NewsType.go" />
         <option value="$PROJECT_DIR$/db/LoginUser.go" />
-        <option value="$PROJECT_DIR$/router/Index.go" />
         <option value="$PROJECT_DIR$/templates/layout/admin/layout.html" />
         <option value="$PROJECT_DIR$/webpack/css/style.css" />
         <option value="$PROJECT_DIR$/templates/index.html" />
         <option value="$PROJECT_DIR$/templates/layout/default/layout.html" />
+        <option value="$PROJECT_DIR$/router/Index.go" />
       </list>
     </option>
   </component>
@@ -823,7 +825,7 @@
       <workItem from="1472440295912" duration="85012000" />
       <workItem from="1472893047018" duration="41801000" />
       <workItem from="1473249687555" duration="26137000" />
-      <workItem from="1473412613032" duration="28488000" />
+      <workItem from="1473412613032" duration="30169000" />
     </task>
     <task id="LOCAL-00001" summary="daoclound">
       <created>1473337048637</created>
@@ -839,11 +841,25 @@
       <option name="project" value="LOCAL" />
       <updated>1473762152780</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="daoclound">
+      <created>1473762180849</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1473762180849</updated>
+    </task>
+    <task id="LOCAL-00004" summary="daoclound">
+      <created>1473762350386</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1473762350386</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="307125000" />
+    <option name="totallyTimeSpent" value="308806000" />
   </component>
   <component name="TodoView" selected-index="2">
     <todo-panel id="selected-file">
@@ -884,6 +900,24 @@
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3289689" sideWeight="0.4969743" order="1" side_tool="false" content_ui="tabs" />
     </layout>
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State>
+              <option name="RECENTLY_FILTERED_USER_GROUPS">
+                <collection />
+              </option>
+              <option name="RECENTLY_FILTERED_BRANCH_GROUPS">
+                <collection />
+              </option>
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
   <component name="Vcs.Log.UiProperties">
     <option name="RECENTLY_FILTERED_USER_GROUPS">
@@ -1325,8 +1359,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/router/Index.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="242">
-          <caret line="50" column="36" selection-start-line="50" selection-start-column="36" selection-end-line="50" selection-end-column="36" />
+        <state relative-caret-position="166">
+          <caret line="46" column="54" selection-start-line="46" selection-start-column="54" selection-end-line="46" selection-end-column="54" />
           <folding>
             <element signature="e#16#227#0" expanded="true" />
           </folding>
