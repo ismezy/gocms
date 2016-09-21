@@ -7,98 +7,34 @@
 <div class="banner">
     <div class="my-slider">
         <ul>
-            <li><div class="image" style="background-image: url(/common/image?path=banner/20160906_112959_000.jpg)"></div></li>
-            <li><div class="image" style="background-image: url(/common/image?path=banner/20160906_112959_001.jpg)"></div></li>
-            <li><div class="image" style="background-image: url(/common/image?path=banner/20160906_112959_002.jpg)"></div></li>
-            <li><div class="image" style="background-image: url(/common/image?path=banner/20160906_112959_003.jpg)"></div></li>
-            <li><div class="image" style="background-image: url(/common/image?path=banner/20160906_112959_004.jpg)"></div></li>
+            {{range .banners}}
+            <li><div class="image" style="background-image: url(/common/image?path={{.ImgPath}})"></div></li>
+            {{end}}
         </ul>
     </div>
 </div>
 <div class="banner-bottom-strip">
     <div class="container">
-        <p>工业自动化设备、机电设备一体化、数控及数显设备装置</p>
+        <p>“用户至上，诚信服务”</p>
     </div>
 </div>
 <div class="welcome">
     <div class="container">
         <h3>领域</h3>
-        <h5>SIKO的测量技术几十年来应用于许多领域</h5>
+        <h5>地地</h5>
         <div id="products" class="products">
-            <div class="col-md-4 product-grid">
-                <a href="images/2916907.jpg" class="b-link-stripe b-animate-go1   swipebox" title="">
-                    <img src="images/2916907.jpg" alt=" " class="img-responsive">
+            {{range .tile.Items}}
+            <div class="col-md-4 product-grid" >
+                <a href="{{.Url}}" class="b-link-stripe b-animate-go1   swipebox" title="">
+                    <img src="/common/image?path={{.ImgPath}}" alt=" " class="img-responsive">
                 </a>
                 <div class="project-grid-text1">
-                    <h4> 包装领域</h4>
-                    <p> 定位系统 (主轴驱动, 位置指示器, 控制旋钮) 用于 主轴/ 轴的格式调整</p>
+                    <h4>{{.Title}}</h4>
+                    <p>{{.Memo}}</p>
                 </div>
             </div>
-            <div class="col-md-4 product-grid">
-                <a href="images/2916908.jpg" class="b-link-stripe b-animate-go1   swipebox" title="">
-                    <img src="images/2916908.jpg" alt=" " class="img-responsive">
-                </a>
-                <div class="project-grid-text1">
-                    <h4> 木材加工 / 家具工业</h4>
-                    <p> 定位设备和测量显示器 /用于优化调节时间的显示器</p>
-                </div>
-            </div>
-            <div class="col-md-4 product-grid">
-                <a href="images/2916909.jpg" class="b-link-stripe b-animate-go1   swipebox" title="">
-                    <img src="images/2916909.jpg" alt=" " class="img-responsive">
-                </a>
-                <div class="project-grid-text1">
-                    <h4>金属加工 / 铁板加工 / 工具机械</h4>
-                    <p> 用于测量值检测的定位设备<br/><br/></p>
-                </div>
-            </div>
-            <div class="col-md-4 product-grid">
-                <a href="images/2916910.jpg" class="b-link-stripe b-animate-go1   swipebox" title="">
-                    <img src="images/2916910.jpg" alt=" " class="img-responsive">
-                </a>
-                <div class="project-grid-text1">
-                    <h4>石材加工</h4>
-                    <p>水刀切割机、石锯
-                        石钻孔机、
-                        石铣床、
-                        石材切割机...</p>
-                </div>
-            </div>
-            <div class="col-md-4 product-grid">
-                <a href="images/2916911.jpg" class="b-link-stripe b-animate-go1   swipebox" title="">
-                    <img src="images/2916911.jpg" alt=" " class="img-responsive">
-                </a>
-                <div class="project-grid-text1">
-                    <h4>玻璃加工</h4>
-                    <p>制瓶机的调节、
-                        平面玻璃加工、
-                        水刀切割机、
-                        玻璃钻孔机、
-                        玻璃磨削机、
+            {{end}}
 
-                        玻璃锯、
-                        玻璃钻孔、
-                        玻璃切割机、
-                        玻璃加工机械...</p>
-                </div>
-            </div>
-            <div class="col-md-4 product-grid">
-                <a href="images/2916912.jpg" class="b-link-stripe b-animate-go1   swipebox" title="">
-                    <img src="images/2916912.jpg" alt=" " class="img-responsive">
-                </a>
-                <div class="project-grid-text1">
-                    <h4> 印刷领域: 测量解决方案和设置设备</h4>
-                    <p>印刷机、
-                        数字打印机、
-                        印刷滚筒、
-                        旋转气缸的压力调节、
-                        监控印刷速度、
-                        调节纸张格式、
-                        纸输入的细调节、
-                        冲压工具的定位
-                        … </p>
-                </div>
-            </div>
             <div class="clearfix"> </div>
         </div>
     </div>
@@ -161,7 +97,6 @@
         <div class="clearfix"> </div>
     </div>
 </div>
-
 <div class="team-work">
     <div class="container">
         <h3 class="team">团队</h3>
@@ -190,3 +125,4 @@
         </div>
     </div>
 </div>
+

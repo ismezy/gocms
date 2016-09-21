@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>后台管理</title>
+    <link rel="stylesheet" type="text/css" href="/ngapp.css"/>
+    <script src="/jquery-3.1.0.min.js"> </script>
+    <script src="/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/ngapp.bundle.js"></script>
+</head>
+<body ng-app="adminApp">
+{{template "header"}}
+<br/>
+<div class="container page-box">
+        <div class="page-box-left">
+            <ul class="left-menu">
+                <li id="newsTypeManager"><a href="/admin/news/type">栏目管理</a></li>
+                <li id="newsManager"><a href="/admin/news/list/1">文章管理</a>
+                    <ul class="left-sub-menu"><li><a id="addRootType" href="/admin/news">发表新文章</a></li></ul>
+                </li>
+                <li>
+                    <span>首页设置</span>
+                    <ul class="left-sub-menu">
+<!--                        <li><a id="" href="/admin/news">菜单管理</a></li>-->
+                            <li><a href="/admin/banner">滚动栏管理</a></li>
+                            <li><a href="/ngadmin#/tile">磁贴管理</a></li>
+                    </ul>
+                </li>
+                <li><a href="/logout">安全退出</a></li>
+            </ul>
+        </div>
+        <div class="page-box-right" ng-view>
+        </div>
+</div>
+<br/>
+{{template "footer"}}
+</body>
+</html>

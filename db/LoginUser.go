@@ -27,7 +27,6 @@ func (u *LoginUser) IsAuthenticated() bool{
 func (u *LoginUser) Login() {
 	u.Authenticated = true
 	userCache[u.Id.Hex()] = u
-	fmt.Println("login",u)
 }
 
 func (u *LoginUser) Logout() {

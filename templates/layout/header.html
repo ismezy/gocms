@@ -1,0 +1,90 @@
+{{ define "header" }}
+<!--header-->
+<div class="header">
+    <div class="header-nav">
+        <div class="container">
+            <div class="logo">
+                <a href="/">
+                    <img src="/images/logo3.png"/>
+                </a>
+            </div>
+            <div class="navigation">
+                <nav class="navbar navbar-default">
+                    <div class="navbar-header">
+                        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                            <span class="sr-only">Toggle navigation</span>
+                            <span class="icon-bar"> </span>
+                            <span class="icon-bar"> </span>
+                            <span class="icon-bar"> </span>
+                        </button>
+                    </div>
+                    <div class="collapse navbar-collapse nav-wil" id="bs-example-navbar-collapse-1">
+                        <ul class="nav navbar-nav">
+                            {{MainMenu}}
+                        </ul>
+                        <div class="clearfix"> </div>
+                    </div><!-- /.navbar-collapse -->
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- script-for-menu -->
+<script>
+    $("span.menu").click(function(){
+        $(".top-nav ul").slideToggle("slow" , function(){
+        });
+    });
+</script>
+<!-- script-for-menu -->
+{{end}}
+{{define "footer"}}
+<!-- footer -->
+<div class="footer">
+    <div class="container">
+        <div class="col-md-3 ftr_navi ftr">
+            <h3>网站导航</h3>
+            <ul>
+                {{MainMenu}}
+            </ul>
+        </div>
+        <div class="col-md-3 ftr_navi ftr">
+            <h3>产品和服务</h3>
+            <ul>
+                <li><a href="#">Customer Support</a></li>
+                <li><a href="#">Platinum Support</a></li>
+                <li><a href="#">Gold Support</a></li>
+                <li><a href="#">Standard Support</a></li>
+                <li><a href="#">Training</a></li>
+            </ul>
+        </div>
+        <div class="col-md-3 get_in_touch ftr">
+            <h3>联系我们</h3>
+            <p>Ola-ola street jump,</p>
+            <p>260-14 City, Country</p>
+            <p>+62 000-0000-00</p>
+            <a href="mailto:mail@mlampah.com">www.example.com</a>
+        </div>
+        <div class="col-md-3 ftr-logo">
+            <a href="index.html"><h3>鼎量自控</h3></a>
+            <p>版权所有 © 2015.鼎量自控</p>
+        </div>
+        <div class="clearfix"> </div>
+    </div>
+</div>
+<!---->
+<script type="text/javascript">
+    $(document).ready(function() {
+        /*
+         var defaults = {
+         containerID: 'toTop', // fading element id
+         containerHoverID: 'toTopHover', // fading element hover id
+         scrollSpeed: 1200,
+         easingType: 'linear'
+         };
+         */
+        $().UItoTop({ easingType: 'easeOutQuart' });
+    });
+</script>
+<a href="#to-top" id="toTop" style="display: block;"> <span id="toTopHover" style="opacity: 1;"> </span></a>
+{{end}}

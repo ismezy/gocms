@@ -1,28 +1,66 @@
 <script src="/unslider-min.js" type="text/javascript"></script>
 <script type="text/javascript">
 $(function(){
-    $('.my-slider').unslider();
+    var slider = $('.my-slider').unslider()
     var model = {
-        list:ko.observableArray([]),
-        curent:{
+        current:{
+            edit:ko.observable(false),
             id:ko.observable(),
-            img:ko.observable(),
             url:ko.observable(),
             status:ko.observable()
-        }
+        },
+        action:ko.observable("")
     }
-    ko.applyBindings(model);
+    ko.applyBindings(model)
+    slider.on('unslider.change',function (event,index,slider) {
+        model.current.id($(slider).data('id'))
+        model.current.url($(slider).data('url'))
+        model.current.edit(true)
+    })
+    var li = $('.my-slider li')
+    if(li.length > 0){
+        model.current.id(li.eq(0).data('id'))
+        model.current.url(li.eq(0).data('url'))
+        model.current.edit(true)
+    }
+    $('#addBanner').click(function () {
+        model.action("?method=add")
+        $("#bannerId").prop("required",true)
+    })
+    $('#uploadBanner').click(function () {
+        model.action("?method=upload&id=" + $("#bannerId").val())
+        $("#bannerId").prop("required",false)
+    })
+    $('#removeBanner').click(function () {
+        model.action("?method=remove&id=" + $("#bannerId").val())
+        $("#bannerId").prop("required",false)
+    })
 });
 </script>
-<div id="bannerManagerPage">
+<div id="bannerManagerPage" class="container-fluid">
     <div class="my-slider">
         <ul>
-            <li>My slide</li>
-            <li>Another slide</li>
-            <li>My last slide</li>
+            {{range .banners}}
+            <li data-id="{{.Id.Hex}}" data-url="{{.Url}}"><img src="/common/image?path={{.ImgPath}}"/></li>
+            {{end}}
         </ul>
     </div>
-    <div class="row">
-        <div class="col-md-1">选择图片:</div><div class="col-md-2"><input type="file" name="" /></div>
-    </div>
+    <form method="post" enctype="multipart/form-data" data-bind="attr:{action:action}">
+        <input type="hidden" id="bannerId" name="Id" data-bind="value:current.id" />
+        <div class="row">
+        <div class="col-md-4 form-group">
+            <label class="" for="bannerImg">选择图片</label>
+            <input type="file" class="form-control" id="bannerImg" name="ImgFile" />
+        </div>
+        <div class="col-md-5 form-group">
+            <label class="" for="bannerUrl">对应地址</label>
+            <input id="bannerUrl" class="form-control" data-bind="value:current.url" type="text" required="required" name="Url" placeholder="输入点击图片的网址" />
+        </div>
+        </div>
+        <div class="btn-group">
+            <button class="btn btn-primary" id="addBanner">新增</button>
+            <button class="btn btn-success" id="uploadBanner" style="display:none;" data-bind="visible:current.edit">修改</button>
+            <a class="btn btn-danger" data-bind="visible:current.edit,attr:{href:'/admin/banner/'+current.id()+'/remove'}">删除</a>
+        </div>
+    </form>
 </div>

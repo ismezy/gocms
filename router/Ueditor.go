@@ -73,7 +73,7 @@ func uploadBase64(req *http.Request, r render.Render, logger *log.Logger) {
 		}
 
 		newFileName := uuid.NewV4().String() + ".jpg" // 在后台生成唯一文件
-		writer,err:= os.Create(uploadPath + newFileName);
+		writer,err:= os.Create(uploadPath + "/" + newFileName);
 		if(err != nil){
 			r.Text(405,"create file error")
 			logger.Fatal("ueditor draw upload error, create file error", err)

@@ -1,14 +1,43 @@
 <script type="text/javascript">
     $(function () {
-        $('#newsManager').addClass('active').append('<div class="arrow arrow-right"></div>');
+        $('#newsManager').addClass('active').append('<div class="arrow arrow-right"></div>')
+        $('#column').change(function () {
+           window.location = "/admin/news/list/1?column=" + $(this).val()
+        })
+        $('#subcolumn').change(function () {
+            window.location = "/admin/news/list/1?subcolumn=" + $(this).val() + "&column=" + $("#column").val()
+        })
     })
 </script>
 <div id="newsManagerPage">
     <div>
+        <div id="filter" class="form-inline">
+            <label>栏目:</label>
+            <select id="column" class="form-control">
+                <option value="">未选择栏目</option>
+                {{range .columns}}
+                    {{if eq $.column .Id_.Hex}}
+                        <option value="{{.Id_.Hex}}" selected>{{.Title}}</option>
+                    {{else}}
+                        <option value="{{.Id_.Hex}}">{{.Title}}</option>
+                    {{end}}
+                {{end}}
+            </select>
+            <select id="subcolumn" class="form-control">
+                <option value="">未选择子栏目</option>
+                {{range .subcolumns}}
+                {{if eq $.subcolumn .Id_.Hex}}
+                <option value="{{.Id_.Hex}}" selected>{{.Title}}</option>
+                {{else}}
+                <option value="{{.Id_.Hex}}">{{.Title}}</option>
+                {{end}}
+                {{end}}
+            </select>
+        </div>
         <table class="table">
             <thead><th style="width:300px">标题</th><th>大类</th><th>小类</th><th>状态</th><th>标签</th><th>创建时间</th><th></th></thead>
             <tbody>
-            {{ range .newspage.list }}
+            {{ range .newspage.List }}
                 <tr>
                     <td>{{.Title}}</td><td>{{index $.typemap .Type}}</td><td>{{index $.typemap .SubType}}</td><td>{{.Status}}</td>
                     <td>{{range split .Tags ","}}<span class="label label-primary">{{.}}</span> {{end}}</td>
@@ -20,27 +49,27 @@
         </table>
         <nav>
             <ul class="pagination">
-                {{if eq .newspage.page 1}}
+                {{if eq .newspage.Page 1}}
                 <li class="disabled">
                     <span aria-hidden="true">&laquo;</span>
                 </li>
                 {{else}}
                 <li>
-                    <a href="/admin/news/list/{{sub .newspage.page 1}}" aria-label="上一页">
+                    <a href="/admin/news/list/{{sub .newspage.Page 1}}" aria-label="上一页">
                         <span aria-hidden="true">&laquo;</span>
                     </a>
                 </li>
                 {{end}}
-                {{ range loop .newspage.pageCount 1 }}
-                <li {{if eq . $.newspage.page }}class="active"{{end}}><a href="/admin/news/list/{{.}}">{{.}}</a></li>
+                {{ range loop .newspage.PageCount 1 }}
+                <li {{if eq . $.newspage.Page }}class="active"{{end}}><a href="/admin/news/list/{{.}}">{{.}}</a></li>
                 {{ end }}
-                {{if eq .newspage.page .newspage.pageCount}}
+                {{if eq .newspage.Page .newspage.PageCount}}
                 <li class="disabled">
                     <span aria-hidden="true">&raquo;</span>
                 </li>
                 {{else}}
                 <li>
-                    <a href="/admin/news/list/{{add .newspage.page 1.0}}" aria-label="Next">
+                    <a href="/admin/news/list/{{add .newspage.Page 1.0}}" aria-label="Next">
                         <span aria-hidden="true">&raquo;</span>
                     </a>
                 </li>

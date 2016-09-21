@@ -3,7 +3,6 @@ package router
 import (
 	"fmt"
 	"github.com/go-martini/martini"
-	"gopkg.in/mgo.v2"
 	"log"
 	"gopkg.in/mgo.v2/bson"
 	dbw "../db"
@@ -19,28 +18,45 @@ func init() {
 	routers.PushFront(NewsRouter)
 }
 func NewsRouter(m *martini.ClassicMartini){
-	m.Get("/admin/news/list/:page",sessionauth.LoginRequired, func(r LayoutWrapper, d *mgo.Database, logger *log.Logger,params martini.Params, newsDao dbw.NewsDao, newsTypeDao dbw.NewsTypeDao) {
+	m.Get("/admin/news/list/:page",sessionauth.LoginRequired, func(r LayoutWrapper, req *http.Request ,params martini.Params, newsDao dbw.NewsDao, newsTypeDao dbw.NewsTypeDao) {
 		// 分页数据
 		page,ok := params["page"]
 		ipage := 1
 		if(ok){
 			ipage,_ = strconv.Atoi(page)
 		}
-		/*
-		var news []dbw.News
-		rows,_ := d.C("News").Find(nil).Count()
-		d.C("News").Find(nil).Sort("-CreateTime").Skip(30 * (ipage - 1)).Limit(30).All(&news)
-		var pageCount int = rows / 30 + ((rows % 30 + 1) / (rows % 30 + 1))
-		newspage := map[string] interface {} {"list":news, "totalRows":rows, "page":ipage, "pageCount": pageCount}
-		*/
-		newspage := newsDao.FindPage(ipage,30,nil,"-CreateTime")
 
 		// 栏目字典
 		newsTypeMap := newsTypeDao.Map()
+		columns:=newsTypeDao.Parents()
+		ret := map[string] interface{} {"typemap":newsTypeMap,"columns":columns,"column":"","subcolumn":""}
+		// 处理筛选
+		col,cok := req.URL.Query()["column"]
+		scol,sok := req.URL.Query()["subcolumn"]
+		filter := bson.M{}
+		column := ""
+		if(sok && scol[0] != ""){
+			ret["subcolumn"] = scol[0]
+			filter["SubType"] = scol[0]
+			st,_ := newsTypeDao.FindOne(bson.ObjectIdHex(scol[0]))
+			ret["column"] = st.ParentId
+			column = st.ParentId
+		}
+		if(cok){
+			column = col[0]
+		}
+		if(column != ""){
+			ret["column"] = column
+			subcolumns := newsTypeDao.FindByParent(column)
+			ret["subcolumns"] = subcolumns
+			filter["Type"] = column
+		}else{
+			subcolumns := newsTypeDao.FindByParent(columns[0].Id_.Hex())
+			ret["subcolumns"] = subcolumns
+		}
 
-		ret := map[string] interface{} {"newspage": newspage,"typemap":newsTypeMap}
-
-		fmt.Println(ret)
+		newspage := newsDao.FindPage(ipage,30,filter,"-CreateTime")
+		ret["newspage"] = newspage
 		r.HTML(200,"admin/newslist", ret, "admin")
 	})
 	m.Get("/admin/news",sessionauth.LoginRequired, func(r LayoutWrapper, logger *log.Logger,params martini.Params, newsTypeDao dbw.NewsTypeDao,

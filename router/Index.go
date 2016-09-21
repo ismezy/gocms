@@ -16,16 +16,21 @@ func init() {
 }
 
 func indexRouters(m *martini.ClassicMartini){
-	m.Get("/", func(r LayoutWrapper,menuDao dbw.MenuDao){
-		menus,_ := menuDao.All()
+	m.Get("/", func(r LayoutWrapper,bannerDao dbw.BannerDao,tileDao dbw.TileDao){
+		banners,_ := bannerDao.FindAll()
+		tile,_ := tileDao.Get()
 		model := map[string] interface{}{
-			"menus":menus,
+			"banners":banners,
+			"tile":tile,
 		}
 
 	 	r.HTML(200,"index", model)
 	})
 	m.Get("/admin", sessionauth.LoginRequired, func(r LayoutWrapper){
 		r.HTML(200,"admin/index","admin", "admin")
+	})
+	m.Get("/ngadmin", sessionauth.LoginRequired, func(r LayoutWrapper){
+		r.HTML(200,"admin/index","", "ngadmin")
 	})
 	m.Get("/login",func(wr LayoutWrapper,r render.Render,user sessionauth.User, req *http.Request){
 		if(user.IsAuthenticated()){

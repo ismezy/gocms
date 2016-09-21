@@ -103,6 +103,6 @@ func (nd *newsDao) FindPage(page int,pageSize int,filter map[string]interface{},
 	return newspage
 }
 func (nd *newsDao) FindPageByType(page int,pageSize int,typeId string,sort...string) Page{
-	filter := bson.M{"$or":[]bson.M{{"Type":typeId},{"SubType":typeId}}}
+	filter := bson.M{"Status":"发布","$or":[]bson.M{{"Type":typeId},{"SubType":typeId}}}
 	return nd.FindPage(page,pageSize,filter,sort...)
 }

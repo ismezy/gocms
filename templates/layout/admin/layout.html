@@ -11,46 +11,7 @@
     <script type="text/javascript" src="/app.bundle.js"></script>
 </head>
 <body>
-<!--header-->
-<div class="header">
-    <div class="header-nav">
-        <div class="container">
-            <div class="logo">
-                <a href="index.html"><h1>Mechanical</h1></a>
-            </div>
-            <div class="navigation">
-                <nav class="navbar navbar-default">
-                    <div class="navbar-header">
-                        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-                            <span class="sr-only">Toggle navigation</span>
-                            <span class="icon-bar"> </span>
-                            <span class="icon-bar"> </span>
-                            <span class="icon-bar"> </span>
-                        </button>
-                    </div>
-                    <div class="collapse navbar-collapse nav-wil" id="bs-example-navbar-collapse-1">
-                        <ul class="nav navbar-nav">
-                            <li><a href="/">首页</a></li>
-                            <li><a href="/about">关于我们</a></li>
-                            <li><a href="/services">产品展示</a></li>
-                            <li><a href="/contact">联系我们</a></li>
-                            <li><a class="active" href="/admin">后台管理</a></li>
-                        </ul>
-                        <div class="clearfix"> </div>
-                    </div><!-- /.navbar-collapse -->
-                </nav>
-            </div>
-        </div>
-    </div>
-</div>
-<!-- script-for-menu -->
-<script>
-    $("span.menu").click(function(){
-        $(".top-nav ul").slideToggle("slow" , function(){
-        });
-    });
-</script>
-<!-- script-for-menu -->
+{{template "header"}}
 <br/>
 <div class="container page-box">
         <div class="page-box-left">
@@ -64,9 +25,10 @@
                     <ul class="left-sub-menu">
 <!--                        <li><a id="" href="/admin/news">菜单管理</a></li>-->
                             <li><a href="/admin/banner">滚动栏管理</a></li>
+                            <li><a href="/ngadmin#/tile">磁贴管理</a></li>
                     </ul>
                 </li>
-                <li><a href="/logout">退出</a></li>
+                <li><a href="/logout">安全退出</a></li>
             </ul>
         </div>
         <div class="page-box-right">
@@ -74,57 +36,6 @@
         </div>
 </div>
 <br/>
-<div class="footer">
-        <div class="container">
-            <div class="col-md-3 ftr_navi ftr">
-                <h3>Navigation</h3>
-                <ul>
-                    <li><a href="index.html">Home</a></li>
-                    <li><a href="about.html">About</a></li>
-                    <li><a href="gallery.html">Gallery</a></li>
-                    <li><a href="blog.html">Blog</a></li>
-                    <li><a href="contact.html">Contact</a></li>
-                </ul>
-            </div>
-            <div class="col-md-3 ftr_navi ftr">
-                <h3>Members</h3>
-                <ul>
-                    <li><a href="#">Customer Support</a></li>
-                    <li><a href="#">Platinum Support</a></li>
-                    <li><a href="#">Gold Support</a></li>
-                    <li><a href="#">Standard Support</a></li>
-                    <li><a href="#">Training</a></li>
-                </ul>
-            </div>
-            <div class="col-md-3 get_in_touch ftr">
-                <h3>Get In Touch</h3>
-                <p>Ola-ola street jump,</p>
-                <p>260-14 City, Country</p>
-                <p>+62 000-0000-00</p>
-                <a href="mailto:mail@mlampah.com">www.example.com</a>
-            </div>
-            <div class="col-md-3 ftr-logo">
-                <a href="index.html"><h3>Mechanical</h3></a>
-                <p>Copyright &copy; 2015.Company name All rights reserved.More Templates <a href="http://www.cssmoban.com/" target="_blank" title="模板之家">模板之家</a> - Collect from <a href="http://www.cssmoban.com/" title="网页模板" target="_blank">网页模板</a></p>
-            </div>
-            <div class="clearfix"> </div>
-        </div>
-</div>
-    <!---->
-    <script type="text/javascript">
-        $(document).ready(function() {
-            /*
-             var defaults = {
-             containerID: 'toTop', // fading element id
-             containerHoverID: 'toTopHover', // fading element hover id
-             scrollSpeed: 1200,
-             easingType: 'linear'
-             };
-             */
-            $().UItoTop({ easingType: 'easeOutQuart' });
-        });
-    </script>
-    <a href="#to-top" id="toTop" style="display: block;"> <span id="toTopHover" style="opacity: 1;"> </span></a>
-    <!---->
+{{template "footer"}}
 </body>
 </html>
