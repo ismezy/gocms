@@ -271,3 +271,12 @@ ul.news-list div.content{
 #newsPage .news-info-time{
 
 }
+
+.admin.product-grid .button.upload{
+    position: absolute;
+    margin-top: -15px;
+    margin-left: -53px;
+    top:50%;
+    left:50%;
+    opacity: 0.65;
+}

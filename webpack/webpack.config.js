@@ -6,7 +6,8 @@ var ExtractTextPlugin = require("extract-text-webpack-plugin");
 var CssSourcemapPlugin = require('css-sourcemaps-webpack-plugin');
 module.exports = {
     entry: {
-      app:  './js/app.js'
+      app:  './js/app.js',
+      ngapp:'./js/ngapp.js'
     },
     output: {
         path: '../assets',
@@ -17,6 +18,7 @@ module.exports = {
     devtool: "source-map",
     module: {
         loaders: [
+            {test: /\.html$/, loader: 'raw'},
             // Transpile any JavaScript file:
             {
                 test: /\.js$/,
@@ -31,7 +33,10 @@ module.exports = {
             }, {
                 test   : /\.(ttf|eot|svg|woff[2]?)(\?.*)?$/,
                 loader : 'file-loader?name=fonts/[name].[ext]'
-            }
+            }/*,{
+                test:  /\.html$/,
+                loader : 'file-loader?name=templates/[name].[ext]'
+            }*/
         ]
     },
     watch: true,
