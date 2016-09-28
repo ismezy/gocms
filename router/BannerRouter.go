@@ -47,7 +47,7 @@ func BannerRouter(m *martini.ClassicMartini)  {
 		}
 		if(ferr == nil){
 			targetPath := "/banner/" + uuid.NewV4().String() +  filepath.Ext(fileHeader.Filename)
-			os.MkdirAll(uploadPath + "/banner",0640)
+			os.MkdirAll(uploadPath + "/banner",0660)
 			target,err := os.Create(uploadPath + targetPath)
 			if(err != nil){
 				logger.Println("upload error,create file failed", err, targetPath)

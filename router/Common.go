@@ -16,6 +16,7 @@ import (
 
 var routers *list.List = list.New()
 var uploadPath = "/temp"
+type JsonMsg map[string]string
 
 func init() {
 	up := os.Getenv("cms_upload_path")
@@ -34,18 +35,9 @@ func CommonRouter (m *martini.ClassicMartini) {
 			return
 		}
 		var file = uploadPath + path[0]
-		ext := filepath.Ext(file)
-		res.Header().Add("Content-Type","image/" + ext[1:len(ext)])
-//		res.Header().Add("attachment;filename", filepath.])
-		fmt.Println("download :%s",path)
-		f, err := os.Open(file)
-		defer f.Close()
-		if(err == nil){
-			io.Copy(res,f)
-		}
+		http.ServeFile(res,req,file)
 	})
 	m.Post("/admin/image/upload", sessionauth.LoginRequired,func(req *http.Request,r render.Render, logger *log.Logger){
-		fmt.Println("----------------------")
 		file,fileHeader,err := req.FormFile("file")
 		if(err != nil){
 			logger.Println("upload image failed,file not found",err)
@@ -53,7 +45,10 @@ func CommonRouter (m *martini.ClassicMartini) {
 			return
 		}
 		defer file.Close()
-		os.MkdirAll(uploadPath + "/temp",0640)
+		mkerr := os.MkdirAll(uploadPath + "/temp",0660)
+		if(mkerr != nil){
+			logger.Println("mkdir error", uploadPath + "/temp",mkerr)
+		}
 		path := "/temp/" + uuid.NewV4().String() +  filepath.Ext(fileHeader.Filename)
 		target,terr := os.Create(uploadPath + path)
 		if(terr != nil){

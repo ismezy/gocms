@@ -9,19 +9,19 @@ import (
 )
 
 type Menu struct {
-	Id bson.ObjectId `bson:"_id"`
-	Title string `bson:"Title"`
-	Path string `bson:"Path"`
-	Code string `bson:"Code"`
-	Index int `bson:"Index"`
-	SubMenu[] Menu
+	Id bson.ObjectId `bson:"_id" json:"Id"`
+	Title string `bson:"Title" json:"Title"`
+	Path string `bson:"Path" json:"Path"`
+	Code string `bson:"Code" json:"Code"`
+	Index int `bson:"Index" json:"Index"`
+	SubMenu []Menu `bson:"SubMenu"`
 }
 
 type MenuDao interface {
 	Remove(id string) error
 	All() ([]Menu,error)
 	FindOne(id string) (Menu,error)
-	Save(menu Menu) error
+	Save(menu Menu) (Menu,error)
 }
 
 type menuDaoImpl struct {
@@ -38,7 +38,7 @@ func init() {
 
 func (md *menuDaoImpl) All() ([]Menu,error){
 	var menu []Menu
-	err := md.d.C("Menu").Find(nil).Sort("Index").All(&menu)
+	err := md.d.C("Menu").Find(nil).Sort("Index").Sort("Index").All(&menu)
 	if(err != nil){
 		md.logger.Println("FindAll Menu Error ", err)
 		return menu,err
@@ -55,21 +55,22 @@ func (md *menuDaoImpl) FindOne(id string) (Menu,error){
 	}
 	return menu,nil
 }
-func (md *menuDaoImpl) Save(menu Menu) error {
+func (md *menuDaoImpl) Save(menu Menu) (Menu,error) {
 	if(menu.Id.Valid()){	// 更新
-		err := md.d.C("Menu").Update(menu.Id,menu)
+		err := md.d.C("Menu").UpdateId(menu.Id,menu)
 		if(err != nil){
 			md.logger.Println("Update Menu Error ", err)
-			return err
+			return menu,err
 		}
 	}else{		// 新增
+		menu.Id = bson.NewObjectId()
 		err := md.d.C("Menu").Insert(menu)
 		if(err != nil){
 			md.logger.Println("Insert Menu Update Error ", err)
-			return err
+			return menu,err
 		}
 	}
-	return nil
+	return menu,nil
 }
 func (md *menuDaoImpl) Remove(id string) error{
 	err := md.d.C("Menu").RemoveId(bson.ObjectIdHex(id))

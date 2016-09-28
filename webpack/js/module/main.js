@@ -11,7 +11,7 @@ require("angular-xeditable")
 require("ng-file-upload")
 require("../../node_modules/angular-xeditable/dist/css/xeditable.css")
 var app = angular.module("adminApp",["ngRoute","xeditable","ngResource","ngFileUpload","ngAnimate"])
-app.run(function(editableOptions) {
+app.run(["editableOptions",function(editableOptions) {
     editableOptions.theme = 'bs3'
-})
+}])
 module.exports = app

@@ -14,5 +14,6 @@ require('../css/main.css')
 require('../css/swipebox.css')
 require('../css/unslider.css')
 
-require("./module/admin/admin-tile")
-
+require("./module/admin/tile")
+require("./module/admin/column")
+require("./module/admin/menu")

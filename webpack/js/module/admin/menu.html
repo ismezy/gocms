@@ -1,0 +1,26 @@
+<div ng-controller="menuController">
+    <div class="manager menus">
+        <table class="table table-hover table-striped">
+            <thead><tr><th>标题</th><th>地址</th><th>代码</th><th></th></tr></thead>
+            <tr class="item" id="{{item.Id}}" ng-repeat="item in menus">
+                <td width="25%"><span e-style="width:160px;" e-name="title" editable-text="item.Title" e-form="rowform">{{item.Title || '请输入菜单标题'}}</span></td>
+                <td width="50%"><span e-style="width:320px;" e-name="path" editable-text="item.Path" e-form="rowform">{{item.Path || '请输入菜单地址'}}</span></td>
+                <td><span e-style="width:80px;" e-name="code" editable-text="item.Code" e-form="rowform">{{item.Code || '请输入菜单代码'}}</span></td>
+                <td>
+                    <!-- form -->
+                    <form editable-form name="rowform" onbeforesave="saveMenu($data, $index)" ng-show="rowform.$visible" class="form-buttons form-inline btn-group btn-group-sm" shown="inserted == item">
+                        <button type="submit" ng-disabled="rowform.$waiting" class="btn btn-primary">提交</button>
+                        <button type="button" ng-disabled="rowform.$waiting" ng-click="rowform.$cancel()" class="btn btn-default">
+                            取消
+                        </button>
+                    </form>
+                    <div class="btn-group btn-group-sm" ng-show="!rowform.$visible">
+                        <button class="btn btn-primary" ng-click="rowform.$show()">修改</button>
+                        <button class="btn btn-danger" ng-click="removeMenu($index)">删除</button>
+                    </div>
+                </td>
+            </tr>
+            <tr><td><button class="btn btn-block btn-primary" ng-click="addMenu()"><span class="glyphicon glyphicon-plus"></span> 添加菜单</button></td></tr>
+        </table>
+    </div>
+</div>

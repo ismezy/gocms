@@ -280,3 +280,26 @@ ul.news-list div.content{
     left:50%;
     opacity: 0.65;
 }
+/*ng-repeat的元素*/
+.item{
+    -webkit-transition: all linear 0.2s;
+    -o-transition: all linear 0.2s;
+    transition: all linear 0.2s;
+}
+/*动画开始前*/
+.item.ng-enter{
+    opacity:0;
+}
+/*动画过程*/
+.item-ng-enter-active{
+    opacity:1;
+}
+.item.ng-enter-stagger {
+    transition-delay:0.2s;
+    transition-duration:0s;
+}
+
+.clickable{
+    cursor: pointer;
+    color: #00a2d4;
+}

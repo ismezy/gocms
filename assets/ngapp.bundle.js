@@ -61,6 +61,8 @@
 	__webpack_require__(32);
 	
 	__webpack_require__(34);
+	__webpack_require__(50);
+	__webpack_require__(52);
 
 /***/ },
 /* 1 */,
@@ -689,15 +691,15 @@
 	"use strict";
 	
 	var app = __webpack_require__(35);
-	app.config(function ($routeProvider) {
-	    $routeProvider.when('/tile', { template: __webpack_require__(41) });
-	});
+	app.config(["$routeProvider", function ($routeProvider) {
+	    $routeProvider.when('/tile', { template: __webpack_require__(49) });
+	}]);
 	app.factory('Tiles', ['$resource', function ($resource) {
 	    return $resource('/admin/tile/:Index', null, {
 	        update: { method: 'PUT' }
 	    });
 	}]);
-	app.controller('tileController', function ($scope, $http, Tiles, Upload) {
+	app.controller('tileController', ["$scope", "$http", "Tiles", "Upload", function ($scope, $http, Tiles, Upload) {
 	    $scope.tile = {
 	        Items: []
 	    };
@@ -718,7 +720,6 @@
 	            file: file
 	        }).then(function (ret) {
 	            $scope.tile.Items[index].ImgPath = ret.data.path;
-	            console.log($scope.tile.Items[index].ImgPath);
 	        });
 	    };
 	    $scope.$watch("tile.Items", function (val, old) {
@@ -745,7 +746,7 @@
 	    //$http.get("/admin/tile/list").success(function(res){
 	    //   $scope.tile = res
 	    //})
-	});
+	}]);
 
 /***/ },
 /* 35 */
@@ -758,15 +759,15 @@
 	
 	var angular = __webpack_require__(36);
 	__webpack_require__(38);
-	__webpack_require__(48);
-	__webpack_require__(44);
 	__webpack_require__(40);
-	__webpack_require__(46);
 	__webpack_require__(42);
+	__webpack_require__(44);
+	__webpack_require__(45);
+	__webpack_require__(47);
 	var app = angular.module("adminApp", ["ngRoute", "xeditable", "ngResource", "ngFileUpload", "ngAnimate"]);
-	app.run(function (editableOptions) {
+	app.run(["editableOptions", function (editableOptions) {
 	  editableOptions.theme = 'bs3';
-	});
+	}]);
 	module.exports = app;
 
 /***/ },
@@ -33635,6247 +33636,14 @@
 
 /***/ },
 /* 40 */
-/***/ function(module, exports) {
-
-	/*!
-	angular-xeditable - 0.3.0
-	Edit-in-place for angular.js
-	Build date: 2016-09-06 
-	*/
-	/**
-	 * Angular-xeditable module 
-	 *
-	 */
-	angular.module('xeditable', [])
-	
-	
-	/**
-	 * Default options. 
-	 *
-	 * @namespace editable-options
-	 */
-	//todo: maybe better have editableDefaults, not options...
-	.value('editableOptions', {
-	  /**
-	   * Theme. Possible values `bs3`, `bs2`, `default`.
-	   * 
-	   * @var {string} theme
-	   * @memberOf editable-options
-	   */  
-	  theme: 'default',
-	  /**
-	   * Icon Set. Possible values `font-awesome`, `default`.
-	   * 
-	   * @var {string} icon set
-	   * @memberOf editable-options
-	   */  
-	  icon_set: 'default',
-	  /**
-	   * Whether to show buttons for single editalbe element.  
-	   * Possible values `right` (default), `no`.
-	   * 
-	   * @var {string} buttons
-	   * @memberOf editable-options
-	   */    
-	  buttons: 'right',
-	  /**
-	   * Default value for `blur` attribute of single editable element.  
-	   * Can be `cancel|submit|ignore`.
-	   * 
-	   * @var {string} blurElem
-	   * @memberOf editable-options
-	   */
-	  blurElem: 'cancel',
-	  /**
-	   * Default value for `blur` attribute of editable form.  
-	   * Can be `cancel|submit|ignore`.
-	   * 
-	   * @var {string} blurForm
-	   * @memberOf editable-options
-	   */
-	  blurForm: 'ignore',
-	  /**
-	   * How input elements get activated. Possible values: `focus|select|none`.
-	   *
-	   * @var {string} activate
-	   * @memberOf editable-options
-	   */
-	  activate: 'focus',
-	  /**
-	   * Whether to disable x-editable. Can be overloaded on each element.
-	   *
-	   * @var {boolean} isDisabled
-	   * @memberOf editable-options
-	   */
-	   isDisabled: false,
-	  
-	  /**
-	   * Event, on which the edit mode gets activated. 
-	   * Can be any event.
-	   *
-	   * @var {string} activationEvent
-	   * @memberOf editable-options
-	   */
-	  activationEvent: 'click'
-	
-	});
-	
-	/*
-	 Angular-ui bootstrap datepicker
-	 http://angular-ui.github.io/bootstrap/#/datepicker
-	 */
-	angular.module('xeditable').directive('editableBsdate', ['editableDirectiveFactory',
-	    function(editableDirectiveFactory) {
-	        return editableDirectiveFactory({
-	            directiveName: 'editableBsdate',
-	            inputTpl: '<div></div>',
-	            render: function() {
-	                /** This basically renders a datepicker as in the example shown in
-	                 **  http://angular-ui.github.io/bootstrap/#/datepicker
-	                 **  The attributes are all the same as in the bootstrap-ui datepicker with e- as prefix
-	                 **/
-	                this.parent.render.call(this);
-	
-	                var inputDatePicker = angular.element('<input type="text" class="form-control" data-ng-model="$parent.$data"/>');
-	
-	                inputDatePicker.attr('uib-datepicker-popup', this.attrs.eDatepickerPopupXEditable || 'yyyy/MM/dd' );
-	                inputDatePicker.attr('is-open', this.attrs.eIsOpen);
-	                inputDatePicker.attr('date-disabled', this.attrs.eDateDisabled);
-	                inputDatePicker.attr('uib-datepicker-popup', this.attrs.eDatepickerPopup);
-	                inputDatePicker.attr('year-range', this.attrs.eYearRange || 20);
-	                inputDatePicker.attr('show-button-bar', this.attrs.eShowButtonBar || true);
-	                inputDatePicker.attr('current-text', this.attrs.eCurrentText || 'Today');
-	                inputDatePicker.attr('clear-text', this.attrs.eClearText || 'Clear');
-	                inputDatePicker.attr('close-text', this.attrs.eCloseText || 'Done');
-	                inputDatePicker.attr('close-on-date-selection', this.attrs.eCloseOnDateSelection || true);
-	                inputDatePicker.attr('datepicker-append-to-body', this.attrs.eDatePickerAppendToBody || false);
-	                inputDatePicker.attr('date-disabled', this.attrs.eDateDisabled);
-	                inputDatePicker.attr('name', this.attrs.eName);
-	                inputDatePicker.attr('on-open-focus', this.attrs.eOnOpenFocus || true);
-	                inputDatePicker.attr('ng-readonly', this.attrs.eReadonly || false);
-	
-	                if (this.attrs.eNgChange) {
-	                    inputDatePicker.attr('ng-change', this.attrs.eNgChange);
-	                    this.inputEl.removeAttr('ng-change');
-	                }
-	
-	                if (this.attrs.eStyle) {
-	                    inputDatePicker.attr('style', this.attrs.eStyle);
-	                    this.inputEl.removeAttr('style');
-	                }
-	
-	                this.scope.dateOptions = {
-	                    formatDay:  this.attrs.eFormatDay || 'dd',
-	                    formatMonth: this.attrs.eFormatMonth || 'MMMM',
-	                    formatYear: this.attrs.eFormatYear || 'yyyy',
-	                    formatDayHeader: this.attrs.eFormatDayHeader || 'EEE',
-	                    formatDayTitle: this.attrs.eFormatDayTitle || 'MMMM yyyy',
-	                    formatMonthTitle: this.attrs.eFormatMonthTitle || 'yyyy',
-	                    showWeeks: this.attrs.eShowWeeks ? this.attrs.eShowWeeks.toLowerCase() === 'true' : true,
-	                    startingDay: this.attrs.eStartingDay || 0,
-	                    minMode: this.attrs.eMinMode || 'day',
-	                    maxMode: this.attrs.eMaxMode || 'year',
-	                    initDate: this.scope.$eval(this.attrs.eInitDate) || new Date(),
-	                    datepickerMode: this.attrs.eDatepickerMode || 'day',
-	                    maxDate: this.scope.$eval(this.attrs.eMaxDate) || null,
-	                    minDate: this.scope.$eval(this.attrs.eMinDate) || null
-	                };
-	
-	                var showCalendarButton = angular.isDefined(this.attrs.eShowCalendarButton) ? this.attrs.eShowCalendarButton : "true";
-	
-	                //See if calendar button should be displayed
-	                if (showCalendarButton === "true") {
-	                    var buttonDatePicker = angular.element('<button type="button" class="btn btn-default"><i class="glyphicon glyphicon-calendar"></i></button>');
-	                    var buttonWrapper = angular.element('<span class="input-group-btn"></span>');
-	
-	                    buttonDatePicker.attr('ng-click', this.attrs.eNgClick);
-	
-	                    buttonWrapper.append(buttonDatePicker);
-	
-	                    this.inputEl.append(buttonWrapper);
-	                } else {
-	                    //If no calendar button, display calendar popup on click of input field
-	                    inputDatePicker.attr('ng-click', this.attrs.eNgClick);
-	                }
-	
-	                inputDatePicker.attr('datepicker-options', "dateOptions");
-	
-	                this.inputEl.prepend(inputDatePicker);
-	
-	                this.inputEl.removeAttr('class');
-	                this.inputEl.removeAttr('ng-click');
-	                this.inputEl.removeAttr('is-open');
-	                this.inputEl.removeAttr('init-date');
-	                this.inputEl.removeAttr('datepicker-popup');
-	                this.inputEl.removeAttr('required');
-	                this.inputEl.removeAttr('ng-model');
-	                this.inputEl.removeAttr('date-picker-append-to-body');
-	                this.inputEl.removeAttr('name');
-	                this.inputEl.attr('class','input-group');
-	            }
-		});
-	}]);
-	/*
-	Angular-ui bootstrap editable timepicker
-	http://angular-ui.github.io/bootstrap/#/timepicker
-	*/
-	angular.module('xeditable').directive('editableBstime', ['editableDirectiveFactory',
-	  function(editableDirectiveFactory) {
-	    return editableDirectiveFactory({
-	      directiveName: 'editableBstime',
-	      inputTpl: '<uib-timepicker></uib-timepicker>',
-	      render: function() {
-	        this.parent.render.call(this);
-	
-	        // timepicker can't update model when ng-model set directly to it
-	        // see: https://github.com/angular-ui/bootstrap/issues/1141
-	        // so we wrap it into DIV
-	        var div = angular.element('<div class="well well-small" style="display:inline-block;"></div>');
-	
-	        // move ng-model to wrapping div
-	        div.attr('ng-model', this.inputEl.attr('ng-model'));
-	        this.inputEl.removeAttr('ng-model');
-	
-	        // move ng-change to wrapping div
-	        if(this.attrs.eNgChange) {
-	          div.attr('ng-change', this.inputEl.attr('ng-change'));
-	          this.inputEl.removeAttr('ng-change');
-	        }
-	
-	        // wrap
-	        this.inputEl.wrap(div);
-	      }
-	    });
-	}]);
-	//checkbox
-	angular.module('xeditable').directive('editableCheckbox', ['editableDirectiveFactory',
-	  function(editableDirectiveFactory) {
-	    return editableDirectiveFactory({
-	      directiveName: 'editableCheckbox',
-	      inputTpl: '<input type="checkbox">',
-	      render: function() {
-	        this.parent.render.call(this);
-	        if(this.attrs.eTitle) {
-	          this.inputEl.wrap('<label></label>');
-	          this.inputEl.parent().append('<span>' + this.attrs.eTitle + '</span>');
-	        }
-	      },
-	      autosubmit: function() {
-	        var self = this;
-	        self.inputEl.bind('change', function() {
-	          setTimeout(function() {
-	            self.scope.$apply(function() {
-	              self.scope.$form.$submit();
-	            });
-	          }, 500);
-	        });
-	      }
-	    });
-	}]);
-	
-	// checklist
-	angular.module('xeditable').directive('editableChecklist', [
-	  'editableDirectiveFactory',
-	  'editableNgOptionsParser',
-	  function(editableDirectiveFactory, editableNgOptionsParser) {
-	    return editableDirectiveFactory({
-	      directiveName: 'editableChecklist',
-	      inputTpl: '<span></span>',
-	      useCopy: true,
-	      render: function() {
-	        this.parent.render.call(this);
-	        var parsed = editableNgOptionsParser(this.attrs.eNgOptions);
-	        var html = '<label ng-repeat="'+parsed.ngRepeat+'">'+
-	          '<input type="checkbox" checklist-model="$parent.$parent.$data" checklist-value="'+parsed.locals.valueFn+'">'+
-	          '<span ng-bind="'+parsed.locals.displayFn+'"></span></label>';
-	
-	        this.inputEl.removeAttr('ng-model');
-	        this.inputEl.removeAttr('ng-options');
-	        this.inputEl.html(html);
-	      }
-	    });
-	}]);
-	
-	angular.module('xeditable').directive('editableCombodate', ['editableDirectiveFactory', 'editableCombodate',
-	  function(editableDirectiveFactory, editableCombodate) {
-	    return editableDirectiveFactory({
-	      directiveName: 'editableCombodate',
-	      inputTpl: '<input type="text">',
-	      render: function() {
-	        this.parent.render.call(this);
-	
-	        var options = {
-	          value: new Date(this.scope.$data)
-	        };
-	        var self = this;
-	        angular.forEach(["format", "template", "minYear", "maxYear", "yearDescending", "minuteStep", "secondStep", "firstItem", "errorClass", "customClass", "roundTime", "smartDays"], function(name) {
-	
-	          var attrName = "e" + name.charAt(0).toUpperCase() + name.slice(1);
-	          if (attrName in self.attrs) {
-	            options[name] = self.attrs[attrName];
-	          }
-	        });
-	
-	        var combodate = editableCombodate.getInstance(this.inputEl, options);
-	        combodate.$widget.find('select').bind('change', function(e) {
-	          self.scope.$data = (new Date(combodate.getValue())).toISOString();
-	        });
-	      }
-	    });
-	  }
-	]);
-	
-	/*
-	Input types: text|password|email|tel|number|url|search|color|date|datetime|datetime-local|time|month|week|file
-	*/
-	
-	(function() {
-	
-	  var camelCase = function(dashDelimitedString) {
-	    return dashDelimitedString.toLowerCase().replace(/-(.)/g, function(match, word) {
-	      return word.toUpperCase();
-	    });
-	  };
-	
-	  var types = 'text|password|email|tel|number|url|search|color|date|datetime|datetime-local|time|month|week|file'.split('|');
-	
-	  //todo: datalist
-	  
-	  // generate directives
-	  angular.forEach(types, function(type) {
-	    var directiveName = camelCase('editable' + '-' + type);
-	    angular.module('xeditable').directive(directiveName, ['editableDirectiveFactory',
-	      function(editableDirectiveFactory) {
-	        return editableDirectiveFactory({
-	          directiveName: directiveName,
-	          inputTpl: '<input type="'+type+'">',
-	          render: function() {
-	            this.parent.render.call(this);
-	
-	            // Add label to the input
-	            if (this.attrs.eLabel) {
-	              var label = angular.element('<label>' + this.attrs.eLabel + '</label>');
-	              this.inputEl.parent().prepend(label);
-	            }
-	            
-	            // Add classes to the form
-	            if (this.attrs.eFormclass) {
-	              this.editorEl.addClass(this.attrs.eFormclass);
-	            }
-	          }
-	        });
-	    }]);
-	  });
-	
-	  //`range` is bit specific
-	  angular.module('xeditable').directive('editableRange', ['editableDirectiveFactory',
-	    function(editableDirectiveFactory) {
-	      return editableDirectiveFactory({
-	        directiveName: 'editableRange',
-	        inputTpl: '<input type="range" id="range" name="range">',
-	        render: function() {
-	          this.parent.render.call(this);
-	          this.inputEl.after('<output>{{$data}}</output>');
-	        }        
-	      });
-	  }]);
-	
-	}());
-	
-	
-	/*
-	 Tags input directive for AngularJS
-	 https://github.com/mbenford/ngTagsInput
-	 */
-	angular.module('xeditable').directive('editableTagsInput', ['editableDirectiveFactory', 'editableUtils',
-	  function(editableDirectiveFactory, editableUtils) {
-	    var findElement = function(name) {
-	        for(var i = 0, len = autoComplete.length; i < len; i++) {
-	            if (autoComplete[i].name === name) {
-	                return i;
-	            }
-	        }
-	    };
-	
-	    var autoComplete = [];
-	
-	    var dir = editableDirectiveFactory({
-	        directiveName: 'editableTagsInput',
-	        inputTpl: '<tags-input></tags-input>',
-	        render: function () {
-	            var index = findElement(this.name);
-	            this.parent.render.call(this);
-	            this.inputEl.append(editableUtils.rename('auto-complete', autoComplete[index].element));
-	            this.inputEl.removeAttr('ng-model');
-	            this.inputEl.attr('ng-model', '$parent.$data');
-	        }
-	    });
-	
-	    var linkOrg = dir.link;
-	
-	    dir.link = function (scope, el, attrs, ctrl) {
-	        var autoCompleteEl = el.find('editable-tags-input-auto-complete');
-	
-	        autoComplete.push({name : attrs.name || attrs.editableTagsInput, element : autoCompleteEl.clone()});
-	
-	        autoCompleteEl.remove();
-	
-	        return linkOrg(scope, el, attrs, ctrl);
-	    };
-	
-	    return dir;
-	}]);
-	// radiolist
-	angular.module('xeditable').directive('editableRadiolist', [
-	  'editableDirectiveFactory',
-	  'editableNgOptionsParser',
-	  function(editableDirectiveFactory, editableNgOptionsParser) {
-	    return editableDirectiveFactory({
-	      directiveName: 'editableRadiolist',
-	      inputTpl: '<span></span>',
-	      render: function() {
-	        this.parent.render.call(this);
-	        var parsed = editableNgOptionsParser(this.attrs.eNgOptions);
-	        
-	        var html = '<label data-ng-repeat="'+parsed.ngRepeat+'">'+
-	          '<input type="radio" data-ng-disabled="::' + this.attrs.eNgDisabled + '" data-ng-model="$parent.$parent.$data" value="{{::'+parsed.locals.valueFn+'}}">'+
-	          '<span data-ng-bind="::'+parsed.locals.displayFn+'"></span></label>';
-	
-	        this.inputEl.removeAttr('ng-model');
-	        this.inputEl.removeAttr('ng-options');
-	        this.inputEl.html(html);
-	      },
-	      autosubmit: function() {
-	        var self = this;
-	        self.inputEl.bind('change', function() {
-	          setTimeout(function() {
-	            self.scope.$apply(function() {
-	              self.scope.$form.$submit();
-	            });
-	          }, 500);
-	        });
-	      }
-	    });
-	}]);
-	
-	//select
-	angular.module('xeditable').directive('editableSelect', ['editableDirectiveFactory',
-	  function(editableDirectiveFactory) {
-	    return editableDirectiveFactory({
-	      directiveName: 'editableSelect',
-	      inputTpl: '<select></select>',
-	      render: function() {
-	        this.parent.render.call(this);
-	
-	        if (this.attrs.ePlaceholder) {
-	          var placeholder = angular.element('<option value="">' + this.attrs.ePlaceholder + '</option>');
-	          this.inputEl.append(placeholder);
-	        }
-	      },
-	      autosubmit: function() {
-	        var self = this;
-	        self.inputEl.bind('change', function() {
-	          self.scope.$apply(function() {
-	            self.scope.$form.$submit();
-	          });
-	        });
-	      }
-	    });
-	}]);
-	//textarea
-	angular.module('xeditable').directive('editableTextarea', ['editableDirectiveFactory',
-	  function(editableDirectiveFactory) {
-	    return editableDirectiveFactory({
-	      directiveName: 'editableTextarea',
-	      inputTpl: '<textarea></textarea>',
-	      addListeners: function() {
-	        var self = this;
-	        self.parent.addListeners.call(self);
-	        // submit textarea by ctrl+enter even with buttons
-	        if (self.single && self.buttons !== 'no') {
-	          self.autosubmit();
-	        }
-	      },
-	      autosubmit: function() {
-	        var self = this;
-	        self.inputEl.bind('keydown', function(e) {
-	          if ((e.ctrlKey || e.metaKey) && (e.keyCode === 13)) {
-	            self.scope.$apply(function() {
-	              self.scope.$form.$submit();
-	            });
-	          }
-	        });
-	      }
-	    });
-	}]);
-	
-	/*
-	 AngularJS-native version of Select2 and Selectize
-	 https://github.com/angular-ui/ui-select
-	 */
-	angular.module('xeditable').directive('editableUiSelect',['editableDirectiveFactory', 'editableUtils',
-	    function(editableDirectiveFactory, editableUtils) {
-	        var findElement = function(name) {
-	            for(var i = 0, len = match.length; i < len; i++) {
-	                  if (match[i].name === name) {
-	                      return i;
-	                  }
-	              }
-	        };
-	
-	        var match = [];
-	        var choices = [];
-	
-	        var dir = editableDirectiveFactory({
-	            directiveName: 'editableUiSelect',
-	            inputTpl: '<ui-select></ui-select>',
-	            render: function () {
-	                var index = findElement(this.name);
-	                this.parent.render.call(this);
-	                this.inputEl.append(editableUtils.rename('ui-select-match', match[index].element));
-	                this.inputEl.append(editableUtils.rename('ui-select-choices', choices[index].element));
-	                this.inputEl.removeAttr('ng-model');
-	                this.inputEl.attr('ng-model', '$parent.$parent.$data');
-	            }
-	        });
-	
-	        var linkOrg = dir.link;
-	
-	        dir.link = function (scope, el, attrs, ctrl) {
-	            var matchEl = el.find('editable-ui-select-match');
-	            var choicesEl = el.find('editable-ui-select-choices');
-	
-	            match.push({name : attrs.name || attrs.editableUiSelect, element : matchEl.clone()});
-	            choices.push({name : attrs.name || attrs.editableUiSelect, element : choicesEl.clone()});
-	
-	            matchEl.remove();
-	            choicesEl.remove();
-	
-	            return linkOrg(scope, el, attrs, ctrl);
-	        };
-	
-	        return dir;
-	    }]);
-	/**
-	 * EditableController class. 
-	 * Attached to element with `editable-xxx` directive.
-	 *
-	 * @namespace editable-element
-	 */
-	/*
-	TODO: this file should be refactored to work more clear without closures!
-	*/
-	angular.module('xeditable').factory('editableController', 
-	  ['$q', 'editableUtils',
-	  function($q, editableUtils) {
-	
-	  //EditableController function
-	  EditableController.$inject = ['$scope', '$attrs', '$element', '$parse', 'editableThemes', 'editableIcons', 'editableOptions', '$rootScope', '$compile', '$q'];
-	  function EditableController($scope, $attrs, $element, $parse, editableThemes, editableIcons, editableOptions, $rootScope, $compile, $q) {
-	    var valueGetter;
-	
-	    //if control is disabled - it does not participate in waiting process
-	    var inWaiting;
-	
-	    var self = this;
-	
-	    self.scope = $scope;
-	    self.elem = $element;
-	    self.attrs = $attrs;
-	    self.inputEl = null;
-	    self.editorEl = null;
-	    self.single = true;
-	    self.error = '';
-	    self.theme =  editableThemes[$attrs.editableTheme] || editableThemes[editableOptions.theme] || editableThemes['default'];
-	    self.parent = {};
-	
-	    //will be undefined if icon_set is default and theme is default
-	    self.icon_set = editableOptions.icon_set === 'default' ? editableIcons.default[editableOptions.theme] : editableIcons.external[editableOptions.icon_set];
-	
-	    //to be overwritten by directive
-	    self.inputTpl = '';
-	    self.directiveName = '';
-	
-	    // with majority of controls copy is not needed, but..
-	    // copy MUST NOT be used for `select-multiple` with objects as items
-	    // copy MUST be used for `checklist`
-	    self.useCopy = false;
-	
-	    //runtime (defaults)
-	    self.single = null;
-	
-	    /**
-	     * Attributes defined with `e-*` prefix automatically transferred from original element to
-	     * control.  
-	     * For example, if you set `<span editable-text="user.name" e-style="width: 100px"`>
-	     * then input will appear as `<input style="width: 100px">`.  
-	     * See [demo](#text-customize).
-	     * 
-	     * @var {any|attribute} e-*
-	     * @memberOf editable-element
-	     */ 
-	
-	    /**
-	     * Whether to show ok/cancel buttons. Values: `right|no`.
-	     * If set to `no` control automatically submitted when value changed.  
-	     * If control is part of form buttons will never be shown. 
-	     * 
-	     * @var {string|attribute} buttons
-	     * @memberOf editable-element
-	     */    
-	    self.buttons = 'right'; 
-	    /**
-	     * Action when control losses focus. Values: `cancel|submit|ignore`.
-	     * Has sense only for single editable element.
-	     * Otherwise, if control is part of form - you should set `blur` of form, not of individual element.
-	     * 
-	     * @var {string|attribute} blur
-	     * @memberOf editable-element
-	     */     
-	    // no real `blur` property as it is transferred to editable form
-	
-	    //init
-	    self.init = function(single) {
-	      self.single = single;
-	
-	      self.name = $attrs.eName || $attrs[self.directiveName];
-	      /*
-	      if(!$attrs[directiveName] && !$attrs.eNgModel && ($attrs.eValue === undefined)) {
-	        throw 'You should provide value for `'+directiveName+'` or `e-value` in editable element!';
-	      }
-	      */
-	      if($attrs[self.directiveName]) {
-	        valueGetter = $parse($attrs[self.directiveName]);
-	      } else {
-	        throw 'You should provide value for `'+self.directiveName+'` in editable element!';
-	      }
-	
-	      // settings for single and non-single
-	      if (!self.single) {
-	        // hide buttons for non-single
-	        self.buttons = 'no';
-	      } else {
-	        self.buttons = self.attrs.buttons || editableOptions.buttons;
-	      }
-	
-	      //if name defined --> watch changes and update $data in form
-	      if($attrs.eName) {
-	        self.scope.$watch('$data', function(newVal){
-	          self.scope.$form.$data[$attrs.eName] = newVal;
-	        });
-	      }
-	
-	      /**
-	       * Called when control is shown.  
-	       * See [demo](#select-remote).
-	       * 
-	       * @var {method|attribute} onshow
-	       * @memberOf editable-element
-	       */
-	      if($attrs.onshow) {
-	        self.onshow = function() {
-	          return self.catchError($parse($attrs.onshow)($scope));
-	        };
-	      }
-	
-	      /**
-	       * Called when control is hidden after both save or cancel.  
-	       * 
-	       * @var {method|attribute} onhide
-	       * @memberOf editable-element
-	       */
-	      if($attrs.onhide) {
-	        self.onhide = function() {
-	          return $parse($attrs.onhide)($scope);
-	        };
-	      }
-	
-	      /**
-	       * Called when control is cancelled.  
-	       * 
-	       * @var {method|attribute} oncancel
-	       * @memberOf editable-element
-	       */
-	      if($attrs.oncancel) {
-	        self.oncancel = function() {
-	          return $parse($attrs.oncancel)($scope);
-	        };
-	      }          
-	
-	      /**
-	       * Called during submit before value is saved to model.  
-	       * See [demo](#onbeforesave).
-	       * 
-	       * @var {method|attribute} onbeforesave
-	       * @memberOf editable-element
-	       */
-	      if ($attrs.onbeforesave) {
-	        self.onbeforesave = function() {
-	          return self.catchError($parse($attrs.onbeforesave)($scope));
-	        };
-	      }
-	
-	      /**
-	       * Called during submit after value is saved to model.  
-	       * See [demo](#onaftersave).
-	       * 
-	       * @var {method|attribute} onaftersave
-	       * @memberOf editable-element
-	       */
-	      if ($attrs.onaftersave) {
-	        self.onaftersave = function() {
-	          return self.catchError($parse($attrs.onaftersave)($scope));
-	        };
-	      }
-	
-	      // watch change of model to update editable element
-	      // now only add/remove `editable-empty` class.
-	      // Initially this method called with newVal = undefined, oldVal = undefined
-	      // so no need initially call handleEmpty() explicitly
-	      $scope.$parent.$watch($attrs[self.directiveName], function(newVal, oldVal) {
-	        self.setLocalValue();
-	        self.handleEmpty();
-	      });
-	    };
-	
-	    self.render = function() {
-	      var theme = self.theme;
-	
-	      //build input
-	      self.inputEl = angular.element(self.inputTpl);
-	
-	      //build controls
-	      self.controlsEl = angular.element(theme.controlsTpl);
-	      self.controlsEl.append(self.inputEl);
-	
-	      //build buttons
-	      if(self.buttons !== 'no') {
-	        self.buttonsEl = angular.element(theme.buttonsTpl);
-	        self.submitEl = angular.element(theme.submitTpl);
-	        self.cancelEl = angular.element(theme.cancelTpl);
-	        if(self.icon_set) {
-	          self.submitEl.find('span').addClass(self.icon_set.ok);
-	          self.cancelEl.find('span').addClass(self.icon_set.cancel);
-	        }
-	        self.buttonsEl.append(self.submitEl).append(self.cancelEl);
-	        self.controlsEl.append(self.buttonsEl);
-	        
-	        self.inputEl.addClass('editable-has-buttons');
-	      }
-	
-	      //build error
-	      self.errorEl = angular.element(theme.errorTpl);
-	      self.controlsEl.append(self.errorEl);
-	
-	      //build editor
-	      self.editorEl = angular.element(self.single ? theme.formTpl : theme.noformTpl);
-	      self.editorEl.append(self.controlsEl);
-	
-	      // transfer `e-*|data-e-*|x-e-*` attributes
-	      for(var k in $attrs.$attr) {
-	        if(k.length <= 1) {
-	          continue;
-	        }
-	        var transferAttr = false;
-	        var nextLetter = k.substring(1, 2);
-	
-	        // if starts with `e` + uppercase letter
-	        if(k.substring(0, 1) === 'e' && nextLetter === nextLetter.toUpperCase()) {
-	          transferAttr = k.substring(1); // cut `e`
-	        } else {
-	          continue;
-	        }
-	        
-	        // exclude `form` and `ng-submit`, 
-	        if(transferAttr === 'Form' || transferAttr === 'NgSubmit') {
-	          continue;
-	        }
-	
-	        // convert back to lowercase style
-	        transferAttr = transferAttr.substring(0, 1).toLowerCase() + editableUtils.camelToDash(transferAttr.substring(1));  
-	
-	        // workaround for attributes without value (e.g. `multiple = "multiple"`)
-	        // except for 'e-value'
-	        var attrValue = (transferAttr !== 'value' && $attrs[k] === '') ? transferAttr : $attrs[k];
-	
-	        // set attributes to input
-	        self.inputEl.attr(transferAttr, attrValue);
-	      }
-	
-	      self.inputEl.addClass('editable-input');
-	      self.inputEl.attr('ng-model', '$parent.$data');
-	
-	      // add directiveName class to editor, e.g. `editable-text`
-	      self.editorEl.addClass(editableUtils.camelToDash(self.directiveName));
-	
-	      if(self.single) {
-	        self.editorEl.attr('editable-form', '$form');
-	        // transfer `blur` to form
-	        self.editorEl.attr('blur', self.attrs.blur || (self.buttons === 'no' ? 'cancel' : editableOptions.blurElem));
-	      }
-	
-	      //apply `postrender` method of theme
-	      if(angular.isFunction(theme.postrender)) {
-	        theme.postrender.call(self);
-	      }
-	
-	    };
-	
-	    // with majority of controls copy is not needed, but..
-	    // copy MUST NOT be used for `select-multiple` with objects as items
-	    // copy MUST be used for `checklist`
-	    self.setLocalValue = function() {
-	      self.scope.$data = self.useCopy ? 
-	        angular.copy(valueGetter($scope.$parent)) : 
-	        valueGetter($scope.$parent);
-	    };
-	
-	    // reference of the scope to use for $compile
-	    var newScope = null;
-	    //show
-	    self.show = function() {
-	      // set value of scope.$data
-	      self.setLocalValue();
-	
-	      /*
-	      Originally render() was inside init() method, but some directives polluting editorEl,
-	      so it is broken on second openning.
-	      Cloning is not a solution as jqLite can not clone with event handler's.
-	      */
-	      self.render();
-	
-	      // insert into DOM
-	      $element.after(self.editorEl);
-	
-	      // compile (needed to attach ng-* events from markup)
-	      newScope = $scope.$new();
-	      $compile(self.editorEl)(newScope);
-	
-	      // attach listeners (`escape`, autosubmit, etc)
-	      self.addListeners();
-	
-	      // hide element
-	      $element.addClass('editable-hide');
-	
-	      // onshow
-	      return self.onshow();
-	    };
-	
-	    //hide
-	    self.hide = function() {
-	
-	      // destroy the scope to prevent memory leak
-	      newScope.$destroy();
-	
-	      self.controlsEl.remove();
-	      self.editorEl.remove();
-	      $element.removeClass('editable-hide');
-	
-	      // onhide
-	      return self.onhide();
-	    };
-	
-	    // cancel
-	    self.cancel = function() {
-	      // oncancel
-	      self.oncancel();
-	      // don't call hide() here as it called in form's code
-	    };
-	
-	    /*
-	    Called after show to attach listeners
-	    */
-	    self.addListeners = function() {
-	      // bind keyup for `escape`
-	      self.inputEl.bind('keyup', function(e) {
-	          if(!self.single) {
-	            return;
-	          }
-	
-	          // todo: move this to editable-form!
-	          switch(e.keyCode) {
-	            // hide on `escape` press
-	            case 27:
-	              self.scope.$apply(function() {
-	                self.scope.$form.$cancel();
-	              });
-	            break;
-	          }
-	      });
-	
-	      // autosubmit when `no buttons`
-	      if (self.single && self.buttons === 'no') {
-	        self.autosubmit();
-	      }
-	
-	      // click - mark element as clicked to exclude in document click handler
-	      self.editorEl.bind('click', function(e) {
-	        // ignore right/middle button click
-	        if (e.which && e.which !== 1) {
-	          return;
-	        }
-	
-	        if (self.scope.$form.$visible) {
-	          self.scope.$form._clicked = true;
-	        }
-	      });
-	    };
-	
-	    // setWaiting
-	    self.setWaiting = function(value) {
-	      if (value) {
-	        // participate in waiting only if not disabled
-	        inWaiting = !self.inputEl.attr('disabled') &&
-	                    !self.inputEl.attr('ng-disabled') &&
-	                    !self.inputEl.attr('ng-enabled');
-	        if (inWaiting) {
-	          self.inputEl.attr('disabled', 'disabled');
-	          if(self.buttonsEl) {
-	            self.buttonsEl.find('button').attr('disabled', 'disabled');
-	          }
-	        }
-	      } else {
-	        if (inWaiting) {
-	          self.inputEl.removeAttr('disabled');
-	          if (self.buttonsEl) {
-	            self.buttonsEl.find('button').removeAttr('disabled');
-	          }
-	        }
-	      }
-	    };
-	
-	    self.activate = function(start, end) {
-	      setTimeout(function() {
-	        var el = self.inputEl[0];
-	        if (editableOptions.activate === 'focus' && el.focus) {
-	          if(start){
-	            end = end || start;
-	            el.onfocus = function(){
-	              var that = this;
-	              setTimeout(function(){
-	                that.setSelectionRange(start,end);
-	              });
-	            };
-	          }
-	          el.focus();
-	        }
-	        if (editableOptions.activate === 'select' && el.select) {
-	          el.select();
-	        }
-	      }, 0);
-	    };
-	
-	    self.setError = function(msg) {
-	      if(!angular.isObject(msg)) {
-	        $scope.$error = msg;
-	        self.error = msg;
-	      }
-	    };
-	
-	    /*
-	    Checks that result is string or promise returned string and shows it as error message
-	    Applied to onshow, onbeforesave, onaftersave
-	    */
-	    self.catchError = function(result, noPromise) {
-	      if (angular.isObject(result) && noPromise !== true) {
-	        $q.when(result).then(
-	          //success and fail handlers are equal
-	          angular.bind(this, function(r) {
-	            this.catchError(r, true);
-	          }),
-	          angular.bind(this, function(r) {
-	            this.catchError(r, true);
-	          })
-	        );
-	      //check $http error
-	      } else if (noPromise && angular.isObject(result) && result.status &&
-	        (result.status !== 200) && result.data && angular.isString(result.data)) {
-	        this.setError(result.data);
-	        //set result to string: to let form know that there was error
-	        result = result.data;
-	      } else if (angular.isString(result)) {
-	        this.setError(result);
-	      }
-	      return result;
-	    };
-	
-	    self.save = function() {
-	      valueGetter.assign($scope.$parent,
-	          self.useCopy ? angular.copy(self.scope.$data) : self.scope.$data);
-	
-	      // no need to call handleEmpty here as we are watching change of model value
-	      // self.handleEmpty();
-	    };
-	
-	    /*
-	    attach/detach `editable-empty` class to element
-	    */
-	    self.handleEmpty = function() {
-	      var val = valueGetter($scope.$parent);
-	      var isEmpty = val === null || val === undefined || val === "" || (angular.isArray(val) && val.length === 0); 
-	      $element.toggleClass('editable-empty', isEmpty);
-	    };
-	
-	    /*
-	    Called when `buttons = "no"` to submit automatically
-	    */
-	    self.autosubmit = angular.noop;
-	
-	    self.onshow = angular.noop;
-	    self.onhide = angular.noop;
-	    self.oncancel = angular.noop;
-	    self.onbeforesave = angular.noop;
-	    self.onaftersave = angular.noop;
-	  }
-	
-	  return EditableController;
-	}]);
-	
-	/*
-	editableFactory is used to generate editable directives (see `/directives` folder)
-	Inside it does several things:
-	- detect form for editable element. Form may be one of three types:
-	  1. autogenerated form (for single editable elements)
-	  2. wrapper form (element wrapped by <form> tag)
-	  3. linked form (element has `e-form` attribute pointing to existing form)
-	
-	- attach editableController to element
-	
-	Depends on: editableController, editableFormFactory
-	*/
-	angular.module('xeditable').factory('editableDirectiveFactory',
-	['$parse', '$compile', 'editableThemes', '$rootScope', '$document', 'editableController', 'editableFormController', 'editableOptions',
-	function($parse, $compile, editableThemes, $rootScope, $document, editableController, editableFormController, editableOptions) {
-	
-	  //directive object
-	  return function(overwrites) {
-	    return {
-	      restrict: 'A',
-	      scope: true,
-	      require: [overwrites.directiveName, '?^form'],
-	      controller: editableController,
-	      link: function(scope, elem, attrs, ctrl) {
-	        // editable controller
-	        var eCtrl = ctrl[0];
-	
-	        // form controller
-	        var eFormCtrl;
-	
-	        // this variable indicates is element is bound to some existing form,
-	        // or it's single element who's form will be generated automatically
-	        // By default consider single element without any linked form.ß
-	        var hasForm = false;
-	
-	        // element wrapped by form
-	        if (ctrl[1]) {
-	          eFormCtrl = ctrl[1];
-	          hasForm = attrs.eSingle === undefined;
-	        } else if (attrs.eForm) { // element not wrapped by <form>, but we have `e-form` attr
-	          var getter = $parse(attrs.eForm)(scope);
-	          if (getter) { // form exists in scope (above), e.g. editable column
-	            eFormCtrl = getter;
-	            hasForm = true;
-	          } else if (elem && typeof elem.parents === "function" && elem.parents().last().find('form[name='+attrs.eForm+']').length) { // form exists below or not exist at all: check document.forms
-	            // form is below and not processed yet
-	            eFormCtrl = null;
-	            hasForm = true;
-	          } else {
-	            // form exists below or not exist at all: check document.forms
-	            for (var i=0; i<$document[0].forms.length;i++) {
-	              if ($document[0].forms[i].name === attrs.eForm) {
-	                // form is below and not processed yet
-	                eFormCtrl = null;
-	                hasForm = true;
-	                break;
-	              }
-	            }
-	          }
-	        }
-	
-	        /*
-	        if(hasForm && !attrs.eName) {
-	          throw 'You should provide `e-name` for editable element inside form!';
-	        }
-	        */
-	
-	        //check for `editable-form` attr in form
-	        /*
-	        if(eFormCtrl && ) {
-	          throw 'You should provide `e-name` for editable element inside form!';
-	        }
-	        */
-	
-	        // store original props to `parent` before merge
-	        angular.forEach(overwrites, function(v, k) {
-	          if(eCtrl[k] !== undefined) {
-	            eCtrl.parent[k] = eCtrl[k];
-	          }
-	        });
-	
-	        // merge overwrites to base editable controller
-	        angular.extend(eCtrl, overwrites);
-	
-	        // x-editable can be disabled using editableOption or edit-disabled attribute
-	        var disabled = angular.isDefined(attrs.editDisabled) ?
-	          scope.$eval(attrs.editDisabled) :
-	          editableOptions.isDisabled;
-	
-	        if (disabled) {
-	          return;
-	        }
-	
-	        // init editable ctrl
-	        eCtrl.init(!hasForm);
-	
-	        // publich editable controller as `$editable` to be referenced in html
-	        scope.$editable = eCtrl;
-	
-	        // add `editable` class to element
-	        elem.addClass('editable');
-	
-	        // hasForm
-	        if(hasForm) {
-	          if(eFormCtrl) {
-	            scope.$form = eFormCtrl;
-	            if(!scope.$form.$addEditable) {
-	              throw 'Form with editable elements should have `editable-form` attribute.';
-	            }
-	            scope.$form.$addEditable(eCtrl);
-	          } else {
-	            // future form (below): add editable controller to buffer and add to form later
-	            $rootScope.$$editableBuffer = $rootScope.$$editableBuffer || {};
-	            $rootScope.$$editableBuffer[attrs.eForm] = $rootScope.$$editableBuffer[attrs.eForm] || [];
-	            $rootScope.$$editableBuffer[attrs.eForm].push(eCtrl);
-	            scope.$form = null; //will be re-assigned later
-	          }
-	        // !hasForm
-	        } else {
-	          // create editableform controller
-	          scope.$form = editableFormController();
-	          // add self to editable controller
-	          scope.$form.$addEditable(eCtrl);
-	
-	          // if `e-form` provided, publish local $form in scope
-	          if(attrs.eForm) {
-	            ($parse(attrs.eForm).assign || angular.noop)(scope.$parent, scope.$form);
-	          }
-	
-	          // bind click - if no external form defined
-	          if(!attrs.eForm || attrs.eClickable) {
-	            elem.addClass('editable-click');
-	            elem.bind(editableOptions.activationEvent, function(e) {
-	              e.preventDefault();
-	              e.editable = eCtrl;
-	              scope.$apply(function(){
-	                scope.$form.$show();
-	              });
-	            });
-	          }
-	        }
-	
-	      }
-	    };
-	  };
-	}]);
-	
-	/*
-	Returns editableForm controller
-	*/
-	angular.module('xeditable').factory('editableFormController', 
-	  ['$parse', '$document', '$rootScope', 'editablePromiseCollection', 'editableUtils',
-	  function($parse, $document, $rootScope, editablePromiseCollection, editableUtils) {
-	
-	  // array of opened editable forms
-	  var shown = [];
-	
-	  //Check if the child element correspond or is a descendant of the parent element
-	  var isSelfOrDescendant = function (parent, child) {
-	    if (child == parent) {
-	      return true;
-	    }
-	
-	    var node = child.parentNode;
-	    while (node !== null) {
-	      if (node == parent) {
-	        return true;
-	      }
-	      node = node.parentNode;
-	    }
-	    return false;
-	  };
-	  
-	  //Check if it is a real blur : if the click event appear on a shown editable elem, this is not a blur.
-	  var isBlur = function(shown, event) {
-	    var isBlur = true;
-	
-	    var editables = shown.$editables;
-	    angular.forEach(editables, function(v){
-	      var element = v.editorEl[0];
-	      if (isSelfOrDescendant(element, event.target))
-	        isBlur = false;
-	      
-	    });
-	    return isBlur;
-	  };
-	  
-	  // bind click to body: cancel|submit|ignore forms
-	  $document.bind('click', function(e) {
-	    // ignore right/middle button click
-	    if (e.which && e.which !== 1) {
-	      return;
-	    }
-	
-	    var toCancel = [];
-	    var toSubmit = [];
-	    for (var i=0; i<shown.length; i++) {
-	
-	      // exclude clicked
-	      if (shown[i]._clicked) {
-	        shown[i]._clicked = false;
-	        continue;
-	      }
-	
-	      // exclude waiting
-	      if (shown[i].$waiting) {
-	        continue;
-	      }
-	
-	      if (shown[i]._blur === 'cancel' && isBlur(shown[i], e)) {
-	        toCancel.push(shown[i]);
-	      }
-	
-	      if (shown[i]._blur === 'submit' && isBlur(shown[i], e)) {
-	        toSubmit.push(shown[i]);
-	      }
-	    }
-	
-	    if (toCancel.length || toSubmit.length) {
-	      $rootScope.$apply(function() {
-	        angular.forEach(toCancel, function(v){ v.$cancel(); });
-	        angular.forEach(toSubmit, function(v){ v.$submit(); });
-	      });
-	    }
-	  });
-	 
-	  $rootScope.$on('closeEdit', function() {
-	    for(var i=0; i < shown.length; i++) {
-	      shown[i].$hide();
-	    }
-	  }); 
-	
-	  var base = {
-	    $addEditable: function(editable) {
-	      //console.log('add editable', editable.elem, editable.elem.bind);
-	      this.$editables.push(editable);
-	
-	      //'on' is not supported in angular 1.0.8
-	      editable.elem.bind('$destroy', angular.bind(this, this.$removeEditable, editable));
-	
-	      //bind editable's local $form to self (if not bound yet, below form) 
-	      if (!editable.scope.$form) {
-	        editable.scope.$form = this;
-	      }
-	
-	      //if form already shown - call show() of new editable
-	      if (this.$visible) {
-	        editable.catchError(editable.show());
-	      }
-	      editable.catchError(editable.setWaiting(this.$waiting));
-	    },
-	
-	    $removeEditable: function(editable) {
-	      //arrayRemove
-	      for(var i=0; i < this.$editables.length; i++) {
-	        if(this.$editables[i] === editable) {
-	          this.$editables.splice(i, 1);
-	          return;
-	        }
-	      }
-	    },
-	
-	    /**
-	     * Shows form with editable controls.
-	     * 
-	     * @method $show()
-	     * @memberOf editable-form
-	     */
-	    $show: function() {
-	      if (this.$visible) {
-	        return;
-	      }
-	
-	      this.$visible = true;
-	
-	      var pc = editablePromiseCollection();
-	
-	      //own show
-	      pc.when(this.$onshow());
-	
-	      //clear errors
-	      this.$setError(null, '');
-	
-	      //children show
-	      angular.forEach(this.$editables, function(editable) {
-	        pc.when(editable.show());
-	      });
-	
-	      //wait promises and activate
-	      pc.then({
-	        onWait: angular.bind(this, this.$setWaiting), 
-	        onTrue: angular.bind(this, this.$activate), 
-	        onFalse: angular.bind(this, this.$activate), 
-	        onString: angular.bind(this, this.$activate)
-	      });
-	
-	      // add to internal list of shown forms
-	      // setTimeout needed to prevent closing right after opening (e.g. when trigger by button)
-	      setTimeout(angular.bind(this, function() {
-	        // clear `clicked` to get ready for clicks on visible form
-	        this._clicked = false;
-	        if(editableUtils.indexOf(shown, this) === -1) {
-	          shown.push(this);
-	        }
-	      }), 0);      
-	    },
-	
-	    /**
-	     * Sets focus on form field specified by `name`.<br/>
-	     * When trying to set the focus on a form field of a new row in the editable table, the `$activate` call needs to be wrapped in a `$timeout` call so that the form is rendered before the `$activate` function is called.
-	     * 
-	     * @method $activate(name)
-	     * @param {string} name name of field
-	     * @memberOf editable-form
-	     */
-	    $activate: function(name) {
-	      var i;
-	      if (this.$editables.length) {
-	        //activate by name
-	        if (angular.isString(name)) {
-	          for(i=0; i<this.$editables.length; i++) {
-	            if (this.$editables[i].name === name) {
-	              this.$editables[i].activate();
-	              return;
-	            }
-	          }
-	        }
-	
-	        //try activate error field
-	        for(i=0; i<this.$editables.length; i++) {
-	          if (this.$editables[i].error) {
-	            this.$editables[i].activate();
-	            return;
-	          }
-	        }
-	
-	        //by default activate first field
-	        this.$editables[0].activate(this.$editables[0].elem[0].selectionStart, this.$editables[0].elem[0].selectionEnd);
-	      }
-	    },
-	
-	    /**
-	     * Hides form with editable controls without saving.
-	     * 
-	     * @method $hide()
-	     * @memberOf editable-form
-	     */
-	    $hide: function() {
-	      if (!this.$visible) {
-	        return;
-	      }      
-	      this.$visible = false;
-	      // self hide
-	      this.$onhide();
-	      // children's hide
-	      angular.forEach(this.$editables, function(editable) {
-	        editable.hide();
-	      });
-	
-	      // remove from internal list of shown forms
-	      editableUtils.arrayRemove(shown, this);
-	    },
-	
-	    /**
-	     * Triggers `oncancel` event and calls `$hide()`.
-	     * 
-	     * @method $cancel()
-	     * @memberOf editable-form
-	     */
-	    $cancel: function() {
-	      if (!this.$visible) {
-	        return;
-	      }      
-	      // self cancel
-	      this.$oncancel();
-	      // children's cancel      
-	      angular.forEach(this.$editables, function(editable) {
-	        editable.cancel();
-	      });
-	      // self hide
-	      this.$hide();
-	    },    
-	
-	    $setWaiting: function(value) {
-	      this.$waiting = !!value;
-	      // we can't just set $waiting variable and use it via ng-disabled in children
-	      // because in editable-row form is not accessible
-	      angular.forEach(this.$editables, function(editable) {
-	        editable.setWaiting(!!value);
-	      });
-	    },
-	
-	    /**
-	     * Shows error message for particular field.
-	     * 
-	     * @method $setError(name, msg)
-	     * @param {string} name name of field
-	     * @param {string} msg error message
-	     * @memberOf editable-form
-	     */
-	    $setError: function(name, msg) {
-	      angular.forEach(this.$editables, function(editable) {
-	        if(!name || editable.name === name) {
-	          editable.setError(msg);
-	        }
-	      });
-	    },
-	
-	    $submit: function() {
-	      if (this.$waiting) {
-	        return;
-	      } 
-	
-	      //clear errors
-	      this.$setError(null, '');
-	
-	      //children onbeforesave
-	      var pc = editablePromiseCollection();
-	      angular.forEach(this.$editables, function(editable) {
-	        pc.when(editable.onbeforesave());
-	      });
-	
-	      /*
-	      onbeforesave result:
-	      - true/undefined: save data and close form
-	      - false: close form without saving
-	      - string: keep form open and show error
-	      */
-	      pc.then({
-	        onWait: angular.bind(this, this.$setWaiting), 
-	        onTrue: angular.bind(this, checkSelf, true), 
-	        onFalse: angular.bind(this, checkSelf, false), 
-	        onString: angular.bind(this, this.$activate)
-	      });
-	
-	      //save
-	      function checkSelf(childrenTrue){
-	        var pc = editablePromiseCollection();
-	        pc.when(this.$onbeforesave());
-	        pc.then({
-	          onWait: angular.bind(this, this.$setWaiting), 
-	          onTrue: childrenTrue ? angular.bind(this, this.$save) : angular.bind(this, this.$hide), 
-	          onFalse: angular.bind(this, this.$hide), 
-	          onString: angular.bind(this, this.$activate)
-	        });
-	      }
-	    },
-	
-	    $save: function() {
-	      // write model for each editable
-	      angular.forEach(this.$editables, function(editable) {
-	        editable.save();
-	      });
-	
-	      //call onaftersave of self and children
-	      var pc = editablePromiseCollection();
-	      pc.when(this.$onaftersave());
-	      angular.forEach(this.$editables, function(editable) {
-	        pc.when(editable.onaftersave());
-	      });
-	
-	      /*
-	      onaftersave result:
-	      - true/undefined/false: just close form
-	      - string: keep form open and show error
-	      */
-	      pc.then({
-	        onWait: angular.bind(this, this.$setWaiting), 
-	        onTrue: angular.bind(this, this.$hide), 
-	        onFalse: angular.bind(this, this.$hide), 
-	        onString: angular.bind(this, this.$activate)
-	      });
-	    },
-	
-	    $onshow: angular.noop,
-	    $oncancel: angular.noop,
-	    $onhide: angular.noop,
-	    $onbeforesave: angular.noop,
-	    $onaftersave: angular.noop
-	  };
-	
-	  return function() {
-	    return angular.extend({
-	      $editables: [],
-	      /**
-	       * Form visibility flag.
-	       * 
-	       * @var {bool} $visible
-	       * @memberOf editable-form
-	       */
-	      $visible: false,
-	      /**
-	       * Form waiting flag. It becomes `true` when form is loading or saving data.
-	       * 
-	       * @var {bool} $waiting
-	       * @memberOf editable-form
-	       */
-	      $waiting: false,
-	      $data: {},
-	      _clicked: false,
-	      _blur: null
-	    }, base);
-	  };
-	}]);
-	
-	/**
-	 * EditableForm directive. Should be defined in <form> containing editable controls.  
-	 * It add some usefull methods to form variable exposed to scope by `name="myform"` attribute.
-	 *
-	 * @namespace editable-form
-	 */
-	angular.module('xeditable').directive('editableForm',
-	  ['$rootScope', '$parse', 'editableFormController', 'editableOptions',
-	  function($rootScope, $parse, editableFormController, editableOptions) {
-	    return {
-	      restrict: 'A',
-	      require: ['form'],
-	      //require: ['form', 'editableForm'],
-	      //controller: EditableFormController,
-	      compile: function() {
-	        return {
-	          pre: function(scope, elem, attrs, ctrl) {
-	            var form = ctrl[0];
-	            var eForm;
-	
-	            //if `editableForm` has value - publish smartly under this value
-	            //this is required only for single editor form that is created and removed
-	            if(attrs.editableForm) {
-	              if(scope[attrs.editableForm] && scope[attrs.editableForm].$show) {
-	                eForm = scope[attrs.editableForm];
-	                angular.extend(form, eForm);
-	              } else {
-	                eForm = editableFormController();
-	                scope[attrs.editableForm] = eForm;
-	                angular.extend(eForm, form);
-	              }
-	            } else { //just merge to form and publish if form has name
-	              eForm = editableFormController();
-	              angular.extend(form, eForm);
-	            }
-	
-	            //read editables from buffer (that appeared before FORM tag)
-	            var buf = $rootScope.$$editableBuffer;
-	            var name = form.$name;
-	            if(name && buf && buf[name]) {
-	              angular.forEach(buf[name], function(editable) {
-	                eForm.$addEditable(editable);
-	              });
-	              delete buf[name];
-	            }
-	          },
-	          post: function(scope, elem, attrs, ctrl) {
-	            var eForm;
-	
-	            if(attrs.editableForm && scope[attrs.editableForm] && scope[attrs.editableForm].$show) {
-	              eForm = scope[attrs.editableForm];
-	            } else {
-	              eForm = ctrl[0];
-	            }
-	
-	            /**
-	             * Called when form is shown.
-	             * 
-	             * @var {method|attribute} onshow 
-	             * @memberOf editable-form
-	             */
-	            if(attrs.onshow) {
-	              eForm.$onshow = angular.bind(eForm, $parse(attrs.onshow), scope);
-	            }
-	
-	            /**
-	             * Called when form hides after both save or cancel.
-	             * 
-	             * @var {method|attribute} onhide 
-	             * @memberOf editable-form
-	             */
-	            if(attrs.onhide) {
-	              eForm.$onhide = angular.bind(eForm, $parse(attrs.onhide), scope);
-	            }
-	
-	            /**
-	             * Called when form is cancelled.
-	             * 
-	             * @var {method|attribute} oncancel
-	             * @memberOf editable-form
-	             */
-	            if(attrs.oncancel) {
-	              eForm.$oncancel = angular.bind(eForm, $parse(attrs.oncancel), scope);
-	            }
-	
-	            /**
-	             * Whether form initially rendered in shown state.
-	             *
-	             * @var {bool|attribute} shown
-	             * @memberOf editable-form
-	             */
-	            if(attrs.shown && $parse(attrs.shown)(scope)) {
-	              eForm.$show();
-	            }
-	
-	            /**
-	             * Action when form losses focus. Values: `cancel|submit|ignore`.
-	             * Default is `ignore`.
-	             * 
-	             * @var {string|attribute} blur
-	             * @memberOf editable-form
-	             */
-	            eForm._blur = attrs.blur || editableOptions.blurForm;
-	
-	            // onbeforesave, onaftersave
-	            if(!attrs.ngSubmit && !attrs.submit) {
-	              /**
-	               * Called after all children `onbeforesave` callbacks but before saving form values
-	               * to model.  
-	               * If at least one children callback returns `non-string` - it will not not be called.  
-	               * See [editable-form demo](#editable-form) for details.
-	               * 
-	               * @var {method|attribute} onbeforesave
-	               * @memberOf editable-form
-	               * 
-	               */
-	              if(attrs.onbeforesave) {
-	                eForm.$onbeforesave = function() {
-	                  return $parse(attrs.onbeforesave)(scope, {$data: eForm.$data});
-	                };
-	              }
-	
-	              /**
-	               * Called when form values are saved to model.  
-	               * See [editable-form demo](#editable-form) for details.
-	               * 
-	               * @var {method|attribute} onaftersave 
-	               * @memberOf editable-form
-	               * 
-	               */
-	              if(attrs.onaftersave) {
-	                eForm.$onaftersave = function() {
-	                  return $parse(attrs.onaftersave)(scope, {$data: eForm.$data});
-	                };
-	              }
-	
-	              elem.bind('submit', function(event) {
-	                event.preventDefault();
-	                scope.$apply(function() {
-	                  eForm.$submit();
-	                });
-	              });
-	            }
-	
-	
-	            // click - mark form as clicked to exclude in document click handler
-	            elem.bind('click', function(e) {
-	              // ignore right/middle button click
-	              if (e.which && e.which !== 1) {
-	                return;
-	              }
-	
-	              if (eForm.$visible) {
-	                eForm._clicked = true;
-	              }
-	            });   
-	
-	          }
-	        };
-	      }
-	    };
-	}]);
-	/**
-	 * editablePromiseCollection
-	 *  
-	 * Collect results of function calls. Shows waiting if there are promises. 
-	 * Finally, applies callbacks if:
-	 * - onTrue(): all results are true and all promises resolved to true
-	 * - onFalse(): at least one result is false or promise resolved to false
-	 * - onString(): at least one result is string or promise rejected or promise resolved to string
-	 */
-	
-	angular.module('xeditable').factory('editablePromiseCollection', ['$q', function($q) { 
-	
-	  function promiseCollection() {
-	    return {
-	      promises: [],
-	      hasFalse: false,
-	      hasString: false,
-	      when: function(result, noPromise) {
-	        if (result === false) {
-	          this.hasFalse = true;
-	        } else if (!noPromise && angular.isObject(result)) {
-	          this.promises.push($q.when(result));
-	        } else if (angular.isString(result)){
-	          this.hasString = true;
-	        } else { //result === true || result === undefined || result === null
-	          return;
-	        }
-	      },
-	      //callbacks: onTrue, onFalse, onString
-	      then: function(callbacks) {
-	        callbacks = callbacks || {};
-	        var onTrue = callbacks.onTrue || angular.noop;
-	        var onFalse = callbacks.onFalse || angular.noop;
-	        var onString = callbacks.onString || angular.noop;
-	        var onWait = callbacks.onWait || angular.noop;
-	
-	        var self = this;
-	
-	        if (this.promises.length) {
-	          onWait(true);
-	          $q.all(this.promises).then(
-	            //all resolved       
-	            function(results) {
-	              onWait(false);
-	              //check all results via same `when` method (without checking promises)
-	              angular.forEach(results, function(result) {
-	                self.when(result, true);  
-	              });
-	              applyCallback();
-	            },
-	            //some rejected
-	            function(error) { 
-	              onWait(false);
-	              onString();
-	            }
-	            );
-	        } else {
-	          applyCallback();
-	        }
-	
-	        function applyCallback() {
-	          if (!self.hasString && !self.hasFalse) {
-	            onTrue();
-	          } else if (!self.hasString && self.hasFalse) {
-	            onFalse();
-	          } else {
-	            onString();
-	          }
-	        }
-	
-	      }
-	    };
-	  }
-	
-	  return promiseCollection;
-	
-	}]);
-	
-	/**
-	 * editableUtils
-	 */
-	 angular.module('xeditable').factory('editableUtils', [function() {
-	  return {
-	    indexOf: function (array, obj) {
-	      if (array.indexOf) return array.indexOf(obj);
-	
-	      for ( var i = 0; i < array.length; i++) {
-	        if (obj === array[i]) return i;
-	      }
-	      return -1;
-	    },
-	
-	    arrayRemove: function (array, value) {
-	      var index = this.indexOf(array, value);
-	      if (index >= 0) {
-	        array.splice(index, 1);
-	      }
-	      return value;
-	    },
-	
-	    // copy from https://github.com/angular/angular.js/blob/master/src/Angular.js
-	    camelToDash: function(str) {
-	      var SNAKE_CASE_REGEXP = /[A-Z]/g;
-	      return str.replace(SNAKE_CASE_REGEXP, function(letter, pos) {
-	        return (pos ? '-' : '') + letter.toLowerCase();
-	      });
-	    },
-	
-	    dashToCamel: function(str) {
-	      var SPECIAL_CHARS_REGEXP = /([\:\-\_]+(.))/g;
-	      var MOZ_HACK_REGEXP = /^moz([A-Z])/;
-	      return str.
-	      replace(SPECIAL_CHARS_REGEXP, function(_, separator, letter, offset) {
-	        return offset ? letter.toUpperCase() : letter;
-	      }).
-	      replace(MOZ_HACK_REGEXP, 'Moz$1');
-	    },
-	
-	    rename: function (tag, el) {
-	      var newEl = angular.element('<' + tag + '/>');
-	      newEl.html(el.html());
-	      var attrs = el[0].attributes;
-	      for (var i = 0; i < attrs.length; ++i) {
-	          newEl.attr(attrs.item(i).nodeName, attrs.item(i).value);
-	      }
-	      return newEl;
-	    }
-	  };
-	}]);
-	
-	/**
-	 * editableNgOptionsParser
-	 *
-	 * see: https://github.com/angular/angular.js/blob/master/src/ng/directive/select.js#L131
-	 */
-	 angular.module('xeditable').factory('editableNgOptionsParser', [function() {
-	  //0000111110000000000022220000000000000000000000333300000000000000444444444444444000000000555555555555555000000066666666666666600000000000000007777000000000000000000088888
-	  var NG_OPTIONS_REGEXP = /^\s*(.*?)(?:\s+as\s+(.*?))?(?:\s+group\s+by\s+(.*))?\s+for\s+(?:([\$\w][\$\w]*)|(?:\(\s*([\$\w][\$\w]*)\s*,\s*([\$\w][\$\w]*)\s*\)))\s+in\s+(.*?)(?:\s+track\s+by\s+(.*?))?$/;
-	
-	  function parser(optionsExp) {
-	    var match;
-	
-	    if (! (match = optionsExp.match(NG_OPTIONS_REGEXP))) {
-	      throw 'ng-options parse error';
-	    }
-	
-	    var 
-	    displayFn = match[2] || match[1],
-	    valueName = match[4] || match[6],
-	    keyName = match[5],
-	    groupByFn = match[3] || '',
-	    valueFn = match[2] ? match[1] : valueName,
-	    valuesFn = match[7],
-	    track = match[8],
-	    trackFn = track ? match[8] : null;
-	
-	    var ngRepeat;
-	    if (keyName === undefined) { // array
-	      ngRepeat = valueName + ' in ' + valuesFn;
-	      if (track !== undefined) {
-	        ngRepeat += ' track by '+trackFn;
-	      }
-	    } else { // object
-	      ngRepeat = '('+keyName+', '+valueName+') in '+valuesFn;
-	    }
-	    
-	    // group not supported yet
-	    return {
-	      ngRepeat: ngRepeat,
-	      locals: {
-	        valueName: valueName,
-	        keyName: keyName,
-	        valueFn: valueFn,
-	        displayFn: displayFn
-	      }
-	    };
-	  }
-	
-	  return parser;
-	}]);
-	
-	/**
-	 * editableCombodate
-	 *
-	 * angular version of https://github.com/vitalets/combodate
-	 */
-	angular.module('xeditable').factory('editableCombodate', [function() {
-	  function Combodate(element, options) {
-	    this.$element = angular.element(element);
-	
-	    if(this.$element[0].nodeName != 'INPUT') {
-	      throw 'Combodate should be applied to INPUT element';
-	    }
-	
-	    var currentYear = new Date().getFullYear();
-	    this.defaults = {
-	      //in this format value stored in original input
-	      format: 'YYYY-MM-DD HH:mm',
-	      //in this format items in dropdowns are displayed
-	      template: 'D / MMM / YYYY   H : mm',
-	      //initial value, can be `new Date()`
-	      value: null,
-	      minYear: 1970,
-	      maxYear: currentYear,
-	      yearDescending: true,
-	      minuteStep: 5,
-	      secondStep: 1,
-	      firstItem: 'empty', //'name', 'empty', 'none'
-	      errorClass: null,
-	      customClass: '',
-	      roundTime: true, // whether to round minutes and seconds if step > 1
-	      smartDays: true // whether days in combo depend on selected month: 31, 30, 28
-	    };
-	
-	    this.options = angular.extend({}, this.defaults, options);
-	    this.init();
-	  }
-	
-	  Combodate.prototype = {
-	    constructor: Combodate,
-	    init: function () {
-	      this.map = {
-	        //key   regexp    moment.method
-	        day:    ['D',    'date'], 
-	        month:  ['M',    'month'], 
-	        year:   ['Y',    'year'], 
-	        hour:   ['[Hh]', 'hours'],
-	        minute: ['m',    'minutes'], 
-	        second: ['s',    'seconds'],
-	        ampm:   ['[Aa]', ''] 
-	      };
-	      
-	      this.$widget = angular.element('<span class="combodate"></span>').html(this.getTemplate());
-	      
-	      this.initCombos();
-	      
-	      if (this.options.smartDays) {
-	        var combo = this;
-	        this.$widget.find('select').bind('change', function(e) {
-	          // update days count if month or year changes
-	          if (angular.element(e.target).hasClass('month') || angular.element(e.target).hasClass('year')) {
-	            combo.fillCombo('day');
-	          }
-	        });        
-	      }
-	
-	      this.$widget.find('select').css('width', 'auto');
-	
-	      // hide original input and insert widget                                       
-	      this.$element.css('display', 'none').after(this.$widget);
-	      
-	      // set initial value
-	      this.setValue(this.$element.val() || this.options.value);
-	    },
-	    
-	    /*
-	     Replace tokens in template with <select> elements 
-	     */         
-	     getTemplate: function() {
-	      var tpl = this.options.template;
-	      var customClass = this.options.customClass;
-	
-	      //first pass
-	      angular.forEach(this.map, function(v, k) {
-	        v = v[0]; 
-	        var r = new RegExp(v+'+');
-	        var token = v.length > 1 ? v.substring(1, 2) : v;
-	        
-	        tpl = tpl.replace(r, '{'+token+'}');
-	      });
-	
-	      //replace spaces with &nbsp;
-	      tpl = tpl.replace(/ /g, '&nbsp;');
-	
-	      //second pass
-	      angular.forEach(this.map, function(v, k) {
-	        v = v[0];
-	        var token = v.length > 1 ? v.substring(1, 2) : v;
-	
-	        tpl = tpl.replace('{'+token+'}', '<select class="'+k+' '+customClass+'"></select>');
-	      });   
-	
-	      return tpl;
-	    },
-	    
-	    /*
-	     Initialize combos that presents in template 
-	     */        
-	     initCombos: function() {
-	      for (var k in this.map) {
-	        var c = this.$widget[0].querySelectorAll('.'+k);
-	        // set properties like this.$day, this.$month etc.
-	        this['$'+k] = c.length ? angular.element(c) : null;
-	        // fill with items
-	        this.fillCombo(k);
-	      }
-	    },
-	
-	    /*
-	     Fill combo with items 
-	     */        
-	     fillCombo: function(k) {
-	      var $combo = this['$'+k];
-	      if (!$combo) {
-	        return;
-	      }
-	
-	      // define method name to fill items, e.g `fillDays`
-	      var f = 'fill' + k.charAt(0).toUpperCase() + k.slice(1); 
-	      var items = this[f]();
-	      var value = $combo.val();
-	
-	      $combo.html('');
-	      for(var i=0; i<items.length; i++) {
-	        $combo.append('<option value="'+items[i][0]+'">'+items[i][1]+'</option>');
-	      }
-	
-	      $combo.val(value);
-	    },
-	
-	    /*
-	     Initialize items of combos. Handles `firstItem` option 
-	     */
-	     fillCommon: function(key) {
-	      var values = [], relTime;
-	
-	      if(this.options.firstItem === 'name') {
-	        //need both to support moment ver < 2 and  >= 2
-	        relTime = moment.relativeTime || moment.langData()._relativeTime; 
-	        var header = typeof relTime[key] === 'function' ? relTime[key](1, true, key, false) : relTime[key];
-	        //take last entry (see momentjs lang files structure) 
-	        header = header.split(' ').reverse()[0];                
-	        values.push(['', header]);
-	      } else if(this.options.firstItem === 'empty') {
-	        values.push(['', '']);
-	      }
-	      return values;
-	    },  
-	
-	
-	    /*
-	    fill day
-	    */
-	    fillDay: function() {
-	      var items = this.fillCommon('d'), name, i,
-	      twoDigit = this.options.template.indexOf('DD') !== -1,
-	      daysCount = 31;
-	
-	      // detect days count (depends on month and year)
-	      // originally https://github.com/vitalets/combodate/pull/7
-	      if (this.options.smartDays && this.$month && this.$year) {
-	        var month = parseInt(this.$month.val(), 10);
-	        var year = parseInt(this.$year.val(), 10);
-	
-	        if (!isNaN(month) && !isNaN(year)) {
-	          daysCount = moment([year, month]).daysInMonth();
-	        }
-	      }
-	
-	      for (i = 1; i <= daysCount; i++) {
-	        name = twoDigit ? this.leadZero(i) : i;
-	        items.push([i, name]);
-	      }
-	      return items;
-	    },
-	    
-	    /*
-	    fill month
-	    */
-	    fillMonth: function() {
-	      var items = this.fillCommon('M'), name, i, 
-	      longNames = this.options.template.indexOf('MMMM') !== -1,
-	      shortNames = this.options.template.indexOf('MMM') !== -1,
-	      twoDigit = this.options.template.indexOf('MM') !== -1;
-	
-	      for(i=0; i<=11; i++) {
-	        if(longNames) {
-	          //see https://github.com/timrwood/momentjs.com/pull/36
-	          name = moment().date(1).month(i).format('MMMM');
-	        } else if(shortNames) {
-	          name = moment().date(1).month(i).format('MMM');
-	        } else if(twoDigit) {
-	          name = this.leadZero(i+1);
-	        } else {
-	          name = i+1;
-	        }
-	        items.push([i, name]);
-	      } 
-	      return items;
-	    },
-	    
-	    /*
-	    fill year
-	    */
-	    fillYear: function() {
-	      var items = [], name, i, 
-	      longNames = this.options.template.indexOf('YYYY') !== -1;
-	
-	      for(i=this.options.maxYear; i>=this.options.minYear; i--) {
-	        name = longNames ? i : (i+'').substring(2);
-	        items[this.options.yearDescending ? 'push' : 'unshift']([i, name]);
-	      }
-	      
-	      items = this.fillCommon('y').concat(items);
-	      
-	      return items;
-	    },
-	    
-	    /*
-	    fill hour
-	    */
-	    fillHour: function() {
-	      var items = this.fillCommon('h'), name, i,
-	      h12 = this.options.template.indexOf('h') !== -1,
-	      h24 = this.options.template.indexOf('H') !== -1,
-	      twoDigit = this.options.template.toLowerCase().indexOf('hh') !== -1,
-	      min = h12 ? 1 : 0, 
-	      max = h12 ? 12 : 23;
-	
-	      for(i=min; i<=max; i++) {
-	        name = twoDigit ? this.leadZero(i) : i;
-	        items.push([i, name]);
-	      } 
-	      return items;
-	    },
-	
-	    /*
-	    fill minute
-	    */
-	    fillMinute: function() {
-	      var items = this.fillCommon('m'), name, i,
-	      twoDigit = this.options.template.indexOf('mm') !== -1;
-	
-	      for(i=0; i<=59; i+= this.options.minuteStep) {
-	        name = twoDigit ? this.leadZero(i) : i;
-	        items.push([i, name]);
-	      }
-	      return items;
-	    },
-	    
-	    /*
-	    fill second
-	    */
-	    fillSecond: function() {
-	      var items = this.fillCommon('s'), name, i,
-	      twoDigit = this.options.template.indexOf('ss') !== -1;
-	
-	      for(i=0; i<=59; i+= this.options.secondStep) {
-	        name = twoDigit ? this.leadZero(i) : i;
-	        items.push([i, name]);
-	      }    
-	      return items;
-	    },
-	    
-	    /*
-	    fill ampm
-	    */
-	    fillAmpm: function() {
-	      var ampmL = this.options.template.indexOf('a') !== -1,
-	      ampmU = this.options.template.indexOf('A') !== -1,            
-	      items = [
-	      ['am', ampmL ? 'am' : 'AM'],
-	      ['pm', ampmL ? 'pm' : 'PM']
-	      ];
-	      return items;
-	    },
-	
-	    /*
-	     Returns current date value from combos. 
-	     If format not specified - `options.format` used.
-	     If format = `null` - Moment object returned.
-	     */
-	     getValue: function(format) {
-	      var dt, values = {}, 
-	      that = this,
-	      notSelected = false;
-	
-	      //getting selected values    
-	      angular.forEach(this.map, function(v, k) {
-	        if(k === 'ampm') {
-	          return;
-	        }
-	        var def = k === 'day' ? 1 : 0;
-	
-	        values[k] = that['$'+k] ? parseInt(that['$'+k].val(), 10) : def; 
-	        
-	        if(isNaN(values[k])) {
-	         notSelected = true;
-	         return false; 
-	       }
-	     });
-	      
-	      //if at least one visible combo not selected - return empty string
-	      if(notSelected) {
-	       return '';
-	     }
-	
-	      //convert hours 12h --> 24h 
-	      if(this.$ampm) {
-	        //12:00 pm --> 12:00 (24-h format, midday), 12:00 am --> 00:00 (24-h format, midnight, start of day)
-	        if(values.hour === 12) {
-	          values.hour = this.$ampm.val() === 'am' ? 0 : 12;                    
-	        } else {
-	          values.hour = this.$ampm.val() === 'am' ? values.hour : values.hour+12;
-	        }
-	      }
-	      
-	      dt = moment([values.year, values.month, values.day, values.hour, values.minute, values.second]);
-	      
-	      //highlight invalid date
-	      this.highlight(dt);
-	
-	      format = format === undefined ? this.options.format : format;
-	      if(format === null) {
-	       return dt.isValid() ? dt : null; 
-	     } else {
-	       return dt.isValid() ? dt.format(format) : ''; 
-	     }
-	   },
-	
-	   setValue: function(value) {
-	    if(!value) {
-	      return;
-	    }
-	
-	      // parse in strict mode (third param `true`)
-	      var dt = typeof value === 'string' ? moment(value, this.options.format, true) : moment(value),
-	      that = this,
-	      values = {};
-	      
-	      //function to find nearest value in select options
-	      function getNearest($select, value) {
-	        var delta = {};
-	        angular.forEach($select.children('option'), function(opt, i){
-	          var optValue = angular.element(opt).attr('value');
-	
-	          if(optValue === '') return;
-	          var distance = Math.abs(optValue - value); 
-	          if(typeof delta.distance === 'undefined' || distance < delta.distance) {
-	            delta = {value: optValue, distance: distance};
-	          } 
-	        }); 
-	        return delta.value;
-	      }
-	      
-	      if(dt.isValid()) {
-	        //read values from date object
-	        angular.forEach(this.map, function(v, k) {
-	          if(k === 'ampm') {
-	            return; 
-	          }
-	          values[k] = dt[v[1]]();
-	        });
-	
-	        if(this.$ampm) {
-	          //12:00 pm --> 12:00 (24-h format, midday), 12:00 am --> 00:00 (24-h format, midnight, start of day)
-	          if(values.hour >= 12) {
-	            values.ampm = 'pm';
-	            if(values.hour > 12) {
-	              values.hour -= 12;
-	            }
-	          } else {
-	            values.ampm = 'am';
-	            if(values.hour === 0) {
-	              values.hour = 12;
-	            }
-	          }
-	        }
-	
-	        angular.forEach(values, function(v, k) {
-	          //call val() for each existing combo, e.g. this.$hour.val()
-	          if(that['$'+k]) {
-	
-	            if(k === 'minute' && that.options.minuteStep > 1 && that.options.roundTime) {
-	             v = getNearest(that['$'+k], v);
-	           }
-	           
-	           if(k === 'second' && that.options.secondStep > 1 && that.options.roundTime) {
-	             v = getNearest(that['$'+k], v);
-	           }                       
-	           
-	           that['$'+k].val(v);
-	         }
-	       });
-	
-	        // update days count
-	        if (this.options.smartDays) {
-	          this.fillCombo('day');
-	        }
-	
-	        this.$element.val(dt.format(this.options.format)).triggerHandler('change');
-	      }
-	    },
-	    
-	    /*
-	     highlight combos if date is invalid
-	     */
-	     highlight: function(dt) {
-	      if(!dt.isValid()) {
-	        if(this.options.errorClass) {
-	          this.$widget.addClass(this.options.errorClass);
-	        } else {
-	          //store original border color
-	          if(!this.borderColor) {
-	            this.borderColor = this.$widget.find('select').css('border-color'); 
-	          }
-	          this.$widget.find('select').css('border-color', 'red');
-	        }
-	      } else {
-	        if(this.options.errorClass) {
-	          this.$widget.removeClass(this.options.errorClass);
-	        } else {
-	          this.$widget.find('select').css('border-color', this.borderColor);
-	        }  
-	      }
-	    },
-	    
-	    leadZero: function(v) {
-	      return v <= 9 ? '0' + v : v; 
-	    },
-	    
-	    destroy: function() {
-	      this.$widget.remove();
-	      this.$element.removeData('combodate').show();
-	    }
-	
-	  };
-	
-	  return {
-	    getInstance: function(element, options) {
-	      return new Combodate(element, options);
-	    }
-	  };
-	}]);
-	
-	/*
-	Editable icons:
-	- default
-	- font-awesome
-	
-	*/
-	angular.module('xeditable').factory('editableIcons', function() {
-	
-	  var icons = {
-	    //Icon-set to use, defaults to bootstrap icons
-	    default: {
-	      'bs2': {
-	        ok: 'icon-ok icon-white',
-	        cancel: 'icon-remove'
-	      },
-	      'bs3': {
-	        ok: 'glyphicon glyphicon-ok',
-	        cancel: 'glyphicon glyphicon-remove'
-	      }
-	    },
-	    external: {
-	      'font-awesome': {
-	        ok: 'fa fa-check',
-	        cancel: 'fa fa-times'
-	      }
-	    }
-	  };
-	
-	  return icons;
-	});
-	
-	/*
-	Editable themes:
-	- default
-	- bootstrap 2
-	- bootstrap 3
-	- semantic-ui
-	
-	Note: in postrender() `this` is instance of editableController
-	*/
-	angular.module('xeditable').factory('editableThemes', function() {
-	  var themes = {
-	    //default
-	    'default': {
-	      formTpl:      '<form class="editable-wrap"></form>',
-	      noformTpl:    '<span class="editable-wrap"></span>',
-	      controlsTpl:  '<span class="editable-controls"></span>',
-	      inputTpl:     '',
-	      errorTpl:     '<div class="editable-error" data-ng-if="$error" data-ng-bind="$error"></div>',
-	      buttonsTpl:   '<span class="editable-buttons"></span>',
-	      submitTpl:    '<button type="submit">save</button>',
-	      cancelTpl:    '<button type="button" ng-click="$form.$cancel()">cancel</button>'
-	    },
-	
-	    //bs2
-	    'bs2': {
-	      formTpl:     '<form class="form-inline editable-wrap" role="form"></form>',
-	      noformTpl:   '<span class="editable-wrap"></span>',
-	      controlsTpl: '<div class="editable-controls controls control-group" ng-class="{\'error\': $error}"></div>',
-	      inputTpl:    '',
-	      errorTpl:    '<div class="editable-error help-block" data-ng-if="$error" data-ng-bind="$error"></div>',
-	      buttonsTpl:  '<span class="editable-buttons"></span>',
-	      submitTpl:   '<button type="submit" class="btn btn-primary"><span></span></button>',
-	      cancelTpl:   '<button type="button" class="btn" ng-click="$form.$cancel()">'+
-	                      '<span></span>'+
-	                   '</button>'
-	
-	    },
-	
-	    //bs3
-	    'bs3': {
-	      formTpl:     '<form class="form-inline editable-wrap" role="form"></form>',
-	      noformTpl:   '<span class="editable-wrap"></span>',
-	      controlsTpl: '<div class="editable-controls form-group" ng-class="{\'has-error\': $error}"></div>',
-	      inputTpl:    '',
-	      errorTpl:    '<div class="editable-error help-block" data-ng-if="$error" data-ng-bind="$error"></div>',
-	      buttonsTpl:  '<span class="editable-buttons"></span>',
-	      submitTpl:   '<button type="submit" class="btn btn-primary"><span></span></button>',
-	      cancelTpl:   '<button type="button" class="btn btn-default" ng-click="$form.$cancel()">'+
-	                     '<span></span>'+
-	                   '</button>',
-	
-	      //bs3 specific prop to change buttons class: btn-sm, btn-lg
-	      buttonsClass: '',
-	      //bs3 specific prop to change standard inputs class: input-sm, input-lg
-	      inputClass: '',
-	      postrender: function() {
-	        //apply `form-control` class to std inputs
-	        switch(this.directiveName) {
-	          case 'editableText':
-	          case 'editableSelect':
-	          case 'editableTextarea':
-	          case 'editableEmail':
-	          case 'editableTel':
-	          case 'editableNumber':
-	          case 'editableUrl':
-	          case 'editableSearch':
-	          case 'editableDate':
-	          case 'editableDatetime':
-	          case 'editableBsdate':
-	          case 'editableTime':
-	          case 'editableMonth':
-	          case 'editableWeek':
-	          case 'editablePassword':
-	          case 'editableDatetimeLocal':
-	            this.inputEl.addClass('form-control');
-	            if(this.theme.inputClass) {
-	              // don`t apply `input-sm` and `input-lg` to select multiple
-	              // should be fixed in bs itself!
-	              if(this.inputEl.attr('multiple') &&
-	                (this.theme.inputClass === 'input-sm' || this.theme.inputClass === 'input-lg')) {
-	                  break;
-	              }
-	              this.inputEl.addClass(this.theme.inputClass);
-	            }
-	          break;
-	          case 'editableCheckbox':
-	              this.editorEl.addClass('checkbox');
-	        }
-	
-	        //apply buttonsClass (bs3 specific!)
-	        if(this.buttonsEl && this.theme.buttonsClass) {
-	          this.buttonsEl.find('button').addClass(this.theme.buttonsClass);
-	        }
-	      }
-	    },
-	    
-	    //semantic-ui
-	    'semantic': {
-	      formTpl:     '<form class="editable-wrap ui form" ng-class="{\'error\': $error}" role="form"></form>',
-	      noformTpl:   '<span class="editable-wrap"></span>',
-	      controlsTpl: '<div class="editable-controls ui fluid input" ng-class="{\'error\': $error}"></div>',
-	      inputTpl:    '',
-	      errorTpl:    '<div class="editable-error ui error message" data-ng-if="$error" data-ng-bind="$error"></div>',
-	      buttonsTpl:  '<span class="mini ui buttons"></span>',
-	      submitTpl:   '<button type="submit" class="ui primary button"><i class="ui check icon"></i></button>',
-	      cancelTpl:   '<button type="button" class="ui button" ng-click="$form.$cancel()">'+
-	                      '<i class="ui cancel icon"></i>'+
-	                   '</button>'
-	    }
-	  };
-	
-	  return themes;
-	});
-
-
-/***/ },
-/* 41 */
-/***/ function(module, exports) {
-
-	module.exports = "<style>\r\n    /*ng-repeat的元素*/\r\n    .item{\r\n        -webkit-transition: all linear 0.2s;\r\n        -o-transition: all linear 0.2s;\r\n        transition: all linear 0.2s;\r\n    }\r\n    /*动画开始前*/\r\n    .item.ng-enter{\r\n        opacity:0;\r\n    }\r\n    /*动画过程*/\r\n    .item-ng-enter-active{\r\n        opacity:1;\r\n    }\r\n    .item.ng-enter-stagger {\r\n        transition-delay:0.2s;\r\n        transition-duration:0s;\r\n    }\r\n</style>\r\n<div ng-controller=\"tileController\">\r\n    <div class=\"btn-toolbar\">\r\n        <div class=\"btn-group-sm\">\r\n            <button class=\"btn btn-primary\" ng-click=\"add()\"><span class=\"glyphicon glyphicon-plus\"></span><span>添加</span></button>\r\n        </div>\r\n    </div>\r\n    <br/>\r\n    <div class=\"product-grid admin\">\r\n        <div class=\"col-md-4 product-grid item\" ng-repeat=\"item in tile.Items\">\r\n            <a href=\"#\" class=\"b-link-stripe b-animate-go1 swipebox\" title=\"\">\r\n                <img ng-src=\"/common/image?path={{item.ImgPath}}\" alt=\"\" class=\"img-responsive\" ng-if=\"item.ImgPath\">\r\n                <img ng-src=\"/images/18.jpg\" alt=\"\" class=\"img-responsive\" ng-if=\"!item.ImgPath\">\r\n                <div class=\"button btn btn-info btn-sm upload\" ngf-select ng-model=\"file\" name=\"file\" ngf-pattern=\"'image/*'\"\r\n                     ngf-accept=\"'image/*'\" ngf-max-size=\"20MB\" ngf-min-height=\"100\" ngf-change=\"upload($file,$index)\">\r\n                    上传或替换图片</div>\r\n            </a>\r\n            <div class=\"project-grid-text1\">\r\n                <h4><a href=\"#\" editable-text=\"item.Title\">{{item.Title || '磁贴' + $index}}</a></h4>\r\n                <p><a href=\"#\" editable-text=\"item.Memo\">{{item.Memo || '简介'}}</a></p>\r\n            </div>\r\n        </div>\r\n    </div>\r\n</div>\r\n"
-
-/***/ },
-/* 42 */
-/***/ function(module, exports) {
-
-	// removed by extract-text-webpack-plugin
-
-/***/ },
-/* 43 */,
-/* 44 */
 /***/ function(module, exports, __webpack_require__) {
 
-	__webpack_require__(45);
-	module.exports = 'ngResource';
-
-
-/***/ },
-/* 45 */
-/***/ function(module, exports) {
-
-	/**
-	 * @license AngularJS v1.5.8
-	 * (c) 2010-2016 Google, Inc. http://angularjs.org
-	 * License: MIT
-	 */
-	(function(window, angular) {'use strict';
-	
-	var $resourceMinErr = angular.$$minErr('$resource');
-	
-	// Helper functions and regex to lookup a dotted path on an object
-	// stopping at undefined/null.  The path must be composed of ASCII
-	// identifiers (just like $parse)
-	var MEMBER_NAME_REGEX = /^(\.[a-zA-Z_$@][0-9a-zA-Z_$@]*)+$/;
-	
-	function isValidDottedPath(path) {
-	  return (path != null && path !== '' && path !== 'hasOwnProperty' &&
-	      MEMBER_NAME_REGEX.test('.' + path));
-	}
-	
-	function lookupDottedPath(obj, path) {
-	  if (!isValidDottedPath(path)) {
-	    throw $resourceMinErr('badmember', 'Dotted member path "@{0}" is invalid.', path);
-	  }
-	  var keys = path.split('.');
-	  for (var i = 0, ii = keys.length; i < ii && angular.isDefined(obj); i++) {
-	    var key = keys[i];
-	    obj = (obj !== null) ? obj[key] : undefined;
-	  }
-	  return obj;
-	}
-	
-	/**
-	 * Create a shallow copy of an object and clear other fields from the destination
-	 */
-	function shallowClearAndCopy(src, dst) {
-	  dst = dst || {};
-	
-	  angular.forEach(dst, function(value, key) {
-	    delete dst[key];
-	  });
-	
-	  for (var key in src) {
-	    if (src.hasOwnProperty(key) && !(key.charAt(0) === '$' && key.charAt(1) === '$')) {
-	      dst[key] = src[key];
-	    }
-	  }
-	
-	  return dst;
-	}
-	
-	/**
-	 * @ngdoc module
-	 * @name ngResource
-	 * @description
-	 *
-	 * # ngResource
-	 *
-	 * The `ngResource` module provides interaction support with RESTful services
-	 * via the $resource service.
-	 *
-	 *
-	 * <div doc-module-components="ngResource"></div>
-	 *
-	 * See {@link ngResource.$resourceProvider} and {@link ngResource.$resource} for usage.
-	 */
-	
-	/**
-	 * @ngdoc provider
-	 * @name $resourceProvider
-	 *
-	 * @description
-	 *
-	 * Use `$resourceProvider` to change the default behavior of the {@link ngResource.$resource}
-	 * service.
-	 *
-	 * ## Dependencies
-	 * Requires the {@link ngResource } module to be installed.
-	 *
-	 */
-	
-	/**
-	 * @ngdoc service
-	 * @name $resource
-	 * @requires $http
-	 * @requires ng.$log
-	 * @requires $q
-	 * @requires ng.$timeout
-	 *
-	 * @description
-	 * A factory which creates a resource object that lets you interact with
-	 * [RESTful](http://en.wikipedia.org/wiki/Representational_State_Transfer) server-side data sources.
-	 *
-	 * The returned resource object has action methods which provide high-level behaviors without
-	 * the need to interact with the low level {@link ng.$http $http} service.
-	 *
-	 * Requires the {@link ngResource `ngResource`} module to be installed.
-	 *
-	 * By default, trailing slashes will be stripped from the calculated URLs,
-	 * which can pose problems with server backends that do not expect that
-	 * behavior.  This can be disabled by configuring the `$resourceProvider` like
-	 * this:
-	 *
-	 * ```js
-	     app.config(['$resourceProvider', function($resourceProvider) {
-	       // Don't strip trailing slashes from calculated URLs
-	       $resourceProvider.defaults.stripTrailingSlashes = false;
-	     }]);
-	 * ```
-	 *
-	 * @param {string} url A parameterized URL template with parameters prefixed by `:` as in
-	 *   `/user/:username`. If you are using a URL with a port number (e.g.
-	 *   `http://example.com:8080/api`), it will be respected.
-	 *
-	 *   If you are using a url with a suffix, just add the suffix, like this:
-	 *   `$resource('http://example.com/resource.json')` or `$resource('http://example.com/:id.json')`
-	 *   or even `$resource('http://example.com/resource/:resource_id.:format')`
-	 *   If the parameter before the suffix is empty, :resource_id in this case, then the `/.` will be
-	 *   collapsed down to a single `.`.  If you need this sequence to appear and not collapse then you
-	 *   can escape it with `/\.`.
-	 *
-	 * @param {Object=} paramDefaults Default values for `url` parameters. These can be overridden in
-	 *   `actions` methods. If a parameter value is a function, it will be called every time
-	 *   a param value needs to be obtained for a request (unless the param was overridden). The function
-	 *   will be passed the current data value as an argument.
-	 *
-	 *   Each key value in the parameter object is first bound to url template if present and then any
-	 *   excess keys are appended to the url search query after the `?`.
-	 *
-	 *   Given a template `/path/:verb` and parameter `{verb:'greet', salutation:'Hello'}` results in
-	 *   URL `/path/greet?salutation=Hello`.
-	 *
-	 *   If the parameter value is prefixed with `@`, then the value for that parameter will be
-	 *   extracted from the corresponding property on the `data` object (provided when calling a
-	 *   "non-GET" action method).
-	 *   For example, if the `defaultParam` object is `{someParam: '@someProp'}` then the value of
-	 *   `someParam` will be `data.someProp`.
-	 *   Note that the parameter will be ignored, when calling a "GET" action method (i.e. an action
-	 *   method that does not accept a request body)
-	 *
-	 * @param {Object.<Object>=} actions Hash with declaration of custom actions that should extend
-	 *   the default set of resource actions. The declaration should be created in the format of {@link
-	 *   ng.$http#usage $http.config}:
-	 *
-	 *       {action1: {method:?, params:?, isArray:?, headers:?, ...},
-	 *        action2: {method:?, params:?, isArray:?, headers:?, ...},
-	 *        ...}
-	 *
-	 *   Where:
-	 *
-	 *   - **`action`** – {string} – The name of action. This name becomes the name of the method on
-	 *     your resource object.
-	 *   - **`method`** – {string} – Case insensitive HTTP method (e.g. `GET`, `POST`, `PUT`,
-	 *     `DELETE`, `JSONP`, etc).
-	 *   - **`params`** – {Object=} – Optional set of pre-bound parameters for this action. If any of
-	 *     the parameter value is a function, it will be called every time when a param value needs to
-	 *     be obtained for a request (unless the param was overridden). The function will be passed the
-	 *     current data value as an argument.
-	 *   - **`url`** – {string} – action specific `url` override. The url templating is supported just
-	 *     like for the resource-level urls.
-	 *   - **`isArray`** – {boolean=} – If true then the returned object for this action is an array,
-	 *     see `returns` section.
-	 *   - **`transformRequest`** –
-	 *     `{function(data, headersGetter)|Array.<function(data, headersGetter)>}` –
-	 *     transform function or an array of such functions. The transform function takes the http
-	 *     request body and headers and returns its transformed (typically serialized) version.
-	 *     By default, transformRequest will contain one function that checks if the request data is
-	 *     an object and serializes to using `angular.toJson`. To prevent this behavior, set
-	 *     `transformRequest` to an empty array: `transformRequest: []`
-	 *   - **`transformResponse`** –
-	 *     `{function(data, headersGetter)|Array.<function(data, headersGetter)>}` –
-	 *     transform function or an array of such functions. The transform function takes the http
-	 *     response body and headers and returns its transformed (typically deserialized) version.
-	 *     By default, transformResponse will contain one function that checks if the response looks
-	 *     like a JSON string and deserializes it using `angular.fromJson`. To prevent this behavior,
-	 *     set `transformResponse` to an empty array: `transformResponse: []`
-	 *   - **`cache`** – `{boolean|Cache}` – If true, a default $http cache will be used to cache the
-	 *     GET request, otherwise if a cache instance built with
-	 *     {@link ng.$cacheFactory $cacheFactory}, this cache will be used for
-	 *     caching.
-	 *   - **`timeout`** – `{number}` – timeout in milliseconds.<br />
-	 *     **Note:** In contrast to {@link ng.$http#usage $http.config}, {@link ng.$q promises} are
-	 *     **not** supported in $resource, because the same value would be used for multiple requests.
-	 *     If you are looking for a way to cancel requests, you should use the `cancellable` option.
-	 *   - **`cancellable`** – `{boolean}` – if set to true, the request made by a "non-instance" call
-	 *     will be cancelled (if not already completed) by calling `$cancelRequest()` on the call's
-	 *     return value. Calling `$cancelRequest()` for a non-cancellable or an already
-	 *     completed/cancelled request will have no effect.<br />
-	 *   - **`withCredentials`** - `{boolean}` - whether to set the `withCredentials` flag on the
-	 *     XHR object. See
-	 *     [requests with credentials](https://developer.mozilla.org/en/http_access_control#section_5)
-	 *     for more information.
-	 *   - **`responseType`** - `{string}` - see
-	 *     [requestType](https://developer.mozilla.org/en-US/docs/DOM/XMLHttpRequest#responseType).
-	 *   - **`interceptor`** - `{Object=}` - The interceptor object has two optional methods -
-	 *     `response` and `responseError`. Both `response` and `responseError` interceptors get called
-	 *     with `http response` object. See {@link ng.$http $http interceptors}.
-	 *
-	 * @param {Object} options Hash with custom settings that should extend the
-	 *   default `$resourceProvider` behavior.  The supported options are:
-	 *
-	 *   - **`stripTrailingSlashes`** – {boolean} – If true then the trailing
-	 *   slashes from any calculated URL will be stripped. (Defaults to true.)
-	 *   - **`cancellable`** – {boolean} – If true, the request made by a "non-instance" call will be
-	 *   cancelled (if not already completed) by calling `$cancelRequest()` on the call's return value.
-	 *   This can be overwritten per action. (Defaults to false.)
-	 *
-	 * @returns {Object} A resource "class" object with methods for the default set of resource actions
-	 *   optionally extended with custom `actions`. The default set contains these actions:
-	 *   ```js
-	 *   { 'get':    {method:'GET'},
-	 *     'save':   {method:'POST'},
-	 *     'query':  {method:'GET', isArray:true},
-	 *     'remove': {method:'DELETE'},
-	 *     'delete': {method:'DELETE'} };
-	 *   ```
-	 *
-	 *   Calling these methods invoke an {@link ng.$http} with the specified http method,
-	 *   destination and parameters. When the data is returned from the server then the object is an
-	 *   instance of the resource class. The actions `save`, `remove` and `delete` are available on it
-	 *   as  methods with the `$` prefix. This allows you to easily perform CRUD operations (create,
-	 *   read, update, delete) on server-side data like this:
-	 *   ```js
-	 *   var User = $resource('/user/:userId', {userId:'@id'});
-	 *   var user = User.get({userId:123}, function() {
-	 *     user.abc = true;
-	 *     user.$save();
-	 *   });
-	 *   ```
-	 *
-	 *   It is important to realize that invoking a $resource object method immediately returns an
-	 *   empty reference (object or array depending on `isArray`). Once the data is returned from the
-	 *   server the existing reference is populated with the actual data. This is a useful trick since
-	 *   usually the resource is assigned to a model which is then rendered by the view. Having an empty
-	 *   object results in no rendering, once the data arrives from the server then the object is
-	 *   populated with the data and the view automatically re-renders itself showing the new data. This
-	 *   means that in most cases one never has to write a callback function for the action methods.
-	 *
-	 *   The action methods on the class object or instance object can be invoked with the following
-	 *   parameters:
-	 *
-	 *   - HTTP GET "class" actions: `Resource.action([parameters], [success], [error])`
-	 *   - non-GET "class" actions: `Resource.action([parameters], postData, [success], [error])`
-	 *   - non-GET instance actions:  `instance.$action([parameters], [success], [error])`
-	 *
-	 *
-	 *   Success callback is called with (value, responseHeaders) arguments, where the value is
-	 *   the populated resource instance or collection object. The error callback is called
-	 *   with (httpResponse) argument.
-	 *
-	 *   Class actions return empty instance (with additional properties below).
-	 *   Instance actions return promise of the action.
-	 *
-	 *   The Resource instances and collections have these additional properties:
-	 *
-	 *   - `$promise`: the {@link ng.$q promise} of the original server interaction that created this
-	 *     instance or collection.
-	 *
-	 *     On success, the promise is resolved with the same resource instance or collection object,
-	 *     updated with data from server. This makes it easy to use in
-	 *     {@link ngRoute.$routeProvider resolve section of $routeProvider.when()} to defer view
-	 *     rendering until the resource(s) are loaded.
-	 *
-	 *     On failure, the promise is rejected with the {@link ng.$http http response} object, without
-	 *     the `resource` property.
-	 *
-	 *     If an interceptor object was provided, the promise will instead be resolved with the value
-	 *     returned by the interceptor.
-	 *
-	 *   - `$resolved`: `true` after first server interaction is completed (either with success or
-	 *      rejection), `false` before that. Knowing if the Resource has been resolved is useful in
-	 *      data-binding.
-	 *
-	 *   The Resource instances and collections have these additional methods:
-	 *
-	 *   - `$cancelRequest`: If there is a cancellable, pending request related to the instance or
-	 *      collection, calling this method will abort the request.
-	 *
-	 *   The Resource instances have these additional methods:
-	 *
-	 *   - `toJSON`: It returns a simple object without any of the extra properties added as part of
-	 *     the Resource API. This object can be serialized through {@link angular.toJson} safely
-	 *     without attaching Angular-specific fields. Notice that `JSON.stringify` (and
-	 *     `angular.toJson`) automatically use this method when serializing a Resource instance
-	 *     (see [MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify#toJSON()_behavior)).
-	 *
-	 * @example
-	 *
-	 * # Credit card resource
-	 *
-	 * ```js
-	     // Define CreditCard class
-	     var CreditCard = $resource('/user/:userId/card/:cardId',
-	      {userId:123, cardId:'@id'}, {
-	       charge: {method:'POST', params:{charge:true}}
-	      });
-	
-	     // We can retrieve a collection from the server
-	     var cards = CreditCard.query(function() {
-	       // GET: /user/123/card
-	       // server returns: [ {id:456, number:'1234', name:'Smith'} ];
-	
-	       var card = cards[0];
-	       // each item is an instance of CreditCard
-	       expect(card instanceof CreditCard).toEqual(true);
-	       card.name = "J. Smith";
-	       // non GET methods are mapped onto the instances
-	       card.$save();
-	       // POST: /user/123/card/456 {id:456, number:'1234', name:'J. Smith'}
-	       // server returns: {id:456, number:'1234', name: 'J. Smith'};
-	
-	       // our custom method is mapped as well.
-	       card.$charge({amount:9.99});
-	       // POST: /user/123/card/456?amount=9.99&charge=true {id:456, number:'1234', name:'J. Smith'}
-	     });
-	
-	     // we can create an instance as well
-	     var newCard = new CreditCard({number:'0123'});
-	     newCard.name = "Mike Smith";
-	     newCard.$save();
-	     // POST: /user/123/card {number:'0123', name:'Mike Smith'}
-	     // server returns: {id:789, number:'0123', name: 'Mike Smith'};
-	     expect(newCard.id).toEqual(789);
-	 * ```
-	 *
-	 * The object returned from this function execution is a resource "class" which has "static" method
-	 * for each action in the definition.
-	 *
-	 * Calling these methods invoke `$http` on the `url` template with the given `method`, `params` and
-	 * `headers`.
-	 *
-	 * @example
-	 *
-	 * # User resource
-	 *
-	 * When the data is returned from the server then the object is an instance of the resource type and
-	 * all of the non-GET methods are available with `$` prefix. This allows you to easily support CRUD
-	 * operations (create, read, update, delete) on server-side data.
-	
-	   ```js
-	     var User = $resource('/user/:userId', {userId:'@id'});
-	     User.get({userId:123}, function(user) {
-	       user.abc = true;
-	       user.$save();
-	     });
-	   ```
-	 *
-	 * It's worth noting that the success callback for `get`, `query` and other methods gets passed
-	 * in the response that came from the server as well as $http header getter function, so one
-	 * could rewrite the above example and get access to http headers as:
-	 *
-	   ```js
-	     var User = $resource('/user/:userId', {userId:'@id'});
-	     User.get({userId:123}, function(user, getResponseHeaders){
-	       user.abc = true;
-	       user.$save(function(user, putResponseHeaders) {
-	         //user => saved user object
-	         //putResponseHeaders => $http header getter
-	       });
-	     });
-	   ```
-	 *
-	 * You can also access the raw `$http` promise via the `$promise` property on the object returned
-	 *
-	   ```
-	     var User = $resource('/user/:userId', {userId:'@id'});
-	     User.get({userId:123})
-	         .$promise.then(function(user) {
-	           $scope.user = user;
-	         });
-	   ```
-	 *
-	 * @example
-	 *
-	 * # Creating a custom 'PUT' request
-	 *
-	 * In this example we create a custom method on our resource to make a PUT request
-	 * ```js
-	 *    var app = angular.module('app', ['ngResource', 'ngRoute']);
-	 *
-	 *    // Some APIs expect a PUT request in the format URL/object/ID
-	 *    // Here we are creating an 'update' method
-	 *    app.factory('Notes', ['$resource', function($resource) {
-	 *    return $resource('/notes/:id', null,
-	 *        {
-	 *            'update': { method:'PUT' }
-	 *        });
-	 *    }]);
-	 *
-	 *    // In our controller we get the ID from the URL using ngRoute and $routeParams
-	 *    // We pass in $routeParams and our Notes factory along with $scope
-	 *    app.controller('NotesCtrl', ['$scope', '$routeParams', 'Notes',
-	                                      function($scope, $routeParams, Notes) {
-	 *    // First get a note object from the factory
-	 *    var note = Notes.get({ id:$routeParams.id });
-	 *    $id = note.id;
-	 *
-	 *    // Now call update passing in the ID first then the object you are updating
-	 *    Notes.update({ id:$id }, note);
-	 *
-	 *    // This will PUT /notes/ID with the note object in the request payload
-	 *    }]);
-	 * ```
-	 *
-	 * @example
-	 *
-	 * # Cancelling requests
-	 *
-	 * If an action's configuration specifies that it is cancellable, you can cancel the request related
-	 * to an instance or collection (as long as it is a result of a "non-instance" call):
-	 *
-	   ```js
-	     // ...defining the `Hotel` resource...
-	     var Hotel = $resource('/api/hotel/:id', {id: '@id'}, {
-	       // Let's make the `query()` method cancellable
-	       query: {method: 'get', isArray: true, cancellable: true}
-	     });
-	
-	     // ...somewhere in the PlanVacationController...
-	     ...
-	     this.onDestinationChanged = function onDestinationChanged(destination) {
-	       // We don't care about any pending request for hotels
-	       // in a different destination any more
-	       this.availableHotels.$cancelRequest();
-	
-	       // Let's query for hotels in '<destination>'
-	       // (calls: /api/hotel?location=<destination>)
-	       this.availableHotels = Hotel.query({location: destination});
-	     };
-	   ```
-	 *
-	 */
-	angular.module('ngResource', ['ng']).
-	  provider('$resource', function() {
-	    var PROTOCOL_AND_DOMAIN_REGEX = /^https?:\/\/[^\/]*/;
-	    var provider = this;
-	
-	    /**
-	     * @ngdoc property
-	     * @name $resourceProvider#defaults
-	     * @description
-	     * Object containing default options used when creating `$resource` instances.
-	     *
-	     * The default values satisfy a wide range of usecases, but you may choose to overwrite any of
-	     * them to further customize your instances. The available properties are:
-	     *
-	     * - **stripTrailingSlashes** – `{boolean}` – If true, then the trailing slashes from any
-	     *   calculated URL will be stripped.<br />
-	     *   (Defaults to true.)
-	     * - **cancellable** – `{boolean}` – If true, the request made by a "non-instance" call will be
-	     *   cancelled (if not already completed) by calling `$cancelRequest()` on the call's return
-	     *   value. For more details, see {@link ngResource.$resource}. This can be overwritten per
-	     *   resource class or action.<br />
-	     *   (Defaults to false.)
-	     * - **actions** - `{Object.<Object>}` - A hash with default actions declarations. Actions are
-	     *   high-level methods corresponding to RESTful actions/methods on resources. An action may
-	     *   specify what HTTP method to use, what URL to hit, if the return value will be a single
-	     *   object or a collection (array) of objects etc. For more details, see
-	     *   {@link ngResource.$resource}. The actions can also be enhanced or overwritten per resource
-	     *   class.<br />
-	     *   The default actions are:
-	     *   ```js
-	     *   {
-	     *     get: {method: 'GET'},
-	     *     save: {method: 'POST'},
-	     *     query: {method: 'GET', isArray: true},
-	     *     remove: {method: 'DELETE'},
-	     *     delete: {method: 'DELETE'}
-	     *   }
-	     *   ```
-	     *
-	     * #### Example
-	     *
-	     * For example, you can specify a new `update` action that uses the `PUT` HTTP verb:
-	     *
-	     * ```js
-	     *   angular.
-	     *     module('myApp').
-	     *     config(['resourceProvider', function ($resourceProvider) {
-	     *       $resourceProvider.defaults.actions.update = {
-	     *         method: 'PUT'
-	     *       };
-	     *     });
-	     * ```
-	     *
-	     * Or you can even overwrite the whole `actions` list and specify your own:
-	     *
-	     * ```js
-	     *   angular.
-	     *     module('myApp').
-	     *     config(['resourceProvider', function ($resourceProvider) {
-	     *       $resourceProvider.defaults.actions = {
-	     *         create: {method: 'POST'}
-	     *         get:    {method: 'GET'},
-	     *         getAll: {method: 'GET', isArray:true},
-	     *         update: {method: 'PUT'},
-	     *         delete: {method: 'DELETE'}
-	     *       };
-	     *     });
-	     * ```
-	     *
-	     */
-	    this.defaults = {
-	      // Strip slashes by default
-	      stripTrailingSlashes: true,
-	
-	      // Make non-instance requests cancellable (via `$cancelRequest()`)
-	      cancellable: false,
-	
-	      // Default actions configuration
-	      actions: {
-	        'get': {method: 'GET'},
-	        'save': {method: 'POST'},
-	        'query': {method: 'GET', isArray: true},
-	        'remove': {method: 'DELETE'},
-	        'delete': {method: 'DELETE'}
-	      }
-	    };
-	
-	    this.$get = ['$http', '$log', '$q', '$timeout', function($http, $log, $q, $timeout) {
-	
-	      var noop = angular.noop,
-	        forEach = angular.forEach,
-	        extend = angular.extend,
-	        copy = angular.copy,
-	        isFunction = angular.isFunction;
-	
-	      /**
-	       * We need our custom method because encodeURIComponent is too aggressive and doesn't follow
-	       * http://www.ietf.org/rfc/rfc3986.txt with regards to the character set
-	       * (pchar) allowed in path segments:
-	       *    segment       = *pchar
-	       *    pchar         = unreserved / pct-encoded / sub-delims / ":" / "@"
-	       *    pct-encoded   = "%" HEXDIG HEXDIG
-	       *    unreserved    = ALPHA / DIGIT / "-" / "." / "_" / "~"
-	       *    sub-delims    = "!" / "$" / "&" / "'" / "(" / ")"
-	       *                     / "*" / "+" / "," / ";" / "="
-	       */
-	      function encodeUriSegment(val) {
-	        return encodeUriQuery(val, true).
-	          replace(/%26/gi, '&').
-	          replace(/%3D/gi, '=').
-	          replace(/%2B/gi, '+');
-	      }
-	
-	
-	      /**
-	       * This method is intended for encoding *key* or *value* parts of query component. We need a
-	       * custom method because encodeURIComponent is too aggressive and encodes stuff that doesn't
-	       * have to be encoded per http://tools.ietf.org/html/rfc3986:
-	       *    query       = *( pchar / "/" / "?" )
-	       *    pchar         = unreserved / pct-encoded / sub-delims / ":" / "@"
-	       *    unreserved    = ALPHA / DIGIT / "-" / "." / "_" / "~"
-	       *    pct-encoded   = "%" HEXDIG HEXDIG
-	       *    sub-delims    = "!" / "$" / "&" / "'" / "(" / ")"
-	       *                     / "*" / "+" / "," / ";" / "="
-	       */
-	      function encodeUriQuery(val, pctEncodeSpaces) {
-	        return encodeURIComponent(val).
-	          replace(/%40/gi, '@').
-	          replace(/%3A/gi, ':').
-	          replace(/%24/g, '$').
-	          replace(/%2C/gi, ',').
-	          replace(/%20/g, (pctEncodeSpaces ? '%20' : '+'));
-	      }
-	
-	      function Route(template, defaults) {
-	        this.template = template;
-	        this.defaults = extend({}, provider.defaults, defaults);
-	        this.urlParams = {};
-	      }
-	
-	      Route.prototype = {
-	        setUrlParams: function(config, params, actionUrl) {
-	          var self = this,
-	            url = actionUrl || self.template,
-	            val,
-	            encodedVal,
-	            protocolAndDomain = '';
-	
-	          var urlParams = self.urlParams = {};
-	          forEach(url.split(/\W/), function(param) {
-	            if (param === 'hasOwnProperty') {
-	              throw $resourceMinErr('badname', "hasOwnProperty is not a valid parameter name.");
-	            }
-	            if (!(new RegExp("^\\d+$").test(param)) && param &&
-	              (new RegExp("(^|[^\\\\]):" + param + "(\\W|$)").test(url))) {
-	              urlParams[param] = {
-	                isQueryParamValue: (new RegExp("\\?.*=:" + param + "(?:\\W|$)")).test(url)
-	              };
-	            }
-	          });
-	          url = url.replace(/\\:/g, ':');
-	          url = url.replace(PROTOCOL_AND_DOMAIN_REGEX, function(match) {
-	            protocolAndDomain = match;
-	            return '';
-	          });
-	
-	          params = params || {};
-	          forEach(self.urlParams, function(paramInfo, urlParam) {
-	            val = params.hasOwnProperty(urlParam) ? params[urlParam] : self.defaults[urlParam];
-	            if (angular.isDefined(val) && val !== null) {
-	              if (paramInfo.isQueryParamValue) {
-	                encodedVal = encodeUriQuery(val, true);
-	              } else {
-	                encodedVal = encodeUriSegment(val);
-	              }
-	              url = url.replace(new RegExp(":" + urlParam + "(\\W|$)", "g"), function(match, p1) {
-	                return encodedVal + p1;
-	              });
-	            } else {
-	              url = url.replace(new RegExp("(\/?):" + urlParam + "(\\W|$)", "g"), function(match,
-	                  leadingSlashes, tail) {
-	                if (tail.charAt(0) == '/') {
-	                  return tail;
-	                } else {
-	                  return leadingSlashes + tail;
-	                }
-	              });
-	            }
-	          });
-	
-	          // strip trailing slashes and set the url (unless this behavior is specifically disabled)
-	          if (self.defaults.stripTrailingSlashes) {
-	            url = url.replace(/\/+$/, '') || '/';
-	          }
-	
-	          // then replace collapse `/.` if found in the last URL path segment before the query
-	          // E.g. `http://url.com/id./format?q=x` becomes `http://url.com/id.format?q=x`
-	          url = url.replace(/\/\.(?=\w+($|\?))/, '.');
-	          // replace escaped `/\.` with `/.`
-	          config.url = protocolAndDomain + url.replace(/\/\\\./, '/.');
-	
-	
-	          // set params - delegate param encoding to $http
-	          forEach(params, function(value, key) {
-	            if (!self.urlParams[key]) {
-	              config.params = config.params || {};
-	              config.params[key] = value;
-	            }
-	          });
-	        }
-	      };
-	
-	
-	      function resourceFactory(url, paramDefaults, actions, options) {
-	        var route = new Route(url, options);
-	
-	        actions = extend({}, provider.defaults.actions, actions);
-	
-	        function extractParams(data, actionParams) {
-	          var ids = {};
-	          actionParams = extend({}, paramDefaults, actionParams);
-	          forEach(actionParams, function(value, key) {
-	            if (isFunction(value)) { value = value(data); }
-	            ids[key] = value && value.charAt && value.charAt(0) == '@' ?
-	              lookupDottedPath(data, value.substr(1)) : value;
-	          });
-	          return ids;
-	        }
-	
-	        function defaultResponseInterceptor(response) {
-	          return response.resource;
-	        }
-	
-	        function Resource(value) {
-	          shallowClearAndCopy(value || {}, this);
-	        }
-	
-	        Resource.prototype.toJSON = function() {
-	          var data = extend({}, this);
-	          delete data.$promise;
-	          delete data.$resolved;
-	          return data;
-	        };
-	
-	        forEach(actions, function(action, name) {
-	          var hasBody = /^(POST|PUT|PATCH)$/i.test(action.method);
-	          var numericTimeout = action.timeout;
-	          var cancellable = angular.isDefined(action.cancellable) ? action.cancellable :
-	              (options && angular.isDefined(options.cancellable)) ? options.cancellable :
-	              provider.defaults.cancellable;
-	
-	          if (numericTimeout && !angular.isNumber(numericTimeout)) {
-	            $log.debug('ngResource:\n' +
-	                       '  Only numeric values are allowed as `timeout`.\n' +
-	                       '  Promises are not supported in $resource, because the same value would ' +
-	                       'be used for multiple requests. If you are looking for a way to cancel ' +
-	                       'requests, you should use the `cancellable` option.');
-	            delete action.timeout;
-	            numericTimeout = null;
-	          }
-	
-	          Resource[name] = function(a1, a2, a3, a4) {
-	            var params = {}, data, success, error;
-	
-	            /* jshint -W086 */ /* (purposefully fall through case statements) */
-	            switch (arguments.length) {
-	              case 4:
-	                error = a4;
-	                success = a3;
-	              //fallthrough
-	              case 3:
-	              case 2:
-	                if (isFunction(a2)) {
-	                  if (isFunction(a1)) {
-	                    success = a1;
-	                    error = a2;
-	                    break;
-	                  }
-	
-	                  success = a2;
-	                  error = a3;
-	                  //fallthrough
-	                } else {
-	                  params = a1;
-	                  data = a2;
-	                  success = a3;
-	                  break;
-	                }
-	              case 1:
-	                if (isFunction(a1)) success = a1;
-	                else if (hasBody) data = a1;
-	                else params = a1;
-	                break;
-	              case 0: break;
-	              default:
-	                throw $resourceMinErr('badargs',
-	                  "Expected up to 4 arguments [params, data, success, error], got {0} arguments",
-	                  arguments.length);
-	            }
-	            /* jshint +W086 */ /* (purposefully fall through case statements) */
-	
-	            var isInstanceCall = this instanceof Resource;
-	            var value = isInstanceCall ? data : (action.isArray ? [] : new Resource(data));
-	            var httpConfig = {};
-	            var responseInterceptor = action.interceptor && action.interceptor.response ||
-	              defaultResponseInterceptor;
-	            var responseErrorInterceptor = action.interceptor && action.interceptor.responseError ||
-	              undefined;
-	            var timeoutDeferred;
-	            var numericTimeoutPromise;
-	
-	            forEach(action, function(value, key) {
-	              switch (key) {
-	                default:
-	                  httpConfig[key] = copy(value);
-	                  break;
-	                case 'params':
-	                case 'isArray':
-	                case 'interceptor':
-	                case 'cancellable':
-	                  break;
-	              }
-	            });
-	
-	            if (!isInstanceCall && cancellable) {
-	              timeoutDeferred = $q.defer();
-	              httpConfig.timeout = timeoutDeferred.promise;
-	
-	              if (numericTimeout) {
-	                numericTimeoutPromise = $timeout(timeoutDeferred.resolve, numericTimeout);
-	              }
-	            }
-	
-	            if (hasBody) httpConfig.data = data;
-	            route.setUrlParams(httpConfig,
-	              extend({}, extractParams(data, action.params || {}), params),
-	              action.url);
-	
-	            var promise = $http(httpConfig).then(function(response) {
-	              var data = response.data;
-	
-	              if (data) {
-	                // Need to convert action.isArray to boolean in case it is undefined
-	                // jshint -W018
-	                if (angular.isArray(data) !== (!!action.isArray)) {
-	                  throw $resourceMinErr('badcfg',
-	                      'Error in resource configuration for action `{0}`. Expected response to ' +
-	                      'contain an {1} but got an {2} (Request: {3} {4})', name, action.isArray ? 'array' : 'object',
-	                    angular.isArray(data) ? 'array' : 'object', httpConfig.method, httpConfig.url);
-	                }
-	                // jshint +W018
-	                if (action.isArray) {
-	                  value.length = 0;
-	                  forEach(data, function(item) {
-	                    if (typeof item === "object") {
-	                      value.push(new Resource(item));
-	                    } else {
-	                      // Valid JSON values may be string literals, and these should not be converted
-	                      // into objects. These items will not have access to the Resource prototype
-	                      // methods, but unfortunately there
-	                      value.push(item);
-	                    }
-	                  });
-	                } else {
-	                  var promise = value.$promise;     // Save the promise
-	                  shallowClearAndCopy(data, value);
-	                  value.$promise = promise;         // Restore the promise
-	                }
-	              }
-	              response.resource = value;
-	
-	              return response;
-	            }, function(response) {
-	              (error || noop)(response);
-	              return $q.reject(response);
-	            });
-	
-	            promise['finally'](function() {
-	              value.$resolved = true;
-	              if (!isInstanceCall && cancellable) {
-	                value.$cancelRequest = angular.noop;
-	                $timeout.cancel(numericTimeoutPromise);
-	                timeoutDeferred = numericTimeoutPromise = httpConfig.timeout = null;
-	              }
-	            });
-	
-	            promise = promise.then(
-	              function(response) {
-	                var value = responseInterceptor(response);
-	                (success || noop)(value, response.headers);
-	                return value;
-	              },
-	              responseErrorInterceptor);
-	
-	            if (!isInstanceCall) {
-	              // we are creating instance / collection
-	              // - set the initial promise
-	              // - return the instance / collection
-	              value.$promise = promise;
-	              value.$resolved = false;
-	              if (cancellable) value.$cancelRequest = timeoutDeferred.resolve;
-	
-	              return value;
-	            }
-	
-	            // instance call
-	            return promise;
-	          };
-	
-	
-	          Resource.prototype['$' + name] = function(params, success, error) {
-	            if (isFunction(params)) {
-	              error = success; success = params; params = {};
-	            }
-	            var result = Resource[name].call(this, params, this, success, error);
-	            return result.$promise || result;
-	          };
-	        });
-	
-	        Resource.bind = function(additionalParamDefaults) {
-	          return resourceFactory(url, extend({}, paramDefaults, additionalParamDefaults), actions);
-	        };
-	
-	        return Resource;
-	      }
-	
-	      return resourceFactory;
-	    }];
-	  });
-	
-	
-	})(window, window.angular);
-
-
-/***/ },
-/* 46 */
-/***/ function(module, exports, __webpack_require__) {
-
-	__webpack_require__(47);
-	module.exports = 'ngFileUpload';
-
-/***/ },
-/* 47 */
-/***/ function(module, exports) {
-
-	/**!
-	 * AngularJS file upload directives and services. Supports: file upload/drop/paste, resume, cancel/abort,
-	 * progress, resize, thumbnail, preview, validation and CORS
-	 * FileAPI Flash shim for old browsers not supporting FormData
-	 * @author  Danial  <danial.farid@gmail.com>
-	 * @version 12.2.9
-	 */
-	
-	(function () {
-	  /** @namespace FileAPI.noContentTimeout */
-	
-	  function patchXHR(fnName, newFn) {
-	    window.XMLHttpRequest.prototype[fnName] = newFn(window.XMLHttpRequest.prototype[fnName]);
-	  }
-	
-	  function redefineProp(xhr, prop, fn) {
-	    try {
-	      Object.defineProperty(xhr, prop, {get: fn});
-	    } catch (e) {/*ignore*/
-	    }
-	  }
-	
-	  if (!window.FileAPI) {
-	    window.FileAPI = {};
-	  }
-	
-	  if (!window.XMLHttpRequest) {
-	    throw 'AJAX is not supported. XMLHttpRequest is not defined.';
-	  }
-	
-	  FileAPI.shouldLoad = !window.FormData || FileAPI.forceLoad;
-	  if (FileAPI.shouldLoad) {
-	    var initializeUploadListener = function (xhr) {
-	      if (!xhr.__listeners) {
-	        if (!xhr.upload) xhr.upload = {};
-	        xhr.__listeners = [];
-	        var origAddEventListener = xhr.upload.addEventListener;
-	        xhr.upload.addEventListener = function (t, fn) {
-	          xhr.__listeners[t] = fn;
-	          if (origAddEventListener) origAddEventListener.apply(this, arguments);
-	        };
-	      }
-	    };
-	
-	    patchXHR('open', function (orig) {
-	      return function (m, url, b) {
-	        initializeUploadListener(this);
-	        this.__url = url;
-	        try {
-	          orig.apply(this, [m, url, b]);
-	        } catch (e) {
-	          if (e.message.indexOf('Access is denied') > -1) {
-	            this.__origError = e;
-	            orig.apply(this, [m, '_fix_for_ie_crossdomain__', b]);
-	          }
-	        }
-	      };
-	    });
-	
-	    patchXHR('getResponseHeader', function (orig) {
-	      return function (h) {
-	        return this.__fileApiXHR && this.__fileApiXHR.getResponseHeader ? this.__fileApiXHR.getResponseHeader(h) : (orig == null ? null : orig.apply(this, [h]));
-	      };
-	    });
-	
-	    patchXHR('getAllResponseHeaders', function (orig) {
-	      return function () {
-	        return this.__fileApiXHR && this.__fileApiXHR.getAllResponseHeaders ? this.__fileApiXHR.getAllResponseHeaders() : (orig == null ? null : orig.apply(this));
-	      };
-	    });
-	
-	    patchXHR('abort', function (orig) {
-	      return function () {
-	        return this.__fileApiXHR && this.__fileApiXHR.abort ? this.__fileApiXHR.abort() : (orig == null ? null : orig.apply(this));
-	      };
-	    });
-	
-	    patchXHR('setRequestHeader', function (orig) {
-	      return function (header, value) {
-	        if (header === '__setXHR_') {
-	          initializeUploadListener(this);
-	          var val = value(this);
-	          // fix for angular < 1.2.0
-	          if (val instanceof Function) {
-	            val(this);
-	          }
-	        } else {
-	          this.__requestHeaders = this.__requestHeaders || {};
-	          this.__requestHeaders[header] = value;
-	          orig.apply(this, arguments);
-	        }
-	      };
-	    });
-	
-	    patchXHR('send', function (orig) {
-	      return function () {
-	        var xhr = this;
-	        if (arguments[0] && arguments[0].__isFileAPIShim) {
-	          var formData = arguments[0];
-	          var config = {
-	            url: xhr.__url,
-	            jsonp: false, //removes the callback form param
-	            cache: true, //removes the ?fileapiXXX in the url
-	            complete: function (err, fileApiXHR) {
-	              if (err && angular.isString(err) && err.indexOf('#2174') !== -1) {
-	                // this error seems to be fine the file is being uploaded properly.
-	                err = null;
-	              }
-	              xhr.__completed = true;
-	              if (!err && xhr.__listeners.load)
-	                xhr.__listeners.load({
-	                  type: 'load',
-	                  loaded: xhr.__loaded,
-	                  total: xhr.__total,
-	                  target: xhr,
-	                  lengthComputable: true
-	                });
-	              if (!err && xhr.__listeners.loadend)
-	                xhr.__listeners.loadend({
-	                  type: 'loadend',
-	                  loaded: xhr.__loaded,
-	                  total: xhr.__total,
-	                  target: xhr,
-	                  lengthComputable: true
-	                });
-	              if (err === 'abort' && xhr.__listeners.abort)
-	                xhr.__listeners.abort({
-	                  type: 'abort',
-	                  loaded: xhr.__loaded,
-	                  total: xhr.__total,
-	                  target: xhr,
-	                  lengthComputable: true
-	                });
-	              if (fileApiXHR.status !== undefined) redefineProp(xhr, 'status', function () {
-	                return (fileApiXHR.status === 0 && err && err !== 'abort') ? 500 : fileApiXHR.status;
-	              });
-	              if (fileApiXHR.statusText !== undefined) redefineProp(xhr, 'statusText', function () {
-	                return fileApiXHR.statusText;
-	              });
-	              redefineProp(xhr, 'readyState', function () {
-	                return 4;
-	              });
-	              if (fileApiXHR.response !== undefined) redefineProp(xhr, 'response', function () {
-	                return fileApiXHR.response;
-	              });
-	              var resp = fileApiXHR.responseText || (err && fileApiXHR.status === 0 && err !== 'abort' ? err : undefined);
-	              redefineProp(xhr, 'responseText', function () {
-	                return resp;
-	              });
-	              redefineProp(xhr, 'response', function () {
-	                return resp;
-	              });
-	              if (err) redefineProp(xhr, 'err', function () {
-	                return err;
-	              });
-	              xhr.__fileApiXHR = fileApiXHR;
-	              if (xhr.onreadystatechange) xhr.onreadystatechange();
-	              if (xhr.onload) xhr.onload();
-	            },
-	            progress: function (e) {
-	              e.target = xhr;
-	              if (xhr.__listeners.progress) xhr.__listeners.progress(e);
-	              xhr.__total = e.total;
-	              xhr.__loaded = e.loaded;
-	              if (e.total === e.loaded) {
-	                // fix flash issue that doesn't call complete if there is no response text from the server
-	                var _this = this;
-	                setTimeout(function () {
-	                  if (!xhr.__completed) {
-	                    xhr.getAllResponseHeaders = function () {
-	                    };
-	                    _this.complete(null, {status: 204, statusText: 'No Content'});
-	                  }
-	                }, FileAPI.noContentTimeout || 10000);
-	              }
-	            },
-	            headers: xhr.__requestHeaders
-	          };
-	          config.data = {};
-	          config.files = {};
-	          for (var i = 0; i < formData.data.length; i++) {
-	            var item = formData.data[i];
-	            if (item.val != null && item.val.name != null && item.val.size != null && item.val.type != null) {
-	              config.files[item.key] = item.val;
-	            } else {
-	              config.data[item.key] = item.val;
-	            }
-	          }
-	
-	          setTimeout(function () {
-	            if (!FileAPI.hasFlash) {
-	              throw 'Adode Flash Player need to be installed. To check ahead use "FileAPI.hasFlash"';
-	            }
-	            xhr.__fileApiXHR = FileAPI.upload(config);
-	          }, 1);
-	        } else {
-	          if (this.__origError) {
-	            throw this.__origError;
-	          }
-	          orig.apply(xhr, arguments);
-	        }
-	      };
-	    });
-	    window.XMLHttpRequest.__isFileAPIShim = true;
-	    window.FormData = FormData = function () {
-	      return {
-	        append: function (key, val, name) {
-	          if (val.__isFileAPIBlobShim) {
-	            val = val.data[0];
-	          }
-	          this.data.push({
-	            key: key,
-	            val: val,
-	            name: name
-	          });
-	        },
-	        data: [],
-	        __isFileAPIShim: true
-	      };
-	    };
-	
-	    window.Blob = Blob = function (b) {
-	      return {
-	        data: b,
-	        __isFileAPIBlobShim: true
-	      };
-	    };
-	  }
-	
-	})();
-	
-	(function () {
-	  /** @namespace FileAPI.forceLoad */
-	  /** @namespace window.FileAPI.jsUrl */
-	  /** @namespace window.FileAPI.jsPath */
-	
-	  function isInputTypeFile(elem) {
-	    return elem[0].tagName.toLowerCase() === 'input' && elem.attr('type') && elem.attr('type').toLowerCase() === 'file';
-	  }
-	
-	  function hasFlash() {
-	    try {
-	      var fo = new ActiveXObject('ShockwaveFlash.ShockwaveFlash');
-	      if (fo) return true;
-	    } catch (e) {
-	      if (navigator.mimeTypes['application/x-shockwave-flash'] !== undefined) return true;
-	    }
-	    return false;
-	  }
-	
-	  function getOffset(obj) {
-	    var left = 0, top = 0;
-	
-	    if (window.jQuery) {
-	      return jQuery(obj).offset();
-	    }
-	
-	    if (obj.offsetParent) {
-	      do {
-	        left += (obj.offsetLeft - obj.scrollLeft);
-	        top += (obj.offsetTop - obj.scrollTop);
-	        obj = obj.offsetParent;
-	      } while (obj);
-	    }
-	    return {
-	      left: left,
-	      top: top
-	    };
-	  }
-	
-	  if (FileAPI.shouldLoad) {
-	    FileAPI.hasFlash = hasFlash();
-	
-	    //load FileAPI
-	    if (FileAPI.forceLoad) {
-	      FileAPI.html5 = false;
-	    }
-	
-	    if (!FileAPI.upload) {
-	      var jsUrl, basePath, script = document.createElement('script'), allScripts = document.getElementsByTagName('script'), i, index, src;
-	      if (window.FileAPI.jsUrl) {
-	        jsUrl = window.FileAPI.jsUrl;
-	      } else if (window.FileAPI.jsPath) {
-	        basePath = window.FileAPI.jsPath;
-	      } else {
-	        for (i = 0; i < allScripts.length; i++) {
-	          src = allScripts[i].src;
-	          index = src.search(/\/ng\-file\-upload[\-a-zA-z0-9\.]*\.js/);
-	          if (index > -1) {
-	            basePath = src.substring(0, index + 1);
-	            break;
-	          }
-	        }
-	      }
-	
-	      if (FileAPI.staticPath == null) FileAPI.staticPath = basePath;
-	      script.setAttribute('src', jsUrl || basePath + 'FileAPI.min.js');
-	      document.getElementsByTagName('head')[0].appendChild(script);
-	    }
-	
-	    FileAPI.ngfFixIE = function (elem, fileElem, changeFn) {
-	      if (!hasFlash()) {
-	        throw 'Adode Flash Player need to be installed. To check ahead use "FileAPI.hasFlash"';
-	      }
-	      var fixInputStyle = function () {
-	        var label = fileElem.parent();
-	        if (elem.attr('disabled')) {
-	          if (label) label.removeClass('js-fileapi-wrapper');
-	        } else {
-	          if (!fileElem.attr('__ngf_flash_')) {
-	            fileElem.unbind('change');
-	            fileElem.unbind('click');
-	            fileElem.bind('change', function (evt) {
-	              fileApiChangeFn.apply(this, [evt]);
-	              changeFn.apply(this, [evt]);
-	            });
-	            fileElem.attr('__ngf_flash_', 'true');
-	          }
-	          label.addClass('js-fileapi-wrapper');
-	          if (!isInputTypeFile(elem)) {
-	            label.css('position', 'absolute')
-	              .css('top', getOffset(elem[0]).top + 'px').css('left', getOffset(elem[0]).left + 'px')
-	              .css('width', elem[0].offsetWidth + 'px').css('height', elem[0].offsetHeight + 'px')
-	              .css('filter', 'alpha(opacity=0)').css('display', elem.css('display'))
-	              .css('overflow', 'hidden').css('z-index', '900000')
-	              .css('visibility', 'visible');
-	            fileElem.css('width', elem[0].offsetWidth + 'px').css('height', elem[0].offsetHeight + 'px')
-	              .css('position', 'absolute').css('top', '0px').css('left', '0px');
-	          }
-	        }
-	      };
-	
-	      elem.bind('mouseenter', fixInputStyle);
-	
-	      var fileApiChangeFn = function (evt) {
-	        var files = FileAPI.getFiles(evt);
-	        //just a double check for #233
-	        for (var i = 0; i < files.length; i++) {
-	          if (files[i].size === undefined) files[i].size = 0;
-	          if (files[i].name === undefined) files[i].name = 'file';
-	          if (files[i].type === undefined) files[i].type = 'undefined';
-	        }
-	        if (!evt.target) {
-	          evt.target = {};
-	        }
-	        evt.target.files = files;
-	        // if evt.target.files is not writable use helper field
-	        if (evt.target.files !== files) {
-	          evt.__files_ = files;
-	        }
-	        (evt.__files_ || evt.target.files).item = function (i) {
-	          return (evt.__files_ || evt.target.files)[i] || null;
-	        };
-	      };
-	    };
-	
-	    FileAPI.disableFileInput = function (elem, disable) {
-	      if (disable) {
-	        elem.removeClass('js-fileapi-wrapper');
-	      } else {
-	        elem.addClass('js-fileapi-wrapper');
-	      }
-	    };
-	  }
-	})();
-	
-	if (!window.FileReader) {
-	  window.FileReader = function () {
-	    var _this = this, loadStarted = false;
-	    this.listeners = {};
-	    this.addEventListener = function (type, fn) {
-	      _this.listeners[type] = _this.listeners[type] || [];
-	      _this.listeners[type].push(fn);
-	    };
-	    this.removeEventListener = function (type, fn) {
-	      if (_this.listeners[type]) _this.listeners[type].splice(_this.listeners[type].indexOf(fn), 1);
-	    };
-	    this.dispatchEvent = function (evt) {
-	      var list = _this.listeners[evt.type];
-	      if (list) {
-	        for (var i = 0; i < list.length; i++) {
-	          list[i].call(_this, evt);
-	        }
-	      }
-	    };
-	    this.onabort = this.onerror = this.onload = this.onloadstart = this.onloadend = this.onprogress = null;
-	
-	    var constructEvent = function (type, evt) {
-	      var e = {type: type, target: _this, loaded: evt.loaded, total: evt.total, error: evt.error};
-	      if (evt.result != null) e.target.result = evt.result;
-	      return e;
-	    };
-	    var listener = function (evt) {
-	      if (!loadStarted) {
-	        loadStarted = true;
-	        if (_this.onloadstart) _this.onloadstart(constructEvent('loadstart', evt));
-	      }
-	      var e;
-	      if (evt.type === 'load') {
-	        if (_this.onloadend) _this.onloadend(constructEvent('loadend', evt));
-	        e = constructEvent('load', evt);
-	        if (_this.onload) _this.onload(e);
-	        _this.dispatchEvent(e);
-	      } else if (evt.type === 'progress') {
-	        e = constructEvent('progress', evt);
-	        if (_this.onprogress) _this.onprogress(e);
-	        _this.dispatchEvent(e);
-	      } else {
-	        e = constructEvent('error', evt);
-	        if (_this.onerror) _this.onerror(e);
-	        _this.dispatchEvent(e);
-	      }
-	    };
-	    this.readAsDataURL = function (file) {
-	      FileAPI.readAsDataURL(file, listener);
-	    };
-	    this.readAsText = function (file) {
-	      FileAPI.readAsText(file, listener);
-	    };
-	  };
-	}
-	
-	/**!
-	 * AngularJS file upload directives and services. Supoorts: file upload/drop/paste, resume, cancel/abort,
-	 * progress, resize, thumbnail, preview, validation and CORS
-	 * @author  Danial  <danial.farid@gmail.com>
-	 * @version 12.2.9
-	 */
-	
-	if (window.XMLHttpRequest && !(window.FileAPI && FileAPI.shouldLoad)) {
-	  window.XMLHttpRequest.prototype.setRequestHeader = (function (orig) {
-	    return function (header, value) {
-	      if (header === '__setXHR_') {
-	        var val = value(this);
-	        // fix for angular < 1.2.0
-	        if (val instanceof Function) {
-	          val(this);
-	        }
-	      } else {
-	        orig.apply(this, arguments);
-	      }
-	    };
-	  })(window.XMLHttpRequest.prototype.setRequestHeader);
-	}
-	
-	var ngFileUpload = angular.module('ngFileUpload', []);
-	
-	ngFileUpload.version = '12.2.9';
-	
-	ngFileUpload.service('UploadBase', ['$http', '$q', '$timeout', function ($http, $q, $timeout) {
-	  var upload = this;
-	  upload.promisesCount = 0;
-	
-	  this.isResumeSupported = function () {
-	    return window.Blob && window.Blob.prototype.slice;
-	  };
-	
-	  var resumeSupported = this.isResumeSupported();
-	
-	  function sendHttp(config) {
-	    config.method = config.method || 'POST';
-	    config.headers = config.headers || {};
-	
-	    var deferred = config._deferred = config._deferred || $q.defer();
-	    var promise = deferred.promise;
-	
-	    function notifyProgress(e) {
-	      if (deferred.notify) {
-	        deferred.notify(e);
-	      }
-	      if (promise.progressFunc) {
-	        $timeout(function () {
-	          promise.progressFunc(e);
-	        });
-	      }
-	    }
-	
-	    function getNotifyEvent(n) {
-	      if (config._start != null && resumeSupported) {
-	        return {
-	          loaded: n.loaded + config._start,
-	          total: (config._file && config._file.size) || n.total,
-	          type: n.type, config: config,
-	          lengthComputable: true, target: n.target
-	        };
-	      } else {
-	        return n;
-	      }
-	    }
-	
-	    if (!config.disableProgress) {
-	      config.headers.__setXHR_ = function () {
-	        return function (xhr) {
-	          if (!xhr || !xhr.upload || !xhr.upload.addEventListener) return;
-	          config.__XHR = xhr;
-	          if (config.xhrFn) config.xhrFn(xhr);
-	          xhr.upload.addEventListener('progress', function (e) {
-	            e.config = config;
-	            notifyProgress(getNotifyEvent(e));
-	          }, false);
-	          //fix for firefox not firing upload progress end, also IE8-9
-	          xhr.upload.addEventListener('load', function (e) {
-	            if (e.lengthComputable) {
-	              e.config = config;
-	              notifyProgress(getNotifyEvent(e));
-	            }
-	          }, false);
-	        };
-	      };
-	    }
-	
-	    function uploadWithAngular() {
-	      $http(config).then(function (r) {
-	          if (resumeSupported && config._chunkSize && !config._finished && config._file) {
-	            var fileSize = config._file && config._file.size || 0;
-	            notifyProgress({
-	                loaded: Math.min(config._end, fileSize),
-	                total: fileSize,
-	                config: config,
-	                type: 'progress'
-	              }
-	            );
-	            upload.upload(config, true);
-	          } else {
-	            if (config._finished) delete config._finished;
-	            deferred.resolve(r);
-	          }
-	        }, function (e) {
-	          deferred.reject(e);
-	        }, function (n) {
-	          deferred.notify(n);
-	        }
-	      );
-	    }
-	
-	    if (!resumeSupported) {
-	      uploadWithAngular();
-	    } else if (config._chunkSize && config._end && !config._finished) {
-	      config._start = config._end;
-	      config._end += config._chunkSize;
-	      uploadWithAngular();
-	    } else if (config.resumeSizeUrl) {
-	      $http.get(config.resumeSizeUrl).then(function (resp) {
-	        if (config.resumeSizeResponseReader) {
-	          config._start = config.resumeSizeResponseReader(resp.data);
-	        } else {
-	          config._start = parseInt((resp.data.size == null ? resp.data : resp.data.size).toString());
-	        }
-	        if (config._chunkSize) {
-	          config._end = config._start + config._chunkSize;
-	        }
-	        uploadWithAngular();
-	      }, function (e) {
-	        throw e;
-	      });
-	    } else if (config.resumeSize) {
-	      config.resumeSize().then(function (size) {
-	        config._start = size;
-	        if (config._chunkSize) {
-	          config._end = config._start + config._chunkSize;
-	        }
-	        uploadWithAngular();
-	      }, function (e) {
-	        throw e;
-	      });
-	    } else {
-	      if (config._chunkSize) {
-	        config._start = 0;
-	        config._end = config._start + config._chunkSize;
-	      }
-	      uploadWithAngular();
-	    }
-	
-	
-	    promise.success = function (fn) {
-	      promise.then(function (response) {
-	        fn(response.data, response.status, response.headers, config);
-	      });
-	      return promise;
-	    };
-	
-	    promise.error = function (fn) {
-	      promise.then(null, function (response) {
-	        fn(response.data, response.status, response.headers, config);
-	      });
-	      return promise;
-	    };
-	
-	    promise.progress = function (fn) {
-	      promise.progressFunc = fn;
-	      promise.then(null, null, function (n) {
-	        fn(n);
-	      });
-	      return promise;
-	    };
-	    promise.abort = promise.pause = function () {
-	      if (config.__XHR) {
-	        $timeout(function () {
-	          config.__XHR.abort();
-	        });
-	      }
-	      return promise;
-	    };
-	    promise.xhr = function (fn) {
-	      config.xhrFn = (function (origXhrFn) {
-	        return function () {
-	          if (origXhrFn) origXhrFn.apply(promise, arguments);
-	          fn.apply(promise, arguments);
-	        };
-	      })(config.xhrFn);
-	      return promise;
-	    };
-	
-	    upload.promisesCount++;
-	    if (promise['finally'] && promise['finally'] instanceof Function) {
-	      promise['finally'](function () {
-	        upload.promisesCount--;
-	      });
-	    }
-	    return promise;
-	  }
-	
-	  this.isUploadInProgress = function () {
-	    return upload.promisesCount > 0;
-	  };
-	
-	  this.rename = function (file, name) {
-	    file.ngfName = name;
-	    return file;
-	  };
-	
-	  this.jsonBlob = function (val) {
-	    if (val != null && !angular.isString(val)) {
-	      val = JSON.stringify(val);
-	    }
-	    var blob = new window.Blob([val], {type: 'application/json'});
-	    blob._ngfBlob = true;
-	    return blob;
-	  };
-	
-	  this.json = function (val) {
-	    return angular.toJson(val);
-	  };
-	
-	  function copy(obj) {
-	    var clone = {};
-	    for (var key in obj) {
-	      if (obj.hasOwnProperty(key)) {
-	        clone[key] = obj[key];
-	      }
-	    }
-	    return clone;
-	  }
-	
-	  this.isFile = function (file) {
-	    return file != null && (file instanceof window.Blob || (file.flashId && file.name && file.size));
-	  };
-	
-	  this.upload = function (config, internal) {
-	    function toResumeFile(file, formData) {
-	      if (file._ngfBlob) return file;
-	      config._file = config._file || file;
-	      if (config._start != null && resumeSupported) {
-	        if (config._end && config._end >= file.size) {
-	          config._finished = true;
-	          config._end = file.size;
-	        }
-	        var slice = file.slice(config._start, config._end || file.size);
-	        slice.name = file.name;
-	        slice.ngfName = file.ngfName;
-	        if (config._chunkSize) {
-	          formData.append('_chunkSize', config._chunkSize);
-	          formData.append('_currentChunkSize', config._end - config._start);
-	          formData.append('_chunkNumber', Math.floor(config._start / config._chunkSize));
-	          formData.append('_totalSize', config._file.size);
-	        }
-	        return slice;
-	      }
-	      return file;
-	    }
-	
-	    function addFieldToFormData(formData, val, key) {
-	      if (val !== undefined) {
-	        if (angular.isDate(val)) {
-	          val = val.toISOString();
-	        }
-	        if (angular.isString(val)) {
-	          formData.append(key, val);
-	        } else if (upload.isFile(val)) {
-	          var file = toResumeFile(val, formData);
-	          var split = key.split(',');
-	          if (split[1]) {
-	            file.ngfName = split[1].replace(/^\s+|\s+$/g, '');
-	            key = split[0];
-	          }
-	          config._fileKey = config._fileKey || key;
-	          formData.append(key, file, file.ngfName || file.name);
-	        } else {
-	          if (angular.isObject(val)) {
-	            if (val.$$ngfCircularDetection) throw 'ngFileUpload: Circular reference in config.data. Make sure specified data for Upload.upload() has no circular reference: ' + key;
-	
-	            val.$$ngfCircularDetection = true;
-	            try {
-	              for (var k in val) {
-	                if (val.hasOwnProperty(k) && k !== '$$ngfCircularDetection') {
-	                  var objectKey = config.objectKey == null ? '[i]' : config.objectKey;
-	                  if (val.length && parseInt(k) > -1) {
-	                    objectKey = config.arrayKey == null ? objectKey : config.arrayKey;
-	                  }
-	                  addFieldToFormData(formData, val[k], key + objectKey.replace(/[ik]/g, k));
-	                }
-	              }
-	            } finally {
-	              delete val.$$ngfCircularDetection;
-	            }
-	          } else {
-	            formData.append(key, val);
-	          }
-	        }
-	      }
-	    }
-	
-	    function digestConfig() {
-	      config._chunkSize = upload.translateScalars(config.resumeChunkSize);
-	      config._chunkSize = config._chunkSize ? parseInt(config._chunkSize.toString()) : null;
-	
-	      config.headers = config.headers || {};
-	      config.headers['Content-Type'] = undefined;
-	      config.transformRequest = config.transformRequest ?
-	        (angular.isArray(config.transformRequest) ?
-	          config.transformRequest : [config.transformRequest]) : [];
-	      config.transformRequest.push(function (data) {
-	        var formData = new window.FormData(), key;
-	        data = data || config.fields || {};
-	        if (config.file) {
-	          data.file = config.file;
-	        }
-	        for (key in data) {
-	          if (data.hasOwnProperty(key)) {
-	            var val = data[key];
-	            if (config.formDataAppender) {
-	              config.formDataAppender(formData, key, val);
-	            } else {
-	              addFieldToFormData(formData, val, key);
-	            }
-	          }
-	        }
-	
-	        return formData;
-	      });
-	    }
-	
-	    if (!internal) config = copy(config);
-	    if (!config._isDigested) {
-	      config._isDigested = true;
-	      digestConfig();
-	    }
-	
-	    return sendHttp(config);
-	  };
-	
-	  this.http = function (config) {
-	    config = copy(config);
-	    config.transformRequest = config.transformRequest || function (data) {
-	        if ((window.ArrayBuffer && data instanceof window.ArrayBuffer) || data instanceof window.Blob) {
-	          return data;
-	        }
-	        return $http.defaults.transformRequest[0].apply(this, arguments);
-	      };
-	    config._chunkSize = upload.translateScalars(config.resumeChunkSize);
-	    config._chunkSize = config._chunkSize ? parseInt(config._chunkSize.toString()) : null;
-	
-	    return sendHttp(config);
-	  };
-	
-	  this.translateScalars = function (str) {
-	    if (angular.isString(str)) {
-	      if (str.search(/kb/i) === str.length - 2) {
-	        return parseFloat(str.substring(0, str.length - 2) * 1024);
-	      } else if (str.search(/mb/i) === str.length - 2) {
-	        return parseFloat(str.substring(0, str.length - 2) * 1048576);
-	      } else if (str.search(/gb/i) === str.length - 2) {
-	        return parseFloat(str.substring(0, str.length - 2) * 1073741824);
-	      } else if (str.search(/b/i) === str.length - 1) {
-	        return parseFloat(str.substring(0, str.length - 1));
-	      } else if (str.search(/s/i) === str.length - 1) {
-	        return parseFloat(str.substring(0, str.length - 1));
-	      } else if (str.search(/m/i) === str.length - 1) {
-	        return parseFloat(str.substring(0, str.length - 1) * 60);
-	      } else if (str.search(/h/i) === str.length - 1) {
-	        return parseFloat(str.substring(0, str.length - 1) * 3600);
-	      }
-	    }
-	    return str;
-	  };
-	
-	  this.urlToBlob = function(url) {
-	    var defer = $q.defer();
-	    $http({url: url, method: 'get', responseType: 'arraybuffer'}).then(function (resp) {
-	      var arrayBufferView = new Uint8Array(resp.data);
-	      var type = resp.headers('content-type') || 'image/WebP';
-	      var blob = new window.Blob([arrayBufferView], {type: type});
-	      var matches = url.match(/.*\/(.+?)(\?.*)?$/);
-	      if (matches.length > 1) {
-	        blob.name = matches[1];
-	      }
-	      defer.resolve(blob);
-	    }, function (e) {
-	      defer.reject(e);
-	    });
-	    return defer.promise;
-	  };
-	
-	  this.setDefaults = function (defaults) {
-	    this.defaults = defaults || {};
-	  };
-	
-	  this.defaults = {};
-	  this.version = ngFileUpload.version;
-	}
-	
-	]);
-	
-	ngFileUpload.service('Upload', ['$parse', '$timeout', '$compile', '$q', 'UploadExif', function ($parse, $timeout, $compile, $q, UploadExif) {
-	  var upload = UploadExif;
-	  upload.getAttrWithDefaults = function (attr, name) {
-	    if (attr[name] != null) return attr[name];
-	    var def = upload.defaults[name];
-	    return (def == null ? def : (angular.isString(def) ? def : JSON.stringify(def)));
-	  };
-	
-	  upload.attrGetter = function (name, attr, scope, params) {
-	    var attrVal = this.getAttrWithDefaults(attr, name);
-	    if (scope) {
-	      try {
-	        if (params) {
-	          return $parse(attrVal)(scope, params);
-	        } else {
-	          return $parse(attrVal)(scope);
-	        }
-	      } catch (e) {
-	        // hangle string value without single qoute
-	        if (name.search(/min|max|pattern/i)) {
-	          return attrVal;
-	        } else {
-	          throw e;
-	        }
-	      }
-	    } else {
-	      return attrVal;
-	    }
-	  };
-	
-	  upload.shouldUpdateOn = function (type, attr, scope) {
-	    var modelOptions = upload.attrGetter('ngfModelOptions', attr, scope);
-	    if (modelOptions && modelOptions.updateOn) {
-	      return modelOptions.updateOn.split(' ').indexOf(type) > -1;
-	    }
-	    return true;
-	  };
-	
-	  upload.emptyPromise = function () {
-	    var d = $q.defer();
-	    var args = arguments;
-	    $timeout(function () {
-	      d.resolve.apply(d, args);
-	    });
-	    return d.promise;
-	  };
-	
-	  upload.rejectPromise = function () {
-	    var d = $q.defer();
-	    var args = arguments;
-	    $timeout(function () {
-	      d.reject.apply(d, args);
-	    });
-	    return d.promise;
-	  };
-	
-	  upload.happyPromise = function (promise, data) {
-	    var d = $q.defer();
-	    promise.then(function (result) {
-	      d.resolve(result);
-	    }, function (error) {
-	      $timeout(function () {
-	        throw error;
-	      });
-	      d.resolve(data);
-	    });
-	    return d.promise;
-	  };
-	
-	  function applyExifRotations(files, attr, scope) {
-	    var promises = [upload.emptyPromise()];
-	    angular.forEach(files, function (f, i) {
-	      if (f.type.indexOf('image/jpeg') === 0 && upload.attrGetter('ngfFixOrientation', attr, scope, {$file: f})) {
-	        promises.push(upload.happyPromise(upload.applyExifRotation(f), f).then(function (fixedFile) {
-	          files.splice(i, 1, fixedFile);
-	        }));
-	      }
-	    });
-	    return $q.all(promises);
-	  }
-	
-	  function resize(files, attr, scope) {
-	    var resizeVal = upload.attrGetter('ngfResize', attr, scope);
-	    if (!resizeVal || !upload.isResizeSupported() || !files.length) return upload.emptyPromise();
-	    if (resizeVal instanceof Function) {
-	      var defer = $q.defer();
-	      return resizeVal(files).then(function (p) {
-	        resizeWithParams(p, files, attr, scope).then(function (r) {
-	          defer.resolve(r);
-	        }, function (e) {
-	          defer.reject(e);
-	        });
-	      }, function (e) {
-	        defer.reject(e);
-	      });
-	    } else {
-	      return resizeWithParams(resizeVal, files, attr, scope);
-	    }
-	  }
-	
-	  function resizeWithParams(params, files, attr, scope) {
-	    var promises = [upload.emptyPromise()];
-	
-	    function handleFile(f, i) {
-	      if (f.type.indexOf('image') === 0) {
-	        if (params.pattern && !upload.validatePattern(f, params.pattern)) return;
-	        params.resizeIf = function (width, height) {
-	          return upload.attrGetter('ngfResizeIf', attr, scope,
-	            {$width: width, $height: height, $file: f});
-	        };
-	        var promise = upload.resize(f, params);
-	        promises.push(promise);
-	        promise.then(function (resizedFile) {
-	          files.splice(i, 1, resizedFile);
-	        }, function (e) {
-	          f.$error = 'resize';
-	          f.$errorParam = (e ? (e.message ? e.message : e) + ': ' : '') + (f && f.name);
-	        });
-	      }
-	    }
-	
-	    for (var i = 0; i < files.length; i++) {
-	      handleFile(files[i], i);
-	    }
-	    return $q.all(promises);
-	  }
-	
-	  upload.updateModel = function (ngModel, attr, scope, fileChange, files, evt, noDelay) {
-	    function update(files, invalidFiles, newFiles, dupFiles, isSingleModel) {
-	      attr.$$ngfPrevValidFiles = files;
-	      attr.$$ngfPrevInvalidFiles = invalidFiles;
-	      var file = files && files.length ? files[0] : null;
-	      var invalidFile = invalidFiles && invalidFiles.length ? invalidFiles[0] : null;
-	
-	      if (ngModel) {
-	        upload.applyModelValidation(ngModel, files);
-	        ngModel.$setViewValue(isSingleModel ? file : files);
-	      }
-	
-	      if (fileChange) {
-	        $parse(fileChange)(scope, {
-	          $files: files,
-	          $file: file,
-	          $newFiles: newFiles,
-	          $duplicateFiles: dupFiles,
-	          $invalidFiles: invalidFiles,
-	          $invalidFile: invalidFile,
-	          $event: evt
-	        });
-	      }
-	
-	      var invalidModel = upload.attrGetter('ngfModelInvalid', attr);
-	      if (invalidModel) {
-	        $timeout(function () {
-	          $parse(invalidModel).assign(scope, isSingleModel ? invalidFile : invalidFiles);
-	        });
-	      }
-	      $timeout(function () {
-	        // scope apply changes
-	      });
-	    }
-	
-	    var allNewFiles, dupFiles = [], prevValidFiles, prevInvalidFiles,
-	      invalids = [], valids = [];
-	
-	    function removeDuplicates() {
-	      function equals(f1, f2) {
-	        return f1.name === f2.name && (f1.$ngfOrigSize || f1.size) === (f2.$ngfOrigSize || f2.size) &&
-	          f1.type === f2.type;
-	      }
-	
-	      function isInPrevFiles(f) {
-	        var j;
-	        for (j = 0; j < prevValidFiles.length; j++) {
-	          if (equals(f, prevValidFiles[j])) {
-	            return true;
-	          }
-	        }
-	        for (j = 0; j < prevInvalidFiles.length; j++) {
-	          if (equals(f, prevInvalidFiles[j])) {
-	            return true;
-	          }
-	        }
-	        return false;
-	      }
-	
-	      if (files) {
-	        allNewFiles = [];
-	        dupFiles = [];
-	        for (var i = 0; i < files.length; i++) {
-	          if (isInPrevFiles(files[i])) {
-	            dupFiles.push(files[i]);
-	          } else {
-	            allNewFiles.push(files[i]);
-	          }
-	        }
-	      }
-	    }
-	
-	    function toArray(v) {
-	      return angular.isArray(v) ? v : [v];
-	    }
-	
-	    function resizeAndUpdate() {
-	      function updateModel() {
-	        $timeout(function () {
-	          update(keep ? prevValidFiles.concat(valids) : valids,
-	            keep ? prevInvalidFiles.concat(invalids) : invalids,
-	            files, dupFiles, isSingleModel);
-	        }, options && options.debounce ? options.debounce.change || options.debounce : 0);
-	      }
-	
-	      resize(validateAfterResize ? allNewFiles : valids, attr, scope).then(function () {
-	        if (validateAfterResize) {
-	          upload.validate(allNewFiles, keep ? prevValidFiles.length : 0, ngModel, attr, scope)
-	            .then(function (validationResult) {
-	              valids = validationResult.validsFiles;
-	              invalids = validationResult.invalidsFiles;
-	              updateModel();
-	            });
-	        } else {
-	          updateModel();
-	        }
-	      }, function (e) {
-	        throw 'Could not resize files ' + e;
-	      });
-	    }
-	
-	    prevValidFiles = attr.$$ngfPrevValidFiles || [];
-	    prevInvalidFiles = attr.$$ngfPrevInvalidFiles || [];
-	    if (ngModel && ngModel.$modelValue) {
-	      prevValidFiles = toArray(ngModel.$modelValue);
-	    }
-	
-	    var keep = upload.attrGetter('ngfKeep', attr, scope);
-	    allNewFiles = (files || []).slice(0);
-	    if (keep === 'distinct' || upload.attrGetter('ngfKeepDistinct', attr, scope) === true) {
-	      removeDuplicates(attr, scope);
-	    }
-	
-	    var isSingleModel = !keep && !upload.attrGetter('ngfMultiple', attr, scope) && !upload.attrGetter('multiple', attr);
-	
-	    if (keep && !allNewFiles.length) return;
-	
-	    upload.attrGetter('ngfBeforeModelChange', attr, scope, {
-	      $files: files,
-	      $file: files && files.length ? files[0] : null,
-	      $newFiles: allNewFiles,
-	      $duplicateFiles: dupFiles,
-	      $event: evt
-	    });
-	
-	    var validateAfterResize = upload.attrGetter('ngfValidateAfterResize', attr, scope);
-	
-	    var options = upload.attrGetter('ngfModelOptions', attr, scope);
-	    upload.validate(allNewFiles, keep ? prevValidFiles.length : 0, ngModel, attr, scope)
-	      .then(function (validationResult) {
-	      if (noDelay) {
-	        update(allNewFiles, [], files, dupFiles, isSingleModel);
-	      } else {
-	        if ((!options || !options.allowInvalid) && !validateAfterResize) {
-	          valids = validationResult.validFiles;
-	          invalids = validationResult.invalidFiles;
-	        } else {
-	          valids = allNewFiles;
-	        }
-	        if (upload.attrGetter('ngfFixOrientation', attr, scope) && upload.isExifSupported()) {
-	          applyExifRotations(valids, attr, scope).then(function () {
-	            resizeAndUpdate();
-	          });
-	        } else {
-	          resizeAndUpdate();
-	        }
-	      }
-	    });
-	  };
-	
-	  return upload;
-	}]);
-	
-	ngFileUpload.directive('ngfSelect', ['$parse', '$timeout', '$compile', 'Upload', function ($parse, $timeout, $compile, Upload) {
-	  var generatedElems = [];
-	
-	  function isDelayedClickSupported(ua) {
-	    // fix for android native browser < 4.4 and safari windows
-	    var m = ua.match(/Android[^\d]*(\d+)\.(\d+)/);
-	    if (m && m.length > 2) {
-	      var v = Upload.defaults.androidFixMinorVersion || 4;
-	      return parseInt(m[1]) < 4 || (parseInt(m[1]) === v && parseInt(m[2]) < v);
-	    }
-	
-	    // safari on windows
-	    return ua.indexOf('Chrome') === -1 && /.*Windows.*Safari.*/.test(ua);
-	  }
-	
-	  function linkFileSelect(scope, elem, attr, ngModel, $parse, $timeout, $compile, upload) {
-	    /** @namespace attr.ngfSelect */
-	    /** @namespace attr.ngfChange */
-	    /** @namespace attr.ngModel */
-	    /** @namespace attr.ngfModelOptions */
-	    /** @namespace attr.ngfMultiple */
-	    /** @namespace attr.ngfCapture */
-	    /** @namespace attr.ngfValidate */
-	    /** @namespace attr.ngfKeep */
-	    var attrGetter = function (name, scope) {
-	      return upload.attrGetter(name, attr, scope);
-	    };
-	
-	    function isInputTypeFile() {
-	      return elem[0].tagName.toLowerCase() === 'input' && attr.type && attr.type.toLowerCase() === 'file';
-	    }
-	
-	    function fileChangeAttr() {
-	      return attrGetter('ngfChange') || attrGetter('ngfSelect');
-	    }
-	
-	    function changeFn(evt) {
-	      if (upload.shouldUpdateOn('change', attr, scope)) {
-	        var fileList = evt.__files_ || (evt.target && evt.target.files), files = [];
-	        /* Handle duplicate call in  IE11 */
-	        if (!fileList) return;
-	        for (var i = 0; i < fileList.length; i++) {
-	          files.push(fileList[i]);
-	        }
-	        upload.updateModel(ngModel, attr, scope, fileChangeAttr(),
-	          files.length ? files : null, evt);
-	      }
-	    }
-	
-	    upload.registerModelChangeValidator(ngModel, attr, scope);
-	
-	    var unwatches = [];
-	    if (attrGetter('ngfMultiple')) {
-	      unwatches.push(scope.$watch(attrGetter('ngfMultiple'), function () {
-	        fileElem.attr('multiple', attrGetter('ngfMultiple', scope));
-	      }));
-	    }
-	    if (attrGetter('ngfCapture')) {
-	      unwatches.push(scope.$watch(attrGetter('ngfCapture'), function () {
-	        fileElem.attr('capture', attrGetter('ngfCapture', scope));
-	      }));
-	    }
-	    if (attrGetter('ngfAccept')) {
-	      unwatches.push(scope.$watch(attrGetter('ngfAccept'), function () {
-	        fileElem.attr('accept', attrGetter('ngfAccept', scope));
-	      }));
-	    }
-	    attr.$observe('accept', function () {
-	      fileElem.attr('accept', attrGetter('accept'));
-	    });
-	    unwatches.push(function () {
-	      if (attr.$$observers) delete attr.$$observers.accept;
-	    });
-	    function bindAttrToFileInput(fileElem) {
-	      for (var i = 0; i < elem[0].attributes.length; i++) {
-	        var attribute = elem[0].attributes[i];
-	        if (attribute.name !== 'type' && attribute.name !== 'class' && attribute.name !== 'style') {
-	          if (attribute.value == null || attribute.value === '') {
-	            if (attribute.name === 'required') attribute.value = 'required';
-	            if (attribute.name === 'multiple') attribute.value = 'multiple';
-	          }
-	          fileElem.attr(attribute.name, attribute.name === 'id' ? 'ngf-' + attribute.value : attribute.value);
-	        }
-	      }
-	    }
-	
-	    function createFileInput() {
-	      if (isInputTypeFile()) {
-	        return elem;
-	      }
-	
-	      var fileElem = angular.element('<input type="file">');
-	
-	      bindAttrToFileInput(fileElem);
-	
-	      var label = angular.element('<label>upload</label>');
-	      label.css('visibility', 'hidden').css('position', 'absolute').css('overflow', 'hidden')
-	        .css('width', '0px').css('height', '0px').css('border', 'none')
-	        .css('margin', '0px').css('padding', '0px').attr('tabindex', '-1');
-	      if (elem.attr('id')) {
-	        label.attr('id', 'ngf-label-' + elem.attr('id'));
-	      }
-	      generatedElems.push({el: elem, ref: label});
-	
-	      document.body.appendChild(label.append(fileElem)[0]);
-	
-	      return fileElem;
-	    }
-	
-	    function clickHandler(evt) {
-	      if (elem.attr('disabled')) return false;
-	      if (attrGetter('ngfSelectDisabled', scope)) return;
-	
-	      var r = detectSwipe(evt);
-	      // prevent the click if it is a swipe
-	      if (r != null) return r;
-	
-	      resetModel(evt);
-	
-	      // fix for md when the element is removed from the DOM and added back #460
-	      try {
-	        if (!isInputTypeFile() && !document.body.contains(fileElem[0])) {
-	          generatedElems.push({el: elem, ref: fileElem.parent()});
-	          document.body.appendChild(fileElem.parent()[0]);
-	          fileElem.bind('change', changeFn);
-	        }
-	      } catch(e){/*ignore*/}
-	
-	      if (isDelayedClickSupported(navigator.userAgent)) {
-	        setTimeout(function () {
-	          fileElem[0].click();
-	        }, 0);
-	      } else {
-	        fileElem[0].click();
-	      }
-	
-	      return false;
-	    }
-	
-	
-	    var initialTouchStartY = 0;
-	    var initialTouchStartX = 0;
-	
-	    function detectSwipe(evt) {
-	      var touches = evt.changedTouches || (evt.originalEvent && evt.originalEvent.changedTouches);
-	      if (touches) {
-	        if (evt.type === 'touchstart') {
-	          initialTouchStartX = touches[0].clientX;
-	          initialTouchStartY = touches[0].clientY;
-	          return true; // don't block event default
-	        } else {
-	          // prevent scroll from triggering event
-	          if (evt.type === 'touchend') {
-	            var currentX = touches[0].clientX;
-	            var currentY = touches[0].clientY;
-	            if ((Math.abs(currentX - initialTouchStartX) > 20) ||
-	            (Math.abs(currentY - initialTouchStartY) > 20)) {
-	              evt.stopPropagation();
-	              evt.preventDefault();
-	              return false;
-	            }
-	          }
-	          return true;
-	        }
-	      }
-	    }
-	
-	    var fileElem = elem;
-	
-	    function resetModel(evt) {
-	      if (upload.shouldUpdateOn('click', attr, scope) && fileElem.val()) {
-	        fileElem.val(null);
-	        upload.updateModel(ngModel, attr, scope, fileChangeAttr(), null, evt, true);
-	      }
-	    }
-	
-	    if (!isInputTypeFile()) {
-	      fileElem = createFileInput();
-	    }
-	    fileElem.bind('change', changeFn);
-	
-	    if (!isInputTypeFile()) {
-	      elem.bind('click touchstart touchend', clickHandler);
-	    } else {
-	      elem.bind('click', resetModel);
-	    }
-	
-	    function ie10SameFileSelectFix(evt) {
-	      if (fileElem && !fileElem.attr('__ngf_ie10_Fix_')) {
-	        if (!fileElem[0].parentNode) {
-	          fileElem = null;
-	          return;
-	        }
-	        evt.preventDefault();
-	        evt.stopPropagation();
-	        fileElem.unbind('click');
-	        var clone = fileElem.clone();
-	        fileElem.replaceWith(clone);
-	        fileElem = clone;
-	        fileElem.attr('__ngf_ie10_Fix_', 'true');
-	        fileElem.bind('change', changeFn);
-	        fileElem.bind('click', ie10SameFileSelectFix);
-	        fileElem[0].click();
-	        return false;
-	      } else {
-	        fileElem.removeAttr('__ngf_ie10_Fix_');
-	      }
-	    }
-	
-	    if (navigator.appVersion.indexOf('MSIE 10') !== -1) {
-	      fileElem.bind('click', ie10SameFileSelectFix);
-	    }
-	
-	    if (ngModel) ngModel.$formatters.push(function (val) {
-	      if (val == null || val.length === 0) {
-	        if (fileElem.val()) {
-	          fileElem.val(null);
-	        }
-	      }
-	      return val;
-	    });
-	
-	    scope.$on('$destroy', function () {
-	      if (!isInputTypeFile()) fileElem.parent().remove();
-	      angular.forEach(unwatches, function (unwatch) {
-	        unwatch();
-	      });
-	    });
-	
-	    $timeout(function () {
-	      for (var i = 0; i < generatedElems.length; i++) {
-	        var g = generatedElems[i];
-	        if (!document.body.contains(g.el[0])) {
-	          generatedElems.splice(i, 1);
-	          g.ref.remove();
-	        }
-	      }
-	    });
-	
-	    if (window.FileAPI && window.FileAPI.ngfFixIE) {
-	      window.FileAPI.ngfFixIE(elem, fileElem, changeFn);
-	    }
-	  }
-	
-	  return {
-	    restrict: 'AEC',
-	    require: '?ngModel',
-	    link: function (scope, elem, attr, ngModel) {
-	      linkFileSelect(scope, elem, attr, ngModel, $parse, $timeout, $compile, Upload);
-	    }
-	  };
-	}]);
-	
-	(function () {
-	
-	  ngFileUpload.service('UploadDataUrl', ['UploadBase', '$timeout', '$q', function (UploadBase, $timeout, $q) {
-	    var upload = UploadBase;
-	    upload.base64DataUrl = function (file) {
-	      if (angular.isArray(file)) {
-	        var d = $q.defer(), count = 0;
-	        angular.forEach(file, function (f) {
-	          upload.dataUrl(f, true)['finally'](function () {
-	            count++;
-	            if (count === file.length) {
-	              var urls = [];
-	              angular.forEach(file, function (ff) {
-	                urls.push(ff.$ngfDataUrl);
-	              });
-	              d.resolve(urls, file);
-	            }
-	          });
-	        });
-	        return d.promise;
-	      } else {
-	        return upload.dataUrl(file, true);
-	      }
-	    };
-	    upload.dataUrl = function (file, disallowObjectUrl) {
-	      if (!file) return upload.emptyPromise(file, file);
-	      if ((disallowObjectUrl && file.$ngfDataUrl != null) || (!disallowObjectUrl && file.$ngfBlobUrl != null)) {
-	        return upload.emptyPromise(disallowObjectUrl ? file.$ngfDataUrl : file.$ngfBlobUrl, file);
-	      }
-	      var p = disallowObjectUrl ? file.$$ngfDataUrlPromise : file.$$ngfBlobUrlPromise;
-	      if (p) return p;
-	
-	      var deferred = $q.defer();
-	      $timeout(function () {
-	        if (window.FileReader && file &&
-	          (!window.FileAPI || navigator.userAgent.indexOf('MSIE 8') === -1 || file.size < 20000) &&
-	          (!window.FileAPI || navigator.userAgent.indexOf('MSIE 9') === -1 || file.size < 4000000)) {
-	          //prefer URL.createObjectURL for handling refrences to files of all sizes
-	          //since it doesn´t build a large string in memory
-	          var URL = window.URL || window.webkitURL;
-	          if (URL && URL.createObjectURL && !disallowObjectUrl) {
-	            var url;
-	            try {
-	              url = URL.createObjectURL(file);
-	            } catch (e) {
-	              $timeout(function () {
-	                file.$ngfBlobUrl = '';
-	                deferred.reject();
-	              });
-	              return;
-	            }
-	            $timeout(function () {
-	              file.$ngfBlobUrl = url;
-	              if (url) {
-	                deferred.resolve(url, file);
-	                upload.blobUrls = upload.blobUrls || [];
-	                upload.blobUrlsTotalSize = upload.blobUrlsTotalSize || 0;
-	                upload.blobUrls.push({url: url, size: file.size});
-	                upload.blobUrlsTotalSize += file.size || 0;
-	                var maxMemory = upload.defaults.blobUrlsMaxMemory || 268435456;
-	                var maxLength = upload.defaults.blobUrlsMaxQueueSize || 200;
-	                while ((upload.blobUrlsTotalSize > maxMemory || upload.blobUrls.length > maxLength) && upload.blobUrls.length > 1) {
-	                  var obj = upload.blobUrls.splice(0, 1)[0];
-	                  URL.revokeObjectURL(obj.url);
-	                  upload.blobUrlsTotalSize -= obj.size;
-	                }
-	              }
-	            });
-	          } else {
-	            var fileReader = new FileReader();
-	            fileReader.onload = function (e) {
-	              $timeout(function () {
-	                file.$ngfDataUrl = e.target.result;
-	                deferred.resolve(e.target.result, file);
-	                $timeout(function () {
-	                  delete file.$ngfDataUrl;
-	                }, 1000);
-	              });
-	            };
-	            fileReader.onerror = function () {
-	              $timeout(function () {
-	                file.$ngfDataUrl = '';
-	                deferred.reject();
-	              });
-	            };
-	            fileReader.readAsDataURL(file);
-	          }
-	        } else {
-	          $timeout(function () {
-	            file[disallowObjectUrl ? '$ngfDataUrl' : '$ngfBlobUrl'] = '';
-	            deferred.reject();
-	          });
-	        }
-	      });
-	
-	      if (disallowObjectUrl) {
-	        p = file.$$ngfDataUrlPromise = deferred.promise;
-	      } else {
-	        p = file.$$ngfBlobUrlPromise = deferred.promise;
-	      }
-	      p['finally'](function () {
-	        delete file[disallowObjectUrl ? '$$ngfDataUrlPromise' : '$$ngfBlobUrlPromise'];
-	      });
-	      return p;
-	    };
-	    return upload;
-	  }]);
-	
-	  function getTagType(el) {
-	    if (el.tagName.toLowerCase() === 'img') return 'image';
-	    if (el.tagName.toLowerCase() === 'audio') return 'audio';
-	    if (el.tagName.toLowerCase() === 'video') return 'video';
-	    return /./;
-	  }
-	
-	  function linkFileDirective(Upload, $timeout, scope, elem, attr, directiveName, resizeParams, isBackground) {
-	    function constructDataUrl(file) {
-	      var disallowObjectUrl = Upload.attrGetter('ngfNoObjectUrl', attr, scope);
-	      Upload.dataUrl(file, disallowObjectUrl)['finally'](function () {
-	        $timeout(function () {
-	          var src = (disallowObjectUrl ? file.$ngfDataUrl : file.$ngfBlobUrl) || file.$ngfDataUrl;
-	          if (isBackground) {
-	            elem.css('background-image', 'url(\'' + (src || '') + '\')');
-	          } else {
-	            elem.attr('src', src);
-	          }
-	          if (src) {
-	            elem.removeClass('ng-hide');
-	          } else {
-	            elem.addClass('ng-hide');
-	          }
-	        });
-	      });
-	    }
-	
-	    $timeout(function () {
-	      var unwatch = scope.$watch(attr[directiveName], function (file) {
-	        var size = resizeParams;
-	        if (directiveName === 'ngfThumbnail') {
-	          if (!size) {
-	            size = {width: elem[0].naturalWidth || elem[0].clientWidth,
-	              height: elem[0].naturalHeight || elem[0].clientHeight};
-	          }
-	          if (size.width === 0 && window.getComputedStyle) {
-	            var style = getComputedStyle(elem[0]);
-	            size = {
-	              width: parseInt(style.width.slice(0, -2)),
-	              height: parseInt(style.height.slice(0, -2))
-	            };
-	          }
-	        }
-	
-	        if (angular.isString(file)) {
-	          elem.removeClass('ng-hide');
-	          if (isBackground) {
-	            return elem.css('background-image', 'url(\'' + file + '\')');
-	          } else {
-	            return elem.attr('src', file);
-	          }
-	        }
-	        if (file && file.type && file.type.search(getTagType(elem[0])) === 0 &&
-	          (!isBackground || file.type.indexOf('image') === 0)) {
-	          if (size && Upload.isResizeSupported()) {
-	            size.resizeIf = function (width, height) {
-	              return Upload.attrGetter('ngfResizeIf', attr, scope,
-	                {$width: width, $height: height, $file: file});
-	            };
-	            Upload.resize(file, size).then(
-	              function (f) {
-	                constructDataUrl(f);
-	              }, function (e) {
-	                throw e;
-	              }
-	            );
-	          } else {
-	            constructDataUrl(file);
-	          }
-	        } else {
-	          elem.addClass('ng-hide');
-	        }
-	      });
-	
-	      scope.$on('$destroy', function () {
-	        unwatch();
-	      });
-	    });
-	  }
-	
-	
-	  /** @namespace attr.ngfSrc */
-	  /** @namespace attr.ngfNoObjectUrl */
-	  ngFileUpload.directive('ngfSrc', ['Upload', '$timeout', function (Upload, $timeout) {
-	    return {
-	      restrict: 'AE',
-	      link: function (scope, elem, attr) {
-	        linkFileDirective(Upload, $timeout, scope, elem, attr, 'ngfSrc',
-	          Upload.attrGetter('ngfResize', attr, scope), false);
-	      }
-	    };
-	  }]);
-	
-	  /** @namespace attr.ngfBackground */
-	  /** @namespace attr.ngfNoObjectUrl */
-	  ngFileUpload.directive('ngfBackground', ['Upload', '$timeout', function (Upload, $timeout) {
-	    return {
-	      restrict: 'AE',
-	      link: function (scope, elem, attr) {
-	        linkFileDirective(Upload, $timeout, scope, elem, attr, 'ngfBackground',
-	          Upload.attrGetter('ngfResize', attr, scope), true);
-	      }
-	    };
-	  }]);
-	
-	  /** @namespace attr.ngfThumbnail */
-	  /** @namespace attr.ngfAsBackground */
-	  /** @namespace attr.ngfSize */
-	  /** @namespace attr.ngfNoObjectUrl */
-	  ngFileUpload.directive('ngfThumbnail', ['Upload', '$timeout', function (Upload, $timeout) {
-	    return {
-	      restrict: 'AE',
-	      link: function (scope, elem, attr) {
-	        var size = Upload.attrGetter('ngfSize', attr, scope);
-	        linkFileDirective(Upload, $timeout, scope, elem, attr, 'ngfThumbnail', size,
-	          Upload.attrGetter('ngfAsBackground', attr, scope));
-	      }
-	    };
-	  }]);
-	
-	  ngFileUpload.config(['$compileProvider', function ($compileProvider) {
-	    if ($compileProvider.imgSrcSanitizationWhitelist) $compileProvider.imgSrcSanitizationWhitelist(/^\s*(https?|ftp|mailto|tel|webcal|local|file|data|blob):/);
-	    if ($compileProvider.aHrefSanitizationWhitelist) $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|mailto|tel|webcal|local|file|data|blob):/);
-	  }]);
-	
-	  ngFileUpload.filter('ngfDataUrl', ['UploadDataUrl', '$sce', function (UploadDataUrl, $sce) {
-	    return function (file, disallowObjectUrl, trustedUrl) {
-	      if (angular.isString(file)) {
-	        return $sce.trustAsResourceUrl(file);
-	      }
-	      var src = file && ((disallowObjectUrl ? file.$ngfDataUrl : file.$ngfBlobUrl) || file.$ngfDataUrl);
-	      if (file && !src) {
-	        if (!file.$ngfDataUrlFilterInProgress && angular.isObject(file)) {
-	          file.$ngfDataUrlFilterInProgress = true;
-	          UploadDataUrl.dataUrl(file, disallowObjectUrl);
-	        }
-	        return '';
-	      }
-	      if (file) delete file.$ngfDataUrlFilterInProgress;
-	      return (file && src ? (trustedUrl ? $sce.trustAsResourceUrl(src) : src) : file) || '';
-	    };
-	  }]);
-	
-	})();
-	
-	ngFileUpload.service('UploadValidate', ['UploadDataUrl', '$q', '$timeout', function (UploadDataUrl, $q, $timeout) {
-	  var upload = UploadDataUrl;
-	
-	  function globStringToRegex(str) {
-	    var regexp = '', excludes = [];
-	    if (str.length > 2 && str[0] === '/' && str[str.length - 1] === '/') {
-	      regexp = str.substring(1, str.length - 1);
-	    } else {
-	      var split = str.split(',');
-	      if (split.length > 1) {
-	        for (var i = 0; i < split.length; i++) {
-	          var r = globStringToRegex(split[i]);
-	          if (r.regexp) {
-	            regexp += '(' + r.regexp + ')';
-	            if (i < split.length - 1) {
-	              regexp += '|';
-	            }
-	          } else {
-	            excludes = excludes.concat(r.excludes);
-	          }
-	        }
-	      } else {
-	        if (str.indexOf('!') === 0) {
-	          excludes.push('^((?!' + globStringToRegex(str.substring(1)).regexp + ').)*$');
-	        } else {
-	          if (str.indexOf('.') === 0) {
-	            str = '*' + str;
-	          }
-	          regexp = '^' + str.replace(new RegExp('[.\\\\+*?\\[\\^\\]$(){}=!<>|:\\-]', 'g'), '\\$&') + '$';
-	          regexp = regexp.replace(/\\\*/g, '.*').replace(/\\\?/g, '.');
-	        }
-	      }
-	    }
-	    return {regexp: regexp, excludes: excludes};
-	  }
-	
-	  upload.validatePattern = function (file, val) {
-	    if (!val) {
-	      return true;
-	    }
-	    var pattern = globStringToRegex(val), valid = true;
-	    if (pattern.regexp && pattern.regexp.length) {
-	      var regexp = new RegExp(pattern.regexp, 'i');
-	      valid = (file.type != null && regexp.test(file.type)) ||
-	        (file.name != null && regexp.test(file.name));
-	    }
-	    var len = pattern.excludes.length;
-	    while (len--) {
-	      var exclude = new RegExp(pattern.excludes[len], 'i');
-	      valid = valid && (file.type == null || exclude.test(file.type)) &&
-	        (file.name == null || exclude.test(file.name));
-	    }
-	    return valid;
-	  };
-	
-	  upload.ratioToFloat = function (val) {
-	    var r = val.toString(), xIndex = r.search(/[x:]/i);
-	    if (xIndex > -1) {
-	      r = parseFloat(r.substring(0, xIndex)) / parseFloat(r.substring(xIndex + 1));
-	    } else {
-	      r = parseFloat(r);
-	    }
-	    return r;
-	  };
-	
-	  upload.registerModelChangeValidator = function (ngModel, attr, scope) {
-	    if (ngModel) {
-	      ngModel.$formatters.push(function (files) {
-	        if (ngModel.$dirty) {
-	          if (files && !angular.isArray(files)) {
-	            files = [files];
-	          }
-	          upload.validate(files, 0, ngModel, attr, scope).then(function () {
-	            upload.applyModelValidation(ngModel, files);
-	          });
-	        }
-	      });
-	    }
-	  };
-	
-	  function markModelAsDirty(ngModel, files) {
-	    if (files != null && !ngModel.$dirty) {
-	      if (ngModel.$setDirty) {
-	        ngModel.$setDirty();
-	      } else {
-	        ngModel.$dirty = true;
-	      }
-	    }
-	  }
-	
-	  upload.applyModelValidation = function (ngModel, files) {
-	    markModelAsDirty(ngModel, files);
-	    angular.forEach(ngModel.$ngfValidations, function (validation) {
-	      ngModel.$setValidity(validation.name, validation.valid);
-	    });
-	  };
-	
-	  upload.getValidationAttr = function (attr, scope, name, validationName, file) {
-	    var dName = 'ngf' + name[0].toUpperCase() + name.substr(1);
-	    var val = upload.attrGetter(dName, attr, scope, {$file: file});
-	    if (val == null) {
-	      val = upload.attrGetter('ngfValidate', attr, scope, {$file: file});
-	      if (val) {
-	        var split = (validationName || name).split('.');
-	        val = val[split[0]];
-	        if (split.length > 1) {
-	          val = val && val[split[1]];
-	        }
-	      }
-	    }
-	    return val;
-	  };
-	
-	  upload.validate = function (files, prevLength, ngModel, attr, scope) {
-	    ngModel = ngModel || {};
-	    ngModel.$ngfValidations = ngModel.$ngfValidations || [];
-	
-	    angular.forEach(ngModel.$ngfValidations, function (v) {
-	      v.valid = true;
-	    });
-	
-	    var attrGetter = function (name, params) {
-	      return upload.attrGetter(name, attr, scope, params);
-	    };
-	
-	    var ignoredErrors = (upload.attrGetter('ngfIgnoreInvalid', attr, scope) || '').split(' ');
-	    var runAllValidation = upload.attrGetter('ngfRunAllValidations', attr, scope);
-	
-	    if (files == null || files.length === 0) {
-	      return upload.emptyPromise({'validFiles': files, 'invalidFiles': []});
-	    }
-	
-	    files = files.length === undefined ? [files] : files.slice(0);
-	    var invalidFiles = [];
-	
-	    function validateSync(name, validationName, fn) {
-	      if (files) {
-	        var i = files.length, valid = null;
-	        while (i--) {
-	          var file = files[i];
-	          if (file) {
-	            var val = upload.getValidationAttr(attr, scope, name, validationName, file);
-	            if (val != null) {
-	              if (!fn(file, val, i)) {
-	                if (ignoredErrors.indexOf(name) === -1) {
-	                  file.$error = name;
-	                  (file.$errorMessages = (file.$errorMessages || {}))[name] = true;
-	                  file.$errorParam = val;
-	                  if (invalidFiles.indexOf(file) === -1) {
-	                    invalidFiles.push(file);
-	                  }
-	                  if (!runAllValidation) {
-	                    files.splice(i, 1);
-	                  }
-	                  valid = false;
-	                } else {
-	                  files.splice(i, 1);
-	                }
-	              }
-	            }
-	          }
-	        }
-	        if (valid !== null) {
-	          ngModel.$ngfValidations.push({name: name, valid: valid});
-	        }
-	      }
-	    }
-	
-	    validateSync('pattern', null, upload.validatePattern);
-	    validateSync('minSize', 'size.min', function (file, val) {
-	      return file.size + 0.1 >= upload.translateScalars(val);
-	    });
-	    validateSync('maxSize', 'size.max', function (file, val) {
-	      return file.size - 0.1 <= upload.translateScalars(val);
-	    });
-	    var totalSize = 0;
-	    validateSync('maxTotalSize', null, function (file, val) {
-	      totalSize += file.size;
-	      if (totalSize > upload.translateScalars(val)) {
-	        files.splice(0, files.length);
-	        return false;
-	      }
-	      return true;
-	    });
-	
-	    validateSync('validateFn', null, function (file, r) {
-	      return r === true || r === null || r === '';
-	    });
-	
-	    if (!files.length) {
-	      return upload.emptyPromise({'validFiles': [], 'invalidFiles': invalidFiles});
-	    }
-	
-	    function validateAsync(name, validationName, type, asyncFn, fn) {
-	      function resolveResult(defer, file, val) {
-	        function resolveInternal(fn) {
-	          if (fn()) {
-	            if (ignoredErrors.indexOf(name) === -1) {
-	              file.$error = name;
-	              (file.$errorMessages = (file.$errorMessages || {}))[name] = true;
-	              file.$errorParam = val;
-	              if (invalidFiles.indexOf(file) === -1) {
-	                invalidFiles.push(file);
-	              }
-	              if (!runAllValidation) {
-	                files.splice(files.indexOf(file), 1);
-	              }
-	              defer.resolve(false);
-	            } else {
-	              files.splice(files.indexOf(file), 1);
-	              defer.resolve(true);
-	            }
-	          } else {
-	            defer.resolve(true);
-	          }
-	        }
-	
-	        if (val != null) {
-	          asyncFn(file, val).then(function (d) {
-	            resolveInternal(function () {
-	              return !fn(d, val);
-	            });
-	          }, function () {
-	            resolveInternal(function () {
-	              return attrGetter('ngfValidateForce', {$file: file});
-	            });
-	          });
-	        } else {
-	          defer.resolve(true);
-	        }
-	      }
-	
-	      var promises = [upload.emptyPromise(true)];
-	      if (files) {
-	        files = files.length === undefined ? [files] : files;
-	        angular.forEach(files, function (file) {
-	          var defer = $q.defer();
-	          promises.push(defer.promise);
-	          if (type && (file.type == null || file.type.search(type) !== 0)) {
-	            defer.resolve(true);
-	            return;
-	          }
-	          if (name === 'dimensions' && upload.attrGetter('ngfDimensions', attr) != null) {
-	            upload.imageDimensions(file).then(function (d) {
-	              resolveResult(defer, file,
-	                attrGetter('ngfDimensions', {$file: file, $width: d.width, $height: d.height}));
-	            }, function () {
-	              defer.resolve(false);
-	            });
-	          } else if (name === 'duration' && upload.attrGetter('ngfDuration', attr) != null) {
-	            upload.mediaDuration(file).then(function (d) {
-	              resolveResult(defer, file,
-	                attrGetter('ngfDuration', {$file: file, $duration: d}));
-	            }, function () {
-	              defer.resolve(false);
-	            });
-	          } else {
-	            resolveResult(defer, file,
-	              upload.getValidationAttr(attr, scope, name, validationName, file));
-	          }
-	        });
-	      }
-	      var deffer = $q.defer();
-	      $q.all(promises).then(function (values) {
-	        var isValid = true;
-	        for (var i = 0; i < values.length; i++) {
-	          if (!values[i]) {
-	            isValid = false;
-	            break;
-	          }
-	        }
-	        ngModel.$ngfValidations.push({name: name, valid: isValid});
-	        deffer.resolve(isValid);
-	      });
-	      return deffer.promise;
-	    }
-	
-	    var deffer = $q.defer();
-	    var promises = [];
-	
-	    promises.push(validateAsync('maxHeight', 'height.max', /image/,
-	      this.imageDimensions, function (d, val) {
-	        return d.height <= val;
-	      }));
-	    promises.push(validateAsync('minHeight', 'height.min', /image/,
-	      this.imageDimensions, function (d, val) {
-	        return d.height >= val;
-	      }));
-	    promises.push(validateAsync('maxWidth', 'width.max', /image/,
-	      this.imageDimensions, function (d, val) {
-	        return d.width <= val;
-	      }));
-	    promises.push(validateAsync('minWidth', 'width.min', /image/,
-	      this.imageDimensions, function (d, val) {
-	        return d.width >= val;
-	      }));
-	    promises.push(validateAsync('dimensions', null, /image/,
-	      function (file, val) {
-	        return upload.emptyPromise(val);
-	      }, function (r) {
-	        return r;
-	      }));
-	    promises.push(validateAsync('ratio', null, /image/,
-	      this.imageDimensions, function (d, val) {
-	        var split = val.toString().split(','), valid = false;
-	        for (var i = 0; i < split.length; i++) {
-	          if (Math.abs((d.width / d.height) - upload.ratioToFloat(split[i])) < 0.01) {
-	            valid = true;
-	          }
-	        }
-	        return valid;
-	      }));
-	    promises.push(validateAsync('maxRatio', 'ratio.max', /image/,
-	      this.imageDimensions, function (d, val) {
-	        return (d.width / d.height) - upload.ratioToFloat(val) < 0.0001;
-	      }));
-	    promises.push(validateAsync('minRatio', 'ratio.min', /image/,
-	      this.imageDimensions, function (d, val) {
-	        return (d.width / d.height) - upload.ratioToFloat(val) > -0.0001;
-	      }));
-	    promises.push(validateAsync('maxDuration', 'duration.max', /audio|video/,
-	      this.mediaDuration, function (d, val) {
-	        return d <= upload.translateScalars(val);
-	      }));
-	    promises.push(validateAsync('minDuration', 'duration.min', /audio|video/,
-	      this.mediaDuration, function (d, val) {
-	        return d >= upload.translateScalars(val);
-	      }));
-	    promises.push(validateAsync('duration', null, /audio|video/,
-	      function (file, val) {
-	        return upload.emptyPromise(val);
-	      }, function (r) {
-	        return r;
-	      }));
-	
-	    promises.push(validateAsync('validateAsyncFn', null, null,
-	      function (file, val) {
-	        return val;
-	      }, function (r) {
-	        return r === true || r === null || r === '';
-	      }));
-	
-	    $q.all(promises).then(function () {
-	
-	      if (runAllValidation) {
-	        for (var i = 0; i < files.length; i++) {
-	          var file = files[i];
-	          if (file.$error) {
-	            files.splice(i--, 1);
-	          }
-	        }
-	      }
-	
-	      runAllValidation = false;
-	      validateSync('maxFiles', null, function (file, val, i) {
-	        return prevLength + i < val;
-	      });
-	
-	      deffer.resolve({'validFiles': files, 'invalidFiles': invalidFiles});
-	    });
-	    return deffer.promise;
-	  };
-	
-	  upload.imageDimensions = function (file) {
-	    if (file.$ngfWidth && file.$ngfHeight) {
-	      var d = $q.defer();
-	      $timeout(function () {
-	        d.resolve({width: file.$ngfWidth, height: file.$ngfHeight});
-	      });
-	      return d.promise;
-	    }
-	    if (file.$ngfDimensionPromise) return file.$ngfDimensionPromise;
-	
-	    var deferred = $q.defer();
-	    $timeout(function () {
-	      if (file.type.indexOf('image') !== 0) {
-	        deferred.reject('not image');
-	        return;
-	      }
-	      upload.dataUrl(file).then(function (dataUrl) {
-	        var img = angular.element('<img>').attr('src', dataUrl)
-	          .css('visibility', 'hidden').css('position', 'fixed')
-	          .css('max-width', 'none !important').css('max-height', 'none !important');
-	
-	        function success() {
-	          var width = img[0].naturalWidth || img[0].clientWidth;
-	          var height = img[0].naturalHeight || img[0].clientHeight;
-	          img.remove();
-	          file.$ngfWidth = width;
-	          file.$ngfHeight = height;
-	          deferred.resolve({width: width, height: height});
-	        }
-	
-	        function error() {
-	          img.remove();
-	          deferred.reject('load error');
-	        }
-	
-	        img.on('load', success);
-	        img.on('error', error);
-	
-	        var secondsCounter = 0;
-	        function checkLoadErrorInCaseOfNoCallback() {
-	          $timeout(function () {
-	            if (img[0].parentNode) {
-	              if (img[0].clientWidth) {
-	                success();
-	              } else if (secondsCounter++ > 10) {
-	                error();
-	              } else {
-	                checkLoadErrorInCaseOfNoCallback();
-	              }
-	            }
-	          }, 1000);
-	        }
-	
-	        checkLoadErrorInCaseOfNoCallback();
-	
-	        angular.element(document.getElementsByTagName('body')[0]).append(img);
-	      }, function () {
-	        deferred.reject('load error');
-	      });
-	    });
-	
-	    file.$ngfDimensionPromise = deferred.promise;
-	    file.$ngfDimensionPromise['finally'](function () {
-	      delete file.$ngfDimensionPromise;
-	    });
-	    return file.$ngfDimensionPromise;
-	  };
-	
-	  upload.mediaDuration = function (file) {
-	    if (file.$ngfDuration) {
-	      var d = $q.defer();
-	      $timeout(function () {
-	        d.resolve(file.$ngfDuration);
-	      });
-	      return d.promise;
-	    }
-	    if (file.$ngfDurationPromise) return file.$ngfDurationPromise;
-	
-	    var deferred = $q.defer();
-	    $timeout(function () {
-	      if (file.type.indexOf('audio') !== 0 && file.type.indexOf('video') !== 0) {
-	        deferred.reject('not media');
-	        return;
-	      }
-	      upload.dataUrl(file).then(function (dataUrl) {
-	        var el = angular.element(file.type.indexOf('audio') === 0 ? '<audio>' : '<video>')
-	          .attr('src', dataUrl).css('visibility', 'none').css('position', 'fixed');
-	
-	        function success() {
-	          var duration = el[0].duration;
-	          file.$ngfDuration = duration;
-	          el.remove();
-	          deferred.resolve(duration);
-	        }
-	
-	        function error() {
-	          el.remove();
-	          deferred.reject('load error');
-	        }
-	
-	        el.on('loadedmetadata', success);
-	        el.on('error', error);
-	        var count = 0;
-	
-	        function checkLoadError() {
-	          $timeout(function () {
-	            if (el[0].parentNode) {
-	              if (el[0].duration) {
-	                success();
-	              } else if (count > 10) {
-	                error();
-	              } else {
-	                checkLoadError();
-	              }
-	            }
-	          }, 1000);
-	        }
-	
-	        checkLoadError();
-	
-	        angular.element(document.body).append(el);
-	      }, function () {
-	        deferred.reject('load error');
-	      });
-	    });
-	
-	    file.$ngfDurationPromise = deferred.promise;
-	    file.$ngfDurationPromise['finally'](function () {
-	      delete file.$ngfDurationPromise;
-	    });
-	    return file.$ngfDurationPromise;
-	  };
-	  return upload;
-	}
-	]);
-	
-	ngFileUpload.service('UploadResize', ['UploadValidate', '$q', function (UploadValidate, $q) {
-	  var upload = UploadValidate;
-	
-	  /**
-	   * Conserve aspect ratio of the original region. Useful when shrinking/enlarging
-	   * images to fit into a certain area.
-	   * Source:  http://stackoverflow.com/a/14731922
-	   *
-	   * @param {Number} srcWidth Source area width
-	   * @param {Number} srcHeight Source area height
-	   * @param {Number} maxWidth Nestable area maximum available width
-	   * @param {Number} maxHeight Nestable area maximum available height
-	   * @return {Object} { width, height }
-	   */
-	  var calculateAspectRatioFit = function (srcWidth, srcHeight, maxWidth, maxHeight, centerCrop) {
-	    var ratio = centerCrop ? Math.max(maxWidth / srcWidth, maxHeight / srcHeight) :
-	      Math.min(maxWidth / srcWidth, maxHeight / srcHeight);
-	    return {
-	      width: srcWidth * ratio, height: srcHeight * ratio,
-	      marginX: srcWidth * ratio - maxWidth, marginY: srcHeight * ratio - maxHeight
-	    };
-	  };
-	
-	  // Extracted from https://github.com/romelgomez/angular-firebase-image-upload/blob/master/app/scripts/fileUpload.js#L89
-	  var resize = function (imagen, width, height, quality, type, ratio, centerCrop, resizeIf) {
-	    var deferred = $q.defer();
-	    var canvasElement = document.createElement('canvas');
-	    var imageElement = document.createElement('img');
-	    imageElement.setAttribute('style', 'visibility:hidden;position:fixed;z-index:-100000');
-	    document.body.appendChild(imageElement);
-	
-	    imageElement.onload = function () {
-	      var imgWidth = imageElement.width, imgHeight = imageElement.height;
-	      imageElement.parentNode.removeChild(imageElement);
-	      if (resizeIf != null && resizeIf(imgWidth, imgHeight) === false) {
-	        deferred.reject('resizeIf');
-	        return;
-	      }
-	      try {
-	        if (ratio) {
-	          var ratioFloat = upload.ratioToFloat(ratio);
-	          var imgRatio = imgWidth / imgHeight;
-	          if (imgRatio < ratioFloat) {
-	            width = imgWidth;
-	            height = width / ratioFloat;
-	          } else {
-	            height = imgHeight;
-	            width = height * ratioFloat;
-	          }
-	        }
-	        if (!width) {
-	          width = imgWidth;
-	        }
-	        if (!height) {
-	          height = imgHeight;
-	        }
-	        var dimensions = calculateAspectRatioFit(imgWidth, imgHeight, width, height, centerCrop);
-	        canvasElement.width = Math.min(dimensions.width, width);
-	        canvasElement.height = Math.min(dimensions.height, height);
-	        var context = canvasElement.getContext('2d');
-	        context.drawImage(imageElement,
-	          Math.min(0, -dimensions.marginX / 2), Math.min(0, -dimensions.marginY / 2),
-	          dimensions.width, dimensions.height);
-	        deferred.resolve(canvasElement.toDataURL(type || 'image/WebP', quality || 0.934));
-	      } catch (e) {
-	        deferred.reject(e);
-	      }
-	    };
-	    imageElement.onerror = function () {
-	      imageElement.parentNode.removeChild(imageElement);
-	      deferred.reject();
-	    };
-	    imageElement.src = imagen;
-	    return deferred.promise;
-	  };
-	
-	  upload.dataUrltoBlob = function (dataurl, name, origSize) {
-	    var arr = dataurl.split(','), mime = arr[0].match(/:(.*?);/)[1],
-	      bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
-	    while (n--) {
-	      u8arr[n] = bstr.charCodeAt(n);
-	    }
-	    var blob = new window.Blob([u8arr], {type: mime});
-	    blob.name = name;
-	    blob.$ngfOrigSize = origSize;
-	    return blob;
-	  };
-	
-	  upload.isResizeSupported = function () {
-	    var elem = document.createElement('canvas');
-	    return window.atob && elem.getContext && elem.getContext('2d') && window.Blob;
-	  };
-	
-	  if (upload.isResizeSupported()) {
-	    // add name getter to the blob constructor prototype
-	    Object.defineProperty(window.Blob.prototype, 'name', {
-	      get: function () {
-	        return this.$ngfName;
-	      },
-	      set: function (v) {
-	        this.$ngfName = v;
-	      },
-	      configurable: true
-	    });
-	  }
-	
-	  upload.resize = function (file, options) {
-	    if (file.type.indexOf('image') !== 0) return upload.emptyPromise(file);
-	
-	    var deferred = $q.defer();
-	    upload.dataUrl(file, true).then(function (url) {
-	      resize(url, options.width, options.height, options.quality, options.type || file.type,
-	        options.ratio, options.centerCrop, options.resizeIf)
-	        .then(function (dataUrl) {
-	          if (file.type === 'image/jpeg' && options.restoreExif !== false) {
-	            try {
-	              dataUrl = upload.restoreExif(url, dataUrl);
-	            } catch (e) {
-	              setTimeout(function () {throw e;}, 1);
-	            }
-	          }
-	          try {
-	            var blob = upload.dataUrltoBlob(dataUrl, file.name, file.size);
-	            deferred.resolve(blob);
-	          } catch (e) {
-	            deferred.reject(e);
-	          }
-	        }, function (r) {
-	          if (r === 'resizeIf') {
-	            deferred.resolve(file);
-	          }
-	          deferred.reject(r);
-	        });
-	    }, function (e) {
-	      deferred.reject(e);
-	    });
-	    return deferred.promise;
-	  };
-	
-	  return upload;
-	}]);
-	
-	(function () {
-	  ngFileUpload.directive('ngfDrop', ['$parse', '$timeout', '$window', 'Upload', '$http', '$q',
-	    function ($parse, $timeout, $window, Upload, $http, $q) {
-	      return {
-	        restrict: 'AEC',
-	        require: '?ngModel',
-	        link: function (scope, elem, attr, ngModel) {
-	          linkDrop(scope, elem, attr, ngModel, $parse, $timeout, $window, Upload, $http, $q);
-	        }
-	      };
-	    }]);
-	
-	  ngFileUpload.directive('ngfNoFileDrop', function () {
-	    return function (scope, elem) {
-	      if (dropAvailable()) elem.css('display', 'none');
-	    };
-	  });
-	
-	  ngFileUpload.directive('ngfDropAvailable', ['$parse', '$timeout', 'Upload', function ($parse, $timeout, Upload) {
-	    return function (scope, elem, attr) {
-	      if (dropAvailable()) {
-	        var model = $parse(Upload.attrGetter('ngfDropAvailable', attr));
-	        $timeout(function () {
-	          model(scope);
-	          if (model.assign) {
-	            model.assign(scope, true);
-	          }
-	        });
-	      }
-	    };
-	  }]);
-	
-	  function linkDrop(scope, elem, attr, ngModel, $parse, $timeout, $window, upload, $http, $q) {
-	    var available = dropAvailable();
-	
-	    var attrGetter = function (name, scope, params) {
-	      return upload.attrGetter(name, attr, scope, params);
-	    };
-	
-	    if (attrGetter('dropAvailable')) {
-	      $timeout(function () {
-	        if (scope[attrGetter('dropAvailable')]) {
-	          scope[attrGetter('dropAvailable')].value = available;
-	        } else {
-	          scope[attrGetter('dropAvailable')] = available;
-	        }
-	      });
-	    }
-	    if (!available) {
-	      if (attrGetter('ngfHideOnDropNotAvailable', scope) === true) {
-	        elem.css('display', 'none');
-	      }
-	      return;
-	    }
-	
-	    function isDisabled() {
-	      return elem.attr('disabled') || attrGetter('ngfDropDisabled', scope);
-	    }
-	
-	    if (attrGetter('ngfSelect') == null) {
-	      upload.registerModelChangeValidator(ngModel, attr, scope);
-	    }
-	
-	    var leaveTimeout = null;
-	    var stopPropagation = $parse(attrGetter('ngfStopPropagation'));
-	    var dragOverDelay = 1;
-	    var actualDragOverClass;
-	
-	    elem[0].addEventListener('dragover', function (evt) {
-	      if (isDisabled() || !upload.shouldUpdateOn('drop', attr, scope)) return;
-	      evt.preventDefault();
-	      if (stopPropagation(scope)) evt.stopPropagation();
-	      // handling dragover events from the Chrome download bar
-	      if (navigator.userAgent.indexOf('Chrome') > -1) {
-	        var b = evt.dataTransfer.effectAllowed;
-	        evt.dataTransfer.dropEffect = ('move' === b || 'linkMove' === b) ? 'move' : 'copy';
-	      }
-	      $timeout.cancel(leaveTimeout);
-	      if (!actualDragOverClass) {
-	        actualDragOverClass = 'C';
-	        calculateDragOverClass(scope, attr, evt, function (clazz) {
-	          actualDragOverClass = clazz;
-	          elem.addClass(actualDragOverClass);
-	          attrGetter('ngfDrag', scope, {$isDragging: true, $class: actualDragOverClass, $event: evt});
-	        });
-	      }
-	    }, false);
-	    elem[0].addEventListener('dragenter', function (evt) {
-	      if (isDisabled() || !upload.shouldUpdateOn('drop', attr, scope)) return;
-	      evt.preventDefault();
-	      if (stopPropagation(scope)) evt.stopPropagation();
-	    }, false);
-	    elem[0].addEventListener('dragleave', function (evt) {
-	      if (isDisabled() || !upload.shouldUpdateOn('drop', attr, scope)) return;
-	      evt.preventDefault();
-	      if (stopPropagation(scope)) evt.stopPropagation();
-	      leaveTimeout = $timeout(function () {
-	        if (actualDragOverClass) elem.removeClass(actualDragOverClass);
-	        actualDragOverClass = null;
-	        attrGetter('ngfDrag', scope, {$isDragging: false, $event: evt});
-	      }, dragOverDelay || 100);
-	    }, false);
-	    elem[0].addEventListener('drop', function (evt) {
-	      if (isDisabled() || !upload.shouldUpdateOn('drop', attr, scope)) return;
-	      evt.preventDefault();
-	      if (stopPropagation(scope)) evt.stopPropagation();
-	      if (actualDragOverClass) elem.removeClass(actualDragOverClass);
-	      actualDragOverClass = null;
-	      var items = evt.dataTransfer.items;
-	      var html;
-	      try {
-	        html = evt.dataTransfer && evt.dataTransfer.getData && evt.dataTransfer.getData('text/html');
-	      } catch (e) {/* Fix IE11 that throw error calling getData */
-	      }
-	
-	      extractFiles(items, evt.dataTransfer.files, attrGetter('ngfAllowDir', scope) !== false,
-	        attrGetter('multiple') || attrGetter('ngfMultiple', scope)).then(function (files) {
-	        if (files.length) {
-	          updateModel(files, evt);
-	        } else {
-	          extractFilesFromHtml('dropUrl', html).then(function (files) {
-	            updateModel(files, evt);
-	          });
-	        }
-	      });
-	    }, false);
-	    elem[0].addEventListener('paste', function (evt) {
-	      if (navigator.userAgent.toLowerCase().indexOf('firefox') > -1 &&
-	        attrGetter('ngfEnableFirefoxPaste', scope)) {
-	        evt.preventDefault();
-	      }
-	      if (isDisabled() || !upload.shouldUpdateOn('paste', attr, scope)) return;
-	      var files = [];
-	      var clipboard = evt.clipboardData || evt.originalEvent.clipboardData;
-	      if (clipboard && clipboard.items) {
-	        for (var k = 0; k < clipboard.items.length; k++) {
-	          if (clipboard.items[k].type.indexOf('image') !== -1) {
-	            files.push(clipboard.items[k].getAsFile());
-	          }
-	        }
-	      }
-	      if (files.length) {
-	        updateModel(files, evt);
-	      } else {
-	        extractFilesFromHtml('pasteUrl', clipboard).then(function (files) {
-	          updateModel(files, evt);
-	        });
-	      }
-	    }, false);
-	
-	    if (navigator.userAgent.toLowerCase().indexOf('firefox') > -1 &&
-	      attrGetter('ngfEnableFirefoxPaste', scope)) {
-	      elem.attr('contenteditable', true);
-	      elem.on('keypress', function (e) {
-	        if (!e.metaKey && !e.ctrlKey) {
-	          e.preventDefault();
-	        }
-	      });
-	    }
-	
-	    function updateModel(files, evt) {
-	      upload.updateModel(ngModel, attr, scope, attrGetter('ngfChange') || attrGetter('ngfDrop'), files, evt);
-	    }
-	
-	    function extractFilesFromHtml(updateOn, html) {
-	      if (!upload.shouldUpdateOn(updateOn, attr, scope) || typeof html !== 'string') return upload.rejectPromise([]);
-	      var urls = [];
-	      html.replace(/<(img src|img [^>]* src) *=\"([^\"]*)\"/gi, function (m, n, src) {
-	        urls.push(src);
-	      });
-	      var promises = [], files = [];
-	      if (urls.length) {
-	        angular.forEach(urls, function (url) {
-	          promises.push(upload.urlToBlob(url).then(function (blob) {
-	            files.push(blob);
-	          }));
-	        });
-	        var defer = $q.defer();
-	        $q.all(promises).then(function () {
-	          defer.resolve(files);
-	        }, function (e) {
-	          defer.reject(e);
-	        });
-	        return defer.promise;
-	      }
-	      return upload.emptyPromise();
-	    }
-	
-	    function calculateDragOverClass(scope, attr, evt, callback) {
-	      var obj = attrGetter('ngfDragOverClass', scope, {$event: evt}), dClass = 'dragover';
-	      if (angular.isString(obj)) {
-	        dClass = obj;
-	      } else if (obj) {
-	        if (obj.delay) dragOverDelay = obj.delay;
-	        if (obj.accept || obj.reject) {
-	          var items = evt.dataTransfer.items;
-	          if (items == null || !items.length) {
-	            dClass = obj.accept;
-	          } else {
-	            var pattern = obj.pattern || attrGetter('ngfPattern', scope, {$event: evt});
-	            var len = items.length;
-	            while (len--) {
-	              if (!upload.validatePattern(items[len], pattern)) {
-	                dClass = obj.reject;
-	                break;
-	              } else {
-	                dClass = obj.accept;
-	              }
-	            }
-	          }
-	        }
-	      }
-	      callback(dClass);
-	    }
-	
-	    function extractFiles(items, fileList, allowDir, multiple) {
-	      var maxFiles = upload.getValidationAttr(attr, scope, 'maxFiles');
-	      if (maxFiles == null) {
-	        maxFiles = Number.MAX_VALUE;
-	      }
-	      var maxTotalSize = upload.getValidationAttr(attr, scope, 'maxTotalSize');
-	      if (maxTotalSize == null) {
-	        maxTotalSize = Number.MAX_VALUE;
-	      }
-	      var includeDir = attrGetter('ngfIncludeDir', scope);
-	      var files = [], totalSize = 0;
-	
-	      function traverseFileTree(entry, path) {
-	        var defer = $q.defer();
-	        if (entry != null) {
-	          if (entry.isDirectory) {
-	            var promises = [upload.emptyPromise()];
-	            if (includeDir) {
-	              var file = {type: 'directory'};
-	              file.name = file.path = (path || '') + entry.name;
-	              files.push(file);
-	            }
-	            var dirReader = entry.createReader();
-	            var entries = [];
-	            var readEntries = function () {
-	              dirReader.readEntries(function (results) {
-	                try {
-	                  if (!results.length) {
-	                    angular.forEach(entries.slice(0), function (e) {
-	                      if (files.length <= maxFiles && totalSize <= maxTotalSize) {
-	                        promises.push(traverseFileTree(e, (path ? path : '') + entry.name + '/'));
-	                      }
-	                    });
-	                    $q.all(promises).then(function () {
-	                      defer.resolve();
-	                    }, function (e) {
-	                      defer.reject(e);
-	                    });
-	                  } else {
-	                    entries = entries.concat(Array.prototype.slice.call(results || [], 0));
-	                    readEntries();
-	                  }
-	                } catch (e) {
-	                  defer.reject(e);
-	                }
-	              }, function (e) {
-	                defer.reject(e);
-	              });
-	            };
-	            readEntries();
-	          } else {
-	            entry.file(function (file) {
-	              try {
-	                file.path = (path ? path : '') + file.name;
-	                if (includeDir) {
-	                  file = upload.rename(file, file.path);
-	                }
-	                files.push(file);
-	                totalSize += file.size;
-	                defer.resolve();
-	              } catch (e) {
-	                defer.reject(e);
-	              }
-	            }, function (e) {
-	              defer.reject(e);
-	            });
-	          }
-	        }
-	        return defer.promise;
-	      }
-	
-	      var promises = [upload.emptyPromise()];
-	
-	      if (items && items.length > 0 && $window.location.protocol !== 'file:') {
-	        for (var i = 0; i < items.length; i++) {
-	          if (items[i].webkitGetAsEntry && items[i].webkitGetAsEntry() && items[i].webkitGetAsEntry().isDirectory) {
-	            var entry = items[i].webkitGetAsEntry();
-	            if (entry.isDirectory && !allowDir) {
-	              continue;
-	            }
-	            if (entry != null) {
-	              promises.push(traverseFileTree(entry));
-	            }
-	          } else {
-	            var f = items[i].getAsFile();
-	            if (f != null) {
-	              files.push(f);
-	              totalSize += f.size;
-	            }
-	          }
-	          if (files.length > maxFiles || totalSize > maxTotalSize ||
-	            (!multiple && files.length > 0)) break;
-	        }
-	      } else {
-	        if (fileList != null) {
-	          for (var j = 0; j < fileList.length; j++) {
-	            var file = fileList.item(j);
-	            if (file.type || file.size > 0) {
-	              files.push(file);
-	              totalSize += file.size;
-	            }
-	            if (files.length > maxFiles || totalSize > maxTotalSize ||
-	              (!multiple && files.length > 0)) break;
-	          }
-	        }
-	      }
-	
-	      var defer = $q.defer();
-	      $q.all(promises).then(function () {
-	        if (!multiple && !includeDir && files.length) {
-	          var i = 0;
-	          while (files[i] && files[i].type === 'directory') i++;
-	          defer.resolve([files[i]]);
-	        } else {
-	          defer.resolve(files);
-	        }
-	      }, function (e) {
-	        defer.reject(e);
-	      });
-	
-	      return defer.promise;
-	    }
-	  }
-	
-	  function dropAvailable() {
-	    var div = document.createElement('div');
-	    return ('draggable' in div) && ('ondrop' in div) && !/Edge\/12./i.test(navigator.userAgent);
-	  }
-	
-	})();
-	
-	// customized version of https://github.com/exif-js/exif-js
-	ngFileUpload.service('UploadExif', ['UploadResize', '$q', function (UploadResize, $q) {
-	  var upload = UploadResize;
-	
-	  upload.isExifSupported = function () {
-	    return window.FileReader && new FileReader().readAsArrayBuffer && upload.isResizeSupported();
-	  };
-	
-	  function applyTransform(ctx, orientation, width, height) {
-	    switch (orientation) {
-	      case 2:
-	        return ctx.transform(-1, 0, 0, 1, width, 0);
-	      case 3:
-	        return ctx.transform(-1, 0, 0, -1, width, height);
-	      case 4:
-	        return ctx.transform(1, 0, 0, -1, 0, height);
-	      case 5:
-	        return ctx.transform(0, 1, 1, 0, 0, 0);
-	      case 6:
-	        return ctx.transform(0, 1, -1, 0, height, 0);
-	      case 7:
-	        return ctx.transform(0, -1, -1, 0, height, width);
-	      case 8:
-	        return ctx.transform(0, -1, 1, 0, 0, width);
-	    }
-	  }
-	
-	  upload.readOrientation = function (file) {
-	    var defer = $q.defer();
-	    var reader = new FileReader();
-	    var slicedFile = file.slice ? file.slice(0, 64 * 1024) : file;
-	    reader.readAsArrayBuffer(slicedFile);
-	    reader.onerror = function (e) {
-	      return defer.reject(e);
-	    };
-	    reader.onload = function (e) {
-	      var result = {orientation: 1};
-	      var view = new DataView(this.result);
-	      if (view.getUint16(0, false) !== 0xFFD8) return defer.resolve(result);
-	
-	      var length = view.byteLength,
-	        offset = 2;
-	      while (offset < length) {
-	        var marker = view.getUint16(offset, false);
-	        offset += 2;
-	        if (marker === 0xFFE1) {
-	          if (view.getUint32(offset += 2, false) !== 0x45786966) return defer.resolve(result);
-	
-	          var little = view.getUint16(offset += 6, false) === 0x4949;
-	          offset += view.getUint32(offset + 4, little);
-	          var tags = view.getUint16(offset, little);
-	          offset += 2;
-	          for (var i = 0; i < tags; i++)
-	            if (view.getUint16(offset + (i * 12), little) === 0x0112) {
-	              var orientation = view.getUint16(offset + (i * 12) + 8, little);
-	              if (orientation >= 2 && orientation <= 8) {
-	                view.setUint16(offset + (i * 12) + 8, 1, little);
-	                result.fixedArrayBuffer = e.target.result;
-	              }
-	              result.orientation = orientation;
-	              return defer.resolve(result);
-	            }
-	        } else if ((marker & 0xFF00) !== 0xFF00) break;
-	        else offset += view.getUint16(offset, false);
-	      }
-	      return defer.resolve(result);
-	    };
-	    return defer.promise;
-	  };
-	
-	  function arrayBufferToBase64(buffer) {
-	    var binary = '';
-	    var bytes = new Uint8Array(buffer);
-	    var len = bytes.byteLength;
-	    for (var i = 0; i < len; i++) {
-	      binary += String.fromCharCode(bytes[i]);
-	    }
-	    return window.btoa(binary);
-	  }
-	
-	  upload.applyExifRotation = function (file) {
-	    if (file.type.indexOf('image/jpeg') !== 0) {
-	      return upload.emptyPromise(file);
-	    }
-	
-	    var deferred = $q.defer();
-	    upload.readOrientation(file).then(function (result) {
-	      if (result.orientation < 2 || result.orientation > 8) {
-	        return deferred.resolve(file);
-	      }
-	      upload.dataUrl(file, true).then(function (url) {
-	        var canvas = document.createElement('canvas');
-	        var img = document.createElement('img');
-	
-	        img.onload = function () {
-	          try {
-	            canvas.width = result.orientation > 4 ? img.height : img.width;
-	            canvas.height = result.orientation > 4 ? img.width : img.height;
-	            var ctx = canvas.getContext('2d');
-	            applyTransform(ctx, result.orientation, img.width, img.height);
-	            ctx.drawImage(img, 0, 0);
-	            var dataUrl = canvas.toDataURL(file.type || 'image/WebP', 0.934);
-	            dataUrl = upload.restoreExif(arrayBufferToBase64(result.fixedArrayBuffer), dataUrl);
-	            var blob = upload.dataUrltoBlob(dataUrl, file.name);
-	            deferred.resolve(blob);
-	          } catch (e) {
-	            return deferred.reject(e);
-	          }
-	        };
-	        img.onerror = function () {
-	          deferred.reject();
-	        };
-	        img.src = url;
-	      }, function (e) {
-	        deferred.reject(e);
-	      });
-	    }, function (e) {
-	      deferred.reject(e);
-	    });
-	    return deferred.promise;
-	  };
-	
-	  upload.restoreExif = function (orig, resized) {
-	    var ExifRestorer = {};
-	
-	    ExifRestorer.KEY_STR = 'ABCDEFGHIJKLMNOP' +
-	      'QRSTUVWXYZabcdef' +
-	      'ghijklmnopqrstuv' +
-	      'wxyz0123456789+/' +
-	      '=';
-	
-	    ExifRestorer.encode64 = function (input) {
-	      var output = '',
-	        chr1, chr2, chr3 = '',
-	        enc1, enc2, enc3, enc4 = '',
-	        i = 0;
-	
-	      do {
-	        chr1 = input[i++];
-	        chr2 = input[i++];
-	        chr3 = input[i++];
-	
-	        enc1 = chr1 >> 2;
-	        enc2 = ((chr1 & 3) << 4) | (chr2 >> 4);
-	        enc3 = ((chr2 & 15) << 2) | (chr3 >> 6);
-	        enc4 = chr3 & 63;
-	
-	        if (isNaN(chr2)) {
-	          enc3 = enc4 = 64;
-	        } else if (isNaN(chr3)) {
-	          enc4 = 64;
-	        }
-	
-	        output = output +
-	          this.KEY_STR.charAt(enc1) +
-	          this.KEY_STR.charAt(enc2) +
-	          this.KEY_STR.charAt(enc3) +
-	          this.KEY_STR.charAt(enc4);
-	        chr1 = chr2 = chr3 = '';
-	        enc1 = enc2 = enc3 = enc4 = '';
-	      } while (i < input.length);
-	
-	      return output;
-	    };
-	
-	    ExifRestorer.restore = function (origFileBase64, resizedFileBase64) {
-	      if (origFileBase64.match('data:image/jpeg;base64,')) {
-	        origFileBase64 = origFileBase64.replace('data:image/jpeg;base64,', '');
-	      }
-	
-	      var rawImage = this.decode64(origFileBase64);
-	      var segments = this.slice2Segments(rawImage);
-	
-	      var image = this.exifManipulation(resizedFileBase64, segments);
-	
-	      return 'data:image/jpeg;base64,' + this.encode64(image);
-	    };
-	
-	
-	    ExifRestorer.exifManipulation = function (resizedFileBase64, segments) {
-	      var exifArray = this.getExifArray(segments),
-	        newImageArray = this.insertExif(resizedFileBase64, exifArray);
-	      return new Uint8Array(newImageArray);
-	    };
-	
-	
-	    ExifRestorer.getExifArray = function (segments) {
-	      var seg;
-	      for (var x = 0; x < segments.length; x++) {
-	        seg = segments[x];
-	        if (seg[0] === 255 & seg[1] === 225) //(ff e1)
-	        {
-	          return seg;
-	        }
-	      }
-	      return [];
-	    };
-	
-	
-	    ExifRestorer.insertExif = function (resizedFileBase64, exifArray) {
-	      var imageData = resizedFileBase64.replace('data:image/jpeg;base64,', ''),
-	        buf = this.decode64(imageData),
-	        separatePoint = buf.indexOf(255, 3),
-	        mae = buf.slice(0, separatePoint),
-	        ato = buf.slice(separatePoint),
-	        array = mae;
-	
-	      array = array.concat(exifArray);
-	      array = array.concat(ato);
-	      return array;
-	    };
-	
-	
-	    ExifRestorer.slice2Segments = function (rawImageArray) {
-	      var head = 0,
-	        segments = [];
-	
-	      while (1) {
-	        if (rawImageArray[head] === 255 & rawImageArray[head + 1] === 218) {
-	          break;
-	        }
-	        if (rawImageArray[head] === 255 & rawImageArray[head + 1] === 216) {
-	          head += 2;
-	        }
-	        else {
-	          var length = rawImageArray[head + 2] * 256 + rawImageArray[head + 3],
-	            endPoint = head + length + 2,
-	            seg = rawImageArray.slice(head, endPoint);
-	          segments.push(seg);
-	          head = endPoint;
-	        }
-	        if (head > rawImageArray.length) {
-	          break;
-	        }
-	      }
-	
-	      return segments;
-	    };
-	
-	
-	    ExifRestorer.decode64 = function (input) {
-	      var chr1, chr2, chr3 = '',
-	        enc1, enc2, enc3, enc4 = '',
-	        i = 0,
-	        buf = [];
-	
-	      // remove all characters that are not A-Z, a-z, 0-9, +, /, or =
-	      var base64test = /[^A-Za-z0-9\+\/\=]/g;
-	      if (base64test.exec(input)) {
-	        console.log('There were invalid base64 characters in the input text.\n' +
-	          'Valid base64 characters are A-Z, a-z, 0-9, ' + ', ' / ',and "="\n' +
-	          'Expect errors in decoding.');
-	      }
-	      input = input.replace(/[^A-Za-z0-9\+\/\=]/g, '');
-	
-	      do {
-	        enc1 = this.KEY_STR.indexOf(input.charAt(i++));
-	        enc2 = this.KEY_STR.indexOf(input.charAt(i++));
-	        enc3 = this.KEY_STR.indexOf(input.charAt(i++));
-	        enc4 = this.KEY_STR.indexOf(input.charAt(i++));
-	
-	        chr1 = (enc1 << 2) | (enc2 >> 4);
-	        chr2 = ((enc2 & 15) << 4) | (enc3 >> 2);
-	        chr3 = ((enc3 & 3) << 6) | enc4;
-	
-	        buf.push(chr1);
-	
-	        if (enc3 !== 64) {
-	          buf.push(chr2);
-	        }
-	        if (enc4 !== 64) {
-	          buf.push(chr3);
-	        }
-	
-	        chr1 = chr2 = chr3 = '';
-	        enc1 = enc2 = enc3 = enc4 = '';
-	
-	      } while (i < input.length);
-	
-	      return buf;
-	    };
-	
-	    return ExifRestorer.restore(orig, resized);  //<= EXIF
-	  };
-	
-	  return upload;
-	}]);
-	
-
-
-/***/ },
-/* 48 */
-/***/ function(module, exports, __webpack_require__) {
-
-	__webpack_require__(49);
+	__webpack_require__(41);
 	module.exports = 'ngAnimate';
 
 
 /***/ },
-/* 49 */
+/* 41 */
 /***/ function(module, exports) {
 
 	/**
@@ -44018,6 +37786,6327 @@
 	
 	})(window, window.angular);
 
+
+/***/ },
+/* 42 */
+/***/ function(module, exports, __webpack_require__) {
+
+	__webpack_require__(43);
+	module.exports = 'ngResource';
+
+
+/***/ },
+/* 43 */
+/***/ function(module, exports) {
+
+	/**
+	 * @license AngularJS v1.5.8
+	 * (c) 2010-2016 Google, Inc. http://angularjs.org
+	 * License: MIT
+	 */
+	(function(window, angular) {'use strict';
+	
+	var $resourceMinErr = angular.$$minErr('$resource');
+	
+	// Helper functions and regex to lookup a dotted path on an object
+	// stopping at undefined/null.  The path must be composed of ASCII
+	// identifiers (just like $parse)
+	var MEMBER_NAME_REGEX = /^(\.[a-zA-Z_$@][0-9a-zA-Z_$@]*)+$/;
+	
+	function isValidDottedPath(path) {
+	  return (path != null && path !== '' && path !== 'hasOwnProperty' &&
+	      MEMBER_NAME_REGEX.test('.' + path));
+	}
+	
+	function lookupDottedPath(obj, path) {
+	  if (!isValidDottedPath(path)) {
+	    throw $resourceMinErr('badmember', 'Dotted member path "@{0}" is invalid.', path);
+	  }
+	  var keys = path.split('.');
+	  for (var i = 0, ii = keys.length; i < ii && angular.isDefined(obj); i++) {
+	    var key = keys[i];
+	    obj = (obj !== null) ? obj[key] : undefined;
+	  }
+	  return obj;
+	}
+	
+	/**
+	 * Create a shallow copy of an object and clear other fields from the destination
+	 */
+	function shallowClearAndCopy(src, dst) {
+	  dst = dst || {};
+	
+	  angular.forEach(dst, function(value, key) {
+	    delete dst[key];
+	  });
+	
+	  for (var key in src) {
+	    if (src.hasOwnProperty(key) && !(key.charAt(0) === '$' && key.charAt(1) === '$')) {
+	      dst[key] = src[key];
+	    }
+	  }
+	
+	  return dst;
+	}
+	
+	/**
+	 * @ngdoc module
+	 * @name ngResource
+	 * @description
+	 *
+	 * # ngResource
+	 *
+	 * The `ngResource` module provides interaction support with RESTful services
+	 * via the $resource service.
+	 *
+	 *
+	 * <div doc-module-components="ngResource"></div>
+	 *
+	 * See {@link ngResource.$resourceProvider} and {@link ngResource.$resource} for usage.
+	 */
+	
+	/**
+	 * @ngdoc provider
+	 * @name $resourceProvider
+	 *
+	 * @description
+	 *
+	 * Use `$resourceProvider` to change the default behavior of the {@link ngResource.$resource}
+	 * service.
+	 *
+	 * ## Dependencies
+	 * Requires the {@link ngResource } module to be installed.
+	 *
+	 */
+	
+	/**
+	 * @ngdoc service
+	 * @name $resource
+	 * @requires $http
+	 * @requires ng.$log
+	 * @requires $q
+	 * @requires ng.$timeout
+	 *
+	 * @description
+	 * A factory which creates a resource object that lets you interact with
+	 * [RESTful](http://en.wikipedia.org/wiki/Representational_State_Transfer) server-side data sources.
+	 *
+	 * The returned resource object has action methods which provide high-level behaviors without
+	 * the need to interact with the low level {@link ng.$http $http} service.
+	 *
+	 * Requires the {@link ngResource `ngResource`} module to be installed.
+	 *
+	 * By default, trailing slashes will be stripped from the calculated URLs,
+	 * which can pose problems with server backends that do not expect that
+	 * behavior.  This can be disabled by configuring the `$resourceProvider` like
+	 * this:
+	 *
+	 * ```js
+	     app.config(['$resourceProvider', function($resourceProvider) {
+	       // Don't strip trailing slashes from calculated URLs
+	       $resourceProvider.defaults.stripTrailingSlashes = false;
+	     }]);
+	 * ```
+	 *
+	 * @param {string} url A parameterized URL template with parameters prefixed by `:` as in
+	 *   `/user/:username`. If you are using a URL with a port number (e.g.
+	 *   `http://example.com:8080/api`), it will be respected.
+	 *
+	 *   If you are using a url with a suffix, just add the suffix, like this:
+	 *   `$resource('http://example.com/resource.json')` or `$resource('http://example.com/:id.json')`
+	 *   or even `$resource('http://example.com/resource/:resource_id.:format')`
+	 *   If the parameter before the suffix is empty, :resource_id in this case, then the `/.` will be
+	 *   collapsed down to a single `.`.  If you need this sequence to appear and not collapse then you
+	 *   can escape it with `/\.`.
+	 *
+	 * @param {Object=} paramDefaults Default values for `url` parameters. These can be overridden in
+	 *   `actions` methods. If a parameter value is a function, it will be called every time
+	 *   a param value needs to be obtained for a request (unless the param was overridden). The function
+	 *   will be passed the current data value as an argument.
+	 *
+	 *   Each key value in the parameter object is first bound to url template if present and then any
+	 *   excess keys are appended to the url search query after the `?`.
+	 *
+	 *   Given a template `/path/:verb` and parameter `{verb:'greet', salutation:'Hello'}` results in
+	 *   URL `/path/greet?salutation=Hello`.
+	 *
+	 *   If the parameter value is prefixed with `@`, then the value for that parameter will be
+	 *   extracted from the corresponding property on the `data` object (provided when calling a
+	 *   "non-GET" action method).
+	 *   For example, if the `defaultParam` object is `{someParam: '@someProp'}` then the value of
+	 *   `someParam` will be `data.someProp`.
+	 *   Note that the parameter will be ignored, when calling a "GET" action method (i.e. an action
+	 *   method that does not accept a request body)
+	 *
+	 * @param {Object.<Object>=} actions Hash with declaration of custom actions that should extend
+	 *   the default set of resource actions. The declaration should be created in the format of {@link
+	 *   ng.$http#usage $http.config}:
+	 *
+	 *       {action1: {method:?, params:?, isArray:?, headers:?, ...},
+	 *        action2: {method:?, params:?, isArray:?, headers:?, ...},
+	 *        ...}
+	 *
+	 *   Where:
+	 *
+	 *   - **`action`** – {string} – The name of action. This name becomes the name of the method on
+	 *     your resource object.
+	 *   - **`method`** – {string} – Case insensitive HTTP method (e.g. `GET`, `POST`, `PUT`,
+	 *     `DELETE`, `JSONP`, etc).
+	 *   - **`params`** – {Object=} – Optional set of pre-bound parameters for this action. If any of
+	 *     the parameter value is a function, it will be called every time when a param value needs to
+	 *     be obtained for a request (unless the param was overridden). The function will be passed the
+	 *     current data value as an argument.
+	 *   - **`url`** – {string} – action specific `url` override. The url templating is supported just
+	 *     like for the resource-level urls.
+	 *   - **`isArray`** – {boolean=} – If true then the returned object for this action is an array,
+	 *     see `returns` section.
+	 *   - **`transformRequest`** –
+	 *     `{function(data, headersGetter)|Array.<function(data, headersGetter)>}` –
+	 *     transform function or an array of such functions. The transform function takes the http
+	 *     request body and headers and returns its transformed (typically serialized) version.
+	 *     By default, transformRequest will contain one function that checks if the request data is
+	 *     an object and serializes to using `angular.toJson`. To prevent this behavior, set
+	 *     `transformRequest` to an empty array: `transformRequest: []`
+	 *   - **`transformResponse`** –
+	 *     `{function(data, headersGetter)|Array.<function(data, headersGetter)>}` –
+	 *     transform function or an array of such functions. The transform function takes the http
+	 *     response body and headers and returns its transformed (typically deserialized) version.
+	 *     By default, transformResponse will contain one function that checks if the response looks
+	 *     like a JSON string and deserializes it using `angular.fromJson`. To prevent this behavior,
+	 *     set `transformResponse` to an empty array: `transformResponse: []`
+	 *   - **`cache`** – `{boolean|Cache}` – If true, a default $http cache will be used to cache the
+	 *     GET request, otherwise if a cache instance built with
+	 *     {@link ng.$cacheFactory $cacheFactory}, this cache will be used for
+	 *     caching.
+	 *   - **`timeout`** – `{number}` – timeout in milliseconds.<br />
+	 *     **Note:** In contrast to {@link ng.$http#usage $http.config}, {@link ng.$q promises} are
+	 *     **not** supported in $resource, because the same value would be used for multiple requests.
+	 *     If you are looking for a way to cancel requests, you should use the `cancellable` option.
+	 *   - **`cancellable`** – `{boolean}` – if set to true, the request made by a "non-instance" call
+	 *     will be cancelled (if not already completed) by calling `$cancelRequest()` on the call's
+	 *     return value. Calling `$cancelRequest()` for a non-cancellable or an already
+	 *     completed/cancelled request will have no effect.<br />
+	 *   - **`withCredentials`** - `{boolean}` - whether to set the `withCredentials` flag on the
+	 *     XHR object. See
+	 *     [requests with credentials](https://developer.mozilla.org/en/http_access_control#section_5)
+	 *     for more information.
+	 *   - **`responseType`** - `{string}` - see
+	 *     [requestType](https://developer.mozilla.org/en-US/docs/DOM/XMLHttpRequest#responseType).
+	 *   - **`interceptor`** - `{Object=}` - The interceptor object has two optional methods -
+	 *     `response` and `responseError`. Both `response` and `responseError` interceptors get called
+	 *     with `http response` object. See {@link ng.$http $http interceptors}.
+	 *
+	 * @param {Object} options Hash with custom settings that should extend the
+	 *   default `$resourceProvider` behavior.  The supported options are:
+	 *
+	 *   - **`stripTrailingSlashes`** – {boolean} – If true then the trailing
+	 *   slashes from any calculated URL will be stripped. (Defaults to true.)
+	 *   - **`cancellable`** – {boolean} – If true, the request made by a "non-instance" call will be
+	 *   cancelled (if not already completed) by calling `$cancelRequest()` on the call's return value.
+	 *   This can be overwritten per action. (Defaults to false.)
+	 *
+	 * @returns {Object} A resource "class" object with methods for the default set of resource actions
+	 *   optionally extended with custom `actions`. The default set contains these actions:
+	 *   ```js
+	 *   { 'get':    {method:'GET'},
+	 *     'save':   {method:'POST'},
+	 *     'query':  {method:'GET', isArray:true},
+	 *     'remove': {method:'DELETE'},
+	 *     'delete': {method:'DELETE'} };
+	 *   ```
+	 *
+	 *   Calling these methods invoke an {@link ng.$http} with the specified http method,
+	 *   destination and parameters. When the data is returned from the server then the object is an
+	 *   instance of the resource class. The actions `save`, `remove` and `delete` are available on it
+	 *   as  methods with the `$` prefix. This allows you to easily perform CRUD operations (create,
+	 *   read, update, delete) on server-side data like this:
+	 *   ```js
+	 *   var User = $resource('/user/:userId', {userId:'@id'});
+	 *   var user = User.get({userId:123}, function() {
+	 *     user.abc = true;
+	 *     user.$save();
+	 *   });
+	 *   ```
+	 *
+	 *   It is important to realize that invoking a $resource object method immediately returns an
+	 *   empty reference (object or array depending on `isArray`). Once the data is returned from the
+	 *   server the existing reference is populated with the actual data. This is a useful trick since
+	 *   usually the resource is assigned to a model which is then rendered by the view. Having an empty
+	 *   object results in no rendering, once the data arrives from the server then the object is
+	 *   populated with the data and the view automatically re-renders itself showing the new data. This
+	 *   means that in most cases one never has to write a callback function for the action methods.
+	 *
+	 *   The action methods on the class object or instance object can be invoked with the following
+	 *   parameters:
+	 *
+	 *   - HTTP GET "class" actions: `Resource.action([parameters], [success], [error])`
+	 *   - non-GET "class" actions: `Resource.action([parameters], postData, [success], [error])`
+	 *   - non-GET instance actions:  `instance.$action([parameters], [success], [error])`
+	 *
+	 *
+	 *   Success callback is called with (value, responseHeaders) arguments, where the value is
+	 *   the populated resource instance or collection object. The error callback is called
+	 *   with (httpResponse) argument.
+	 *
+	 *   Class actions return empty instance (with additional properties below).
+	 *   Instance actions return promise of the action.
+	 *
+	 *   The Resource instances and collections have these additional properties:
+	 *
+	 *   - `$promise`: the {@link ng.$q promise} of the original server interaction that created this
+	 *     instance or collection.
+	 *
+	 *     On success, the promise is resolved with the same resource instance or collection object,
+	 *     updated with data from server. This makes it easy to use in
+	 *     {@link ngRoute.$routeProvider resolve section of $routeProvider.when()} to defer view
+	 *     rendering until the resource(s) are loaded.
+	 *
+	 *     On failure, the promise is rejected with the {@link ng.$http http response} object, without
+	 *     the `resource` property.
+	 *
+	 *     If an interceptor object was provided, the promise will instead be resolved with the value
+	 *     returned by the interceptor.
+	 *
+	 *   - `$resolved`: `true` after first server interaction is completed (either with success or
+	 *      rejection), `false` before that. Knowing if the Resource has been resolved is useful in
+	 *      data-binding.
+	 *
+	 *   The Resource instances and collections have these additional methods:
+	 *
+	 *   - `$cancelRequest`: If there is a cancellable, pending request related to the instance or
+	 *      collection, calling this method will abort the request.
+	 *
+	 *   The Resource instances have these additional methods:
+	 *
+	 *   - `toJSON`: It returns a simple object without any of the extra properties added as part of
+	 *     the Resource API. This object can be serialized through {@link angular.toJson} safely
+	 *     without attaching Angular-specific fields. Notice that `JSON.stringify` (and
+	 *     `angular.toJson`) automatically use this method when serializing a Resource instance
+	 *     (see [MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify#toJSON()_behavior)).
+	 *
+	 * @example
+	 *
+	 * # Credit card resource
+	 *
+	 * ```js
+	     // Define CreditCard class
+	     var CreditCard = $resource('/user/:userId/card/:cardId',
+	      {userId:123, cardId:'@id'}, {
+	       charge: {method:'POST', params:{charge:true}}
+	      });
+	
+	     // We can retrieve a collection from the server
+	     var cards = CreditCard.query(function() {
+	       // GET: /user/123/card
+	       // server returns: [ {id:456, number:'1234', name:'Smith'} ];
+	
+	       var card = cards[0];
+	       // each item is an instance of CreditCard
+	       expect(card instanceof CreditCard).toEqual(true);
+	       card.name = "J. Smith";
+	       // non GET methods are mapped onto the instances
+	       card.$save();
+	       // POST: /user/123/card/456 {id:456, number:'1234', name:'J. Smith'}
+	       // server returns: {id:456, number:'1234', name: 'J. Smith'};
+	
+	       // our custom method is mapped as well.
+	       card.$charge({amount:9.99});
+	       // POST: /user/123/card/456?amount=9.99&charge=true {id:456, number:'1234', name:'J. Smith'}
+	     });
+	
+	     // we can create an instance as well
+	     var newCard = new CreditCard({number:'0123'});
+	     newCard.name = "Mike Smith";
+	     newCard.$save();
+	     // POST: /user/123/card {number:'0123', name:'Mike Smith'}
+	     // server returns: {id:789, number:'0123', name: 'Mike Smith'};
+	     expect(newCard.id).toEqual(789);
+	 * ```
+	 *
+	 * The object returned from this function execution is a resource "class" which has "static" method
+	 * for each action in the definition.
+	 *
+	 * Calling these methods invoke `$http` on the `url` template with the given `method`, `params` and
+	 * `headers`.
+	 *
+	 * @example
+	 *
+	 * # User resource
+	 *
+	 * When the data is returned from the server then the object is an instance of the resource type and
+	 * all of the non-GET methods are available with `$` prefix. This allows you to easily support CRUD
+	 * operations (create, read, update, delete) on server-side data.
+	
+	   ```js
+	     var User = $resource('/user/:userId', {userId:'@id'});
+	     User.get({userId:123}, function(user) {
+	       user.abc = true;
+	       user.$save();
+	     });
+	   ```
+	 *
+	 * It's worth noting that the success callback for `get`, `query` and other methods gets passed
+	 * in the response that came from the server as well as $http header getter function, so one
+	 * could rewrite the above example and get access to http headers as:
+	 *
+	   ```js
+	     var User = $resource('/user/:userId', {userId:'@id'});
+	     User.get({userId:123}, function(user, getResponseHeaders){
+	       user.abc = true;
+	       user.$save(function(user, putResponseHeaders) {
+	         //user => saved user object
+	         //putResponseHeaders => $http header getter
+	       });
+	     });
+	   ```
+	 *
+	 * You can also access the raw `$http` promise via the `$promise` property on the object returned
+	 *
+	   ```
+	     var User = $resource('/user/:userId', {userId:'@id'});
+	     User.get({userId:123})
+	         .$promise.then(function(user) {
+	           $scope.user = user;
+	         });
+	   ```
+	 *
+	 * @example
+	 *
+	 * # Creating a custom 'PUT' request
+	 *
+	 * In this example we create a custom method on our resource to make a PUT request
+	 * ```js
+	 *    var app = angular.module('app', ['ngResource', 'ngRoute']);
+	 *
+	 *    // Some APIs expect a PUT request in the format URL/object/ID
+	 *    // Here we are creating an 'update' method
+	 *    app.factory('Notes', ['$resource', function($resource) {
+	 *    return $resource('/notes/:id', null,
+	 *        {
+	 *            'update': { method:'PUT' }
+	 *        });
+	 *    }]);
+	 *
+	 *    // In our controller we get the ID from the URL using ngRoute and $routeParams
+	 *    // We pass in $routeParams and our Notes factory along with $scope
+	 *    app.controller('NotesCtrl', ['$scope', '$routeParams', 'Notes',
+	                                      function($scope, $routeParams, Notes) {
+	 *    // First get a note object from the factory
+	 *    var note = Notes.get({ id:$routeParams.id });
+	 *    $id = note.id;
+	 *
+	 *    // Now call update passing in the ID first then the object you are updating
+	 *    Notes.update({ id:$id }, note);
+	 *
+	 *    // This will PUT /notes/ID with the note object in the request payload
+	 *    }]);
+	 * ```
+	 *
+	 * @example
+	 *
+	 * # Cancelling requests
+	 *
+	 * If an action's configuration specifies that it is cancellable, you can cancel the request related
+	 * to an instance or collection (as long as it is a result of a "non-instance" call):
+	 *
+	   ```js
+	     // ...defining the `Hotel` resource...
+	     var Hotel = $resource('/api/hotel/:id', {id: '@id'}, {
+	       // Let's make the `query()` method cancellable
+	       query: {method: 'get', isArray: true, cancellable: true}
+	     });
+	
+	     // ...somewhere in the PlanVacationController...
+	     ...
+	     this.onDestinationChanged = function onDestinationChanged(destination) {
+	       // We don't care about any pending request for hotels
+	       // in a different destination any more
+	       this.availableHotels.$cancelRequest();
+	
+	       // Let's query for hotels in '<destination>'
+	       // (calls: /api/hotel?location=<destination>)
+	       this.availableHotels = Hotel.query({location: destination});
+	     };
+	   ```
+	 *
+	 */
+	angular.module('ngResource', ['ng']).
+	  provider('$resource', function() {
+	    var PROTOCOL_AND_DOMAIN_REGEX = /^https?:\/\/[^\/]*/;
+	    var provider = this;
+	
+	    /**
+	     * @ngdoc property
+	     * @name $resourceProvider#defaults
+	     * @description
+	     * Object containing default options used when creating `$resource` instances.
+	     *
+	     * The default values satisfy a wide range of usecases, but you may choose to overwrite any of
+	     * them to further customize your instances. The available properties are:
+	     *
+	     * - **stripTrailingSlashes** – `{boolean}` – If true, then the trailing slashes from any
+	     *   calculated URL will be stripped.<br />
+	     *   (Defaults to true.)
+	     * - **cancellable** – `{boolean}` – If true, the request made by a "non-instance" call will be
+	     *   cancelled (if not already completed) by calling `$cancelRequest()` on the call's return
+	     *   value. For more details, see {@link ngResource.$resource}. This can be overwritten per
+	     *   resource class or action.<br />
+	     *   (Defaults to false.)
+	     * - **actions** - `{Object.<Object>}` - A hash with default actions declarations. Actions are
+	     *   high-level methods corresponding to RESTful actions/methods on resources. An action may
+	     *   specify what HTTP method to use, what URL to hit, if the return value will be a single
+	     *   object or a collection (array) of objects etc. For more details, see
+	     *   {@link ngResource.$resource}. The actions can also be enhanced or overwritten per resource
+	     *   class.<br />
+	     *   The default actions are:
+	     *   ```js
+	     *   {
+	     *     get: {method: 'GET'},
+	     *     save: {method: 'POST'},
+	     *     query: {method: 'GET', isArray: true},
+	     *     remove: {method: 'DELETE'},
+	     *     delete: {method: 'DELETE'}
+	     *   }
+	     *   ```
+	     *
+	     * #### Example
+	     *
+	     * For example, you can specify a new `update` action that uses the `PUT` HTTP verb:
+	     *
+	     * ```js
+	     *   angular.
+	     *     module('myApp').
+	     *     config(['resourceProvider', function ($resourceProvider) {
+	     *       $resourceProvider.defaults.actions.update = {
+	     *         method: 'PUT'
+	     *       };
+	     *     });
+	     * ```
+	     *
+	     * Or you can even overwrite the whole `actions` list and specify your own:
+	     *
+	     * ```js
+	     *   angular.
+	     *     module('myApp').
+	     *     config(['resourceProvider', function ($resourceProvider) {
+	     *       $resourceProvider.defaults.actions = {
+	     *         create: {method: 'POST'}
+	     *         get:    {method: 'GET'},
+	     *         getAll: {method: 'GET', isArray:true},
+	     *         update: {method: 'PUT'},
+	     *         delete: {method: 'DELETE'}
+	     *       };
+	     *     });
+	     * ```
+	     *
+	     */
+	    this.defaults = {
+	      // Strip slashes by default
+	      stripTrailingSlashes: true,
+	
+	      // Make non-instance requests cancellable (via `$cancelRequest()`)
+	      cancellable: false,
+	
+	      // Default actions configuration
+	      actions: {
+	        'get': {method: 'GET'},
+	        'save': {method: 'POST'},
+	        'query': {method: 'GET', isArray: true},
+	        'remove': {method: 'DELETE'},
+	        'delete': {method: 'DELETE'}
+	      }
+	    };
+	
+	    this.$get = ['$http', '$log', '$q', '$timeout', function($http, $log, $q, $timeout) {
+	
+	      var noop = angular.noop,
+	        forEach = angular.forEach,
+	        extend = angular.extend,
+	        copy = angular.copy,
+	        isFunction = angular.isFunction;
+	
+	      /**
+	       * We need our custom method because encodeURIComponent is too aggressive and doesn't follow
+	       * http://www.ietf.org/rfc/rfc3986.txt with regards to the character set
+	       * (pchar) allowed in path segments:
+	       *    segment       = *pchar
+	       *    pchar         = unreserved / pct-encoded / sub-delims / ":" / "@"
+	       *    pct-encoded   = "%" HEXDIG HEXDIG
+	       *    unreserved    = ALPHA / DIGIT / "-" / "." / "_" / "~"
+	       *    sub-delims    = "!" / "$" / "&" / "'" / "(" / ")"
+	       *                     / "*" / "+" / "," / ";" / "="
+	       */
+	      function encodeUriSegment(val) {
+	        return encodeUriQuery(val, true).
+	          replace(/%26/gi, '&').
+	          replace(/%3D/gi, '=').
+	          replace(/%2B/gi, '+');
+	      }
+	
+	
+	      /**
+	       * This method is intended for encoding *key* or *value* parts of query component. We need a
+	       * custom method because encodeURIComponent is too aggressive and encodes stuff that doesn't
+	       * have to be encoded per http://tools.ietf.org/html/rfc3986:
+	       *    query       = *( pchar / "/" / "?" )
+	       *    pchar         = unreserved / pct-encoded / sub-delims / ":" / "@"
+	       *    unreserved    = ALPHA / DIGIT / "-" / "." / "_" / "~"
+	       *    pct-encoded   = "%" HEXDIG HEXDIG
+	       *    sub-delims    = "!" / "$" / "&" / "'" / "(" / ")"
+	       *                     / "*" / "+" / "," / ";" / "="
+	       */
+	      function encodeUriQuery(val, pctEncodeSpaces) {
+	        return encodeURIComponent(val).
+	          replace(/%40/gi, '@').
+	          replace(/%3A/gi, ':').
+	          replace(/%24/g, '$').
+	          replace(/%2C/gi, ',').
+	          replace(/%20/g, (pctEncodeSpaces ? '%20' : '+'));
+	      }
+	
+	      function Route(template, defaults) {
+	        this.template = template;
+	        this.defaults = extend({}, provider.defaults, defaults);
+	        this.urlParams = {};
+	      }
+	
+	      Route.prototype = {
+	        setUrlParams: function(config, params, actionUrl) {
+	          var self = this,
+	            url = actionUrl || self.template,
+	            val,
+	            encodedVal,
+	            protocolAndDomain = '';
+	
+	          var urlParams = self.urlParams = {};
+	          forEach(url.split(/\W/), function(param) {
+	            if (param === 'hasOwnProperty') {
+	              throw $resourceMinErr('badname', "hasOwnProperty is not a valid parameter name.");
+	            }
+	            if (!(new RegExp("^\\d+$").test(param)) && param &&
+	              (new RegExp("(^|[^\\\\]):" + param + "(\\W|$)").test(url))) {
+	              urlParams[param] = {
+	                isQueryParamValue: (new RegExp("\\?.*=:" + param + "(?:\\W|$)")).test(url)
+	              };
+	            }
+	          });
+	          url = url.replace(/\\:/g, ':');
+	          url = url.replace(PROTOCOL_AND_DOMAIN_REGEX, function(match) {
+	            protocolAndDomain = match;
+	            return '';
+	          });
+	
+	          params = params || {};
+	          forEach(self.urlParams, function(paramInfo, urlParam) {
+	            val = params.hasOwnProperty(urlParam) ? params[urlParam] : self.defaults[urlParam];
+	            if (angular.isDefined(val) && val !== null) {
+	              if (paramInfo.isQueryParamValue) {
+	                encodedVal = encodeUriQuery(val, true);
+	              } else {
+	                encodedVal = encodeUriSegment(val);
+	              }
+	              url = url.replace(new RegExp(":" + urlParam + "(\\W|$)", "g"), function(match, p1) {
+	                return encodedVal + p1;
+	              });
+	            } else {
+	              url = url.replace(new RegExp("(\/?):" + urlParam + "(\\W|$)", "g"), function(match,
+	                  leadingSlashes, tail) {
+	                if (tail.charAt(0) == '/') {
+	                  return tail;
+	                } else {
+	                  return leadingSlashes + tail;
+	                }
+	              });
+	            }
+	          });
+	
+	          // strip trailing slashes and set the url (unless this behavior is specifically disabled)
+	          if (self.defaults.stripTrailingSlashes) {
+	            url = url.replace(/\/+$/, '') || '/';
+	          }
+	
+	          // then replace collapse `/.` if found in the last URL path segment before the query
+	          // E.g. `http://url.com/id./format?q=x` becomes `http://url.com/id.format?q=x`
+	          url = url.replace(/\/\.(?=\w+($|\?))/, '.');
+	          // replace escaped `/\.` with `/.`
+	          config.url = protocolAndDomain + url.replace(/\/\\\./, '/.');
+	
+	
+	          // set params - delegate param encoding to $http
+	          forEach(params, function(value, key) {
+	            if (!self.urlParams[key]) {
+	              config.params = config.params || {};
+	              config.params[key] = value;
+	            }
+	          });
+	        }
+	      };
+	
+	
+	      function resourceFactory(url, paramDefaults, actions, options) {
+	        var route = new Route(url, options);
+	
+	        actions = extend({}, provider.defaults.actions, actions);
+	
+	        function extractParams(data, actionParams) {
+	          var ids = {};
+	          actionParams = extend({}, paramDefaults, actionParams);
+	          forEach(actionParams, function(value, key) {
+	            if (isFunction(value)) { value = value(data); }
+	            ids[key] = value && value.charAt && value.charAt(0) == '@' ?
+	              lookupDottedPath(data, value.substr(1)) : value;
+	          });
+	          return ids;
+	        }
+	
+	        function defaultResponseInterceptor(response) {
+	          return response.resource;
+	        }
+	
+	        function Resource(value) {
+	          shallowClearAndCopy(value || {}, this);
+	        }
+	
+	        Resource.prototype.toJSON = function() {
+	          var data = extend({}, this);
+	          delete data.$promise;
+	          delete data.$resolved;
+	          return data;
+	        };
+	
+	        forEach(actions, function(action, name) {
+	          var hasBody = /^(POST|PUT|PATCH)$/i.test(action.method);
+	          var numericTimeout = action.timeout;
+	          var cancellable = angular.isDefined(action.cancellable) ? action.cancellable :
+	              (options && angular.isDefined(options.cancellable)) ? options.cancellable :
+	              provider.defaults.cancellable;
+	
+	          if (numericTimeout && !angular.isNumber(numericTimeout)) {
+	            $log.debug('ngResource:\n' +
+	                       '  Only numeric values are allowed as `timeout`.\n' +
+	                       '  Promises are not supported in $resource, because the same value would ' +
+	                       'be used for multiple requests. If you are looking for a way to cancel ' +
+	                       'requests, you should use the `cancellable` option.');
+	            delete action.timeout;
+	            numericTimeout = null;
+	          }
+	
+	          Resource[name] = function(a1, a2, a3, a4) {
+	            var params = {}, data, success, error;
+	
+	            /* jshint -W086 */ /* (purposefully fall through case statements) */
+	            switch (arguments.length) {
+	              case 4:
+	                error = a4;
+	                success = a3;
+	              //fallthrough
+	              case 3:
+	              case 2:
+	                if (isFunction(a2)) {
+	                  if (isFunction(a1)) {
+	                    success = a1;
+	                    error = a2;
+	                    break;
+	                  }
+	
+	                  success = a2;
+	                  error = a3;
+	                  //fallthrough
+	                } else {
+	                  params = a1;
+	                  data = a2;
+	                  success = a3;
+	                  break;
+	                }
+	              case 1:
+	                if (isFunction(a1)) success = a1;
+	                else if (hasBody) data = a1;
+	                else params = a1;
+	                break;
+	              case 0: break;
+	              default:
+	                throw $resourceMinErr('badargs',
+	                  "Expected up to 4 arguments [params, data, success, error], got {0} arguments",
+	                  arguments.length);
+	            }
+	            /* jshint +W086 */ /* (purposefully fall through case statements) */
+	
+	            var isInstanceCall = this instanceof Resource;
+	            var value = isInstanceCall ? data : (action.isArray ? [] : new Resource(data));
+	            var httpConfig = {};
+	            var responseInterceptor = action.interceptor && action.interceptor.response ||
+	              defaultResponseInterceptor;
+	            var responseErrorInterceptor = action.interceptor && action.interceptor.responseError ||
+	              undefined;
+	            var timeoutDeferred;
+	            var numericTimeoutPromise;
+	
+	            forEach(action, function(value, key) {
+	              switch (key) {
+	                default:
+	                  httpConfig[key] = copy(value);
+	                  break;
+	                case 'params':
+	                case 'isArray':
+	                case 'interceptor':
+	                case 'cancellable':
+	                  break;
+	              }
+	            });
+	
+	            if (!isInstanceCall && cancellable) {
+	              timeoutDeferred = $q.defer();
+	              httpConfig.timeout = timeoutDeferred.promise;
+	
+	              if (numericTimeout) {
+	                numericTimeoutPromise = $timeout(timeoutDeferred.resolve, numericTimeout);
+	              }
+	            }
+	
+	            if (hasBody) httpConfig.data = data;
+	            route.setUrlParams(httpConfig,
+	              extend({}, extractParams(data, action.params || {}), params),
+	              action.url);
+	
+	            var promise = $http(httpConfig).then(function(response) {
+	              var data = response.data;
+	
+	              if (data) {
+	                // Need to convert action.isArray to boolean in case it is undefined
+	                // jshint -W018
+	                if (angular.isArray(data) !== (!!action.isArray)) {
+	                  throw $resourceMinErr('badcfg',
+	                      'Error in resource configuration for action `{0}`. Expected response to ' +
+	                      'contain an {1} but got an {2} (Request: {3} {4})', name, action.isArray ? 'array' : 'object',
+	                    angular.isArray(data) ? 'array' : 'object', httpConfig.method, httpConfig.url);
+	                }
+	                // jshint +W018
+	                if (action.isArray) {
+	                  value.length = 0;
+	                  forEach(data, function(item) {
+	                    if (typeof item === "object") {
+	                      value.push(new Resource(item));
+	                    } else {
+	                      // Valid JSON values may be string literals, and these should not be converted
+	                      // into objects. These items will not have access to the Resource prototype
+	                      // methods, but unfortunately there
+	                      value.push(item);
+	                    }
+	                  });
+	                } else {
+	                  var promise = value.$promise;     // Save the promise
+	                  shallowClearAndCopy(data, value);
+	                  value.$promise = promise;         // Restore the promise
+	                }
+	              }
+	              response.resource = value;
+	
+	              return response;
+	            }, function(response) {
+	              (error || noop)(response);
+	              return $q.reject(response);
+	            });
+	
+	            promise['finally'](function() {
+	              value.$resolved = true;
+	              if (!isInstanceCall && cancellable) {
+	                value.$cancelRequest = angular.noop;
+	                $timeout.cancel(numericTimeoutPromise);
+	                timeoutDeferred = numericTimeoutPromise = httpConfig.timeout = null;
+	              }
+	            });
+	
+	            promise = promise.then(
+	              function(response) {
+	                var value = responseInterceptor(response);
+	                (success || noop)(value, response.headers);
+	                return value;
+	              },
+	              responseErrorInterceptor);
+	
+	            if (!isInstanceCall) {
+	              // we are creating instance / collection
+	              // - set the initial promise
+	              // - return the instance / collection
+	              value.$promise = promise;
+	              value.$resolved = false;
+	              if (cancellable) value.$cancelRequest = timeoutDeferred.resolve;
+	
+	              return value;
+	            }
+	
+	            // instance call
+	            return promise;
+	          };
+	
+	
+	          Resource.prototype['$' + name] = function(params, success, error) {
+	            if (isFunction(params)) {
+	              error = success; success = params; params = {};
+	            }
+	            var result = Resource[name].call(this, params, this, success, error);
+	            return result.$promise || result;
+	          };
+	        });
+	
+	        Resource.bind = function(additionalParamDefaults) {
+	          return resourceFactory(url, extend({}, paramDefaults, additionalParamDefaults), actions);
+	        };
+	
+	        return Resource;
+	      }
+	
+	      return resourceFactory;
+	    }];
+	  });
+	
+	
+	})(window, window.angular);
+
+
+/***/ },
+/* 44 */
+/***/ function(module, exports) {
+
+	/*!
+	angular-xeditable - 0.3.0
+	Edit-in-place for angular.js
+	Build date: 2016-09-06 
+	*/
+	/**
+	 * Angular-xeditable module 
+	 *
+	 */
+	angular.module('xeditable', [])
+	
+	
+	/**
+	 * Default options. 
+	 *
+	 * @namespace editable-options
+	 */
+	//todo: maybe better have editableDefaults, not options...
+	.value('editableOptions', {
+	  /**
+	   * Theme. Possible values `bs3`, `bs2`, `default`.
+	   * 
+	   * @var {string} theme
+	   * @memberOf editable-options
+	   */  
+	  theme: 'default',
+	  /**
+	   * Icon Set. Possible values `font-awesome`, `default`.
+	   * 
+	   * @var {string} icon set
+	   * @memberOf editable-options
+	   */  
+	  icon_set: 'default',
+	  /**
+	   * Whether to show buttons for single editalbe element.  
+	   * Possible values `right` (default), `no`.
+	   * 
+	   * @var {string} buttons
+	   * @memberOf editable-options
+	   */    
+	  buttons: 'right',
+	  /**
+	   * Default value for `blur` attribute of single editable element.  
+	   * Can be `cancel|submit|ignore`.
+	   * 
+	   * @var {string} blurElem
+	   * @memberOf editable-options
+	   */
+	  blurElem: 'cancel',
+	  /**
+	   * Default value for `blur` attribute of editable form.  
+	   * Can be `cancel|submit|ignore`.
+	   * 
+	   * @var {string} blurForm
+	   * @memberOf editable-options
+	   */
+	  blurForm: 'ignore',
+	  /**
+	   * How input elements get activated. Possible values: `focus|select|none`.
+	   *
+	   * @var {string} activate
+	   * @memberOf editable-options
+	   */
+	  activate: 'focus',
+	  /**
+	   * Whether to disable x-editable. Can be overloaded on each element.
+	   *
+	   * @var {boolean} isDisabled
+	   * @memberOf editable-options
+	   */
+	   isDisabled: false,
+	  
+	  /**
+	   * Event, on which the edit mode gets activated. 
+	   * Can be any event.
+	   *
+	   * @var {string} activationEvent
+	   * @memberOf editable-options
+	   */
+	  activationEvent: 'click'
+	
+	});
+	
+	/*
+	 Angular-ui bootstrap datepicker
+	 http://angular-ui.github.io/bootstrap/#/datepicker
+	 */
+	angular.module('xeditable').directive('editableBsdate', ['editableDirectiveFactory',
+	    function(editableDirectiveFactory) {
+	        return editableDirectiveFactory({
+	            directiveName: 'editableBsdate',
+	            inputTpl: '<div></div>',
+	            render: function() {
+	                /** This basically renders a datepicker as in the example shown in
+	                 **  http://angular-ui.github.io/bootstrap/#/datepicker
+	                 **  The attributes are all the same as in the bootstrap-ui datepicker with e- as prefix
+	                 **/
+	                this.parent.render.call(this);
+	
+	                var inputDatePicker = angular.element('<input type="text" class="form-control" data-ng-model="$parent.$data"/>');
+	
+	                inputDatePicker.attr('uib-datepicker-popup', this.attrs.eDatepickerPopupXEditable || 'yyyy/MM/dd' );
+	                inputDatePicker.attr('is-open', this.attrs.eIsOpen);
+	                inputDatePicker.attr('date-disabled', this.attrs.eDateDisabled);
+	                inputDatePicker.attr('uib-datepicker-popup', this.attrs.eDatepickerPopup);
+	                inputDatePicker.attr('year-range', this.attrs.eYearRange || 20);
+	                inputDatePicker.attr('show-button-bar', this.attrs.eShowButtonBar || true);
+	                inputDatePicker.attr('current-text', this.attrs.eCurrentText || 'Today');
+	                inputDatePicker.attr('clear-text', this.attrs.eClearText || 'Clear');
+	                inputDatePicker.attr('close-text', this.attrs.eCloseText || 'Done');
+	                inputDatePicker.attr('close-on-date-selection', this.attrs.eCloseOnDateSelection || true);
+	                inputDatePicker.attr('datepicker-append-to-body', this.attrs.eDatePickerAppendToBody || false);
+	                inputDatePicker.attr('date-disabled', this.attrs.eDateDisabled);
+	                inputDatePicker.attr('name', this.attrs.eName);
+	                inputDatePicker.attr('on-open-focus', this.attrs.eOnOpenFocus || true);
+	                inputDatePicker.attr('ng-readonly', this.attrs.eReadonly || false);
+	
+	                if (this.attrs.eNgChange) {
+	                    inputDatePicker.attr('ng-change', this.attrs.eNgChange);
+	                    this.inputEl.removeAttr('ng-change');
+	                }
+	
+	                if (this.attrs.eStyle) {
+	                    inputDatePicker.attr('style', this.attrs.eStyle);
+	                    this.inputEl.removeAttr('style');
+	                }
+	
+	                this.scope.dateOptions = {
+	                    formatDay:  this.attrs.eFormatDay || 'dd',
+	                    formatMonth: this.attrs.eFormatMonth || 'MMMM',
+	                    formatYear: this.attrs.eFormatYear || 'yyyy',
+	                    formatDayHeader: this.attrs.eFormatDayHeader || 'EEE',
+	                    formatDayTitle: this.attrs.eFormatDayTitle || 'MMMM yyyy',
+	                    formatMonthTitle: this.attrs.eFormatMonthTitle || 'yyyy',
+	                    showWeeks: this.attrs.eShowWeeks ? this.attrs.eShowWeeks.toLowerCase() === 'true' : true,
+	                    startingDay: this.attrs.eStartingDay || 0,
+	                    minMode: this.attrs.eMinMode || 'day',
+	                    maxMode: this.attrs.eMaxMode || 'year',
+	                    initDate: this.scope.$eval(this.attrs.eInitDate) || new Date(),
+	                    datepickerMode: this.attrs.eDatepickerMode || 'day',
+	                    maxDate: this.scope.$eval(this.attrs.eMaxDate) || null,
+	                    minDate: this.scope.$eval(this.attrs.eMinDate) || null
+	                };
+	
+	                var showCalendarButton = angular.isDefined(this.attrs.eShowCalendarButton) ? this.attrs.eShowCalendarButton : "true";
+	
+	                //See if calendar button should be displayed
+	                if (showCalendarButton === "true") {
+	                    var buttonDatePicker = angular.element('<button type="button" class="btn btn-default"><i class="glyphicon glyphicon-calendar"></i></button>');
+	                    var buttonWrapper = angular.element('<span class="input-group-btn"></span>');
+	
+	                    buttonDatePicker.attr('ng-click', this.attrs.eNgClick);
+	
+	                    buttonWrapper.append(buttonDatePicker);
+	
+	                    this.inputEl.append(buttonWrapper);
+	                } else {
+	                    //If no calendar button, display calendar popup on click of input field
+	                    inputDatePicker.attr('ng-click', this.attrs.eNgClick);
+	                }
+	
+	                inputDatePicker.attr('datepicker-options', "dateOptions");
+	
+	                this.inputEl.prepend(inputDatePicker);
+	
+	                this.inputEl.removeAttr('class');
+	                this.inputEl.removeAttr('ng-click');
+	                this.inputEl.removeAttr('is-open');
+	                this.inputEl.removeAttr('init-date');
+	                this.inputEl.removeAttr('datepicker-popup');
+	                this.inputEl.removeAttr('required');
+	                this.inputEl.removeAttr('ng-model');
+	                this.inputEl.removeAttr('date-picker-append-to-body');
+	                this.inputEl.removeAttr('name');
+	                this.inputEl.attr('class','input-group');
+	            }
+		});
+	}]);
+	/*
+	Angular-ui bootstrap editable timepicker
+	http://angular-ui.github.io/bootstrap/#/timepicker
+	*/
+	angular.module('xeditable').directive('editableBstime', ['editableDirectiveFactory',
+	  function(editableDirectiveFactory) {
+	    return editableDirectiveFactory({
+	      directiveName: 'editableBstime',
+	      inputTpl: '<uib-timepicker></uib-timepicker>',
+	      render: function() {
+	        this.parent.render.call(this);
+	
+	        // timepicker can't update model when ng-model set directly to it
+	        // see: https://github.com/angular-ui/bootstrap/issues/1141
+	        // so we wrap it into DIV
+	        var div = angular.element('<div class="well well-small" style="display:inline-block;"></div>');
+	
+	        // move ng-model to wrapping div
+	        div.attr('ng-model', this.inputEl.attr('ng-model'));
+	        this.inputEl.removeAttr('ng-model');
+	
+	        // move ng-change to wrapping div
+	        if(this.attrs.eNgChange) {
+	          div.attr('ng-change', this.inputEl.attr('ng-change'));
+	          this.inputEl.removeAttr('ng-change');
+	        }
+	
+	        // wrap
+	        this.inputEl.wrap(div);
+	      }
+	    });
+	}]);
+	//checkbox
+	angular.module('xeditable').directive('editableCheckbox', ['editableDirectiveFactory',
+	  function(editableDirectiveFactory) {
+	    return editableDirectiveFactory({
+	      directiveName: 'editableCheckbox',
+	      inputTpl: '<input type="checkbox">',
+	      render: function() {
+	        this.parent.render.call(this);
+	        if(this.attrs.eTitle) {
+	          this.inputEl.wrap('<label></label>');
+	          this.inputEl.parent().append('<span>' + this.attrs.eTitle + '</span>');
+	        }
+	      },
+	      autosubmit: function() {
+	        var self = this;
+	        self.inputEl.bind('change', function() {
+	          setTimeout(function() {
+	            self.scope.$apply(function() {
+	              self.scope.$form.$submit();
+	            });
+	          }, 500);
+	        });
+	      }
+	    });
+	}]);
+	
+	// checklist
+	angular.module('xeditable').directive('editableChecklist', [
+	  'editableDirectiveFactory',
+	  'editableNgOptionsParser',
+	  function(editableDirectiveFactory, editableNgOptionsParser) {
+	    return editableDirectiveFactory({
+	      directiveName: 'editableChecklist',
+	      inputTpl: '<span></span>',
+	      useCopy: true,
+	      render: function() {
+	        this.parent.render.call(this);
+	        var parsed = editableNgOptionsParser(this.attrs.eNgOptions);
+	        var html = '<label ng-repeat="'+parsed.ngRepeat+'">'+
+	          '<input type="checkbox" checklist-model="$parent.$parent.$data" checklist-value="'+parsed.locals.valueFn+'">'+
+	          '<span ng-bind="'+parsed.locals.displayFn+'"></span></label>';
+	
+	        this.inputEl.removeAttr('ng-model');
+	        this.inputEl.removeAttr('ng-options');
+	        this.inputEl.html(html);
+	      }
+	    });
+	}]);
+	
+	angular.module('xeditable').directive('editableCombodate', ['editableDirectiveFactory', 'editableCombodate',
+	  function(editableDirectiveFactory, editableCombodate) {
+	    return editableDirectiveFactory({
+	      directiveName: 'editableCombodate',
+	      inputTpl: '<input type="text">',
+	      render: function() {
+	        this.parent.render.call(this);
+	
+	        var options = {
+	          value: new Date(this.scope.$data)
+	        };
+	        var self = this;
+	        angular.forEach(["format", "template", "minYear", "maxYear", "yearDescending", "minuteStep", "secondStep", "firstItem", "errorClass", "customClass", "roundTime", "smartDays"], function(name) {
+	
+	          var attrName = "e" + name.charAt(0).toUpperCase() + name.slice(1);
+	          if (attrName in self.attrs) {
+	            options[name] = self.attrs[attrName];
+	          }
+	        });
+	
+	        var combodate = editableCombodate.getInstance(this.inputEl, options);
+	        combodate.$widget.find('select').bind('change', function(e) {
+	          self.scope.$data = (new Date(combodate.getValue())).toISOString();
+	        });
+	      }
+	    });
+	  }
+	]);
+	
+	/*
+	Input types: text|password|email|tel|number|url|search|color|date|datetime|datetime-local|time|month|week|file
+	*/
+	
+	(function() {
+	
+	  var camelCase = function(dashDelimitedString) {
+	    return dashDelimitedString.toLowerCase().replace(/-(.)/g, function(match, word) {
+	      return word.toUpperCase();
+	    });
+	  };
+	
+	  var types = 'text|password|email|tel|number|url|search|color|date|datetime|datetime-local|time|month|week|file'.split('|');
+	
+	  //todo: datalist
+	  
+	  // generate directives
+	  angular.forEach(types, function(type) {
+	    var directiveName = camelCase('editable' + '-' + type);
+	    angular.module('xeditable').directive(directiveName, ['editableDirectiveFactory',
+	      function(editableDirectiveFactory) {
+	        return editableDirectiveFactory({
+	          directiveName: directiveName,
+	          inputTpl: '<input type="'+type+'">',
+	          render: function() {
+	            this.parent.render.call(this);
+	
+	            // Add label to the input
+	            if (this.attrs.eLabel) {
+	              var label = angular.element('<label>' + this.attrs.eLabel + '</label>');
+	              this.inputEl.parent().prepend(label);
+	            }
+	            
+	            // Add classes to the form
+	            if (this.attrs.eFormclass) {
+	              this.editorEl.addClass(this.attrs.eFormclass);
+	            }
+	          }
+	        });
+	    }]);
+	  });
+	
+	  //`range` is bit specific
+	  angular.module('xeditable').directive('editableRange', ['editableDirectiveFactory',
+	    function(editableDirectiveFactory) {
+	      return editableDirectiveFactory({
+	        directiveName: 'editableRange',
+	        inputTpl: '<input type="range" id="range" name="range">',
+	        render: function() {
+	          this.parent.render.call(this);
+	          this.inputEl.after('<output>{{$data}}</output>');
+	        }        
+	      });
+	  }]);
+	
+	}());
+	
+	
+	/*
+	 Tags input directive for AngularJS
+	 https://github.com/mbenford/ngTagsInput
+	 */
+	angular.module('xeditable').directive('editableTagsInput', ['editableDirectiveFactory', 'editableUtils',
+	  function(editableDirectiveFactory, editableUtils) {
+	    var findElement = function(name) {
+	        for(var i = 0, len = autoComplete.length; i < len; i++) {
+	            if (autoComplete[i].name === name) {
+	                return i;
+	            }
+	        }
+	    };
+	
+	    var autoComplete = [];
+	
+	    var dir = editableDirectiveFactory({
+	        directiveName: 'editableTagsInput',
+	        inputTpl: '<tags-input></tags-input>',
+	        render: function () {
+	            var index = findElement(this.name);
+	            this.parent.render.call(this);
+	            this.inputEl.append(editableUtils.rename('auto-complete', autoComplete[index].element));
+	            this.inputEl.removeAttr('ng-model');
+	            this.inputEl.attr('ng-model', '$parent.$data');
+	        }
+	    });
+	
+	    var linkOrg = dir.link;
+	
+	    dir.link = function (scope, el, attrs, ctrl) {
+	        var autoCompleteEl = el.find('editable-tags-input-auto-complete');
+	
+	        autoComplete.push({name : attrs.name || attrs.editableTagsInput, element : autoCompleteEl.clone()});
+	
+	        autoCompleteEl.remove();
+	
+	        return linkOrg(scope, el, attrs, ctrl);
+	    };
+	
+	    return dir;
+	}]);
+	// radiolist
+	angular.module('xeditable').directive('editableRadiolist', [
+	  'editableDirectiveFactory',
+	  'editableNgOptionsParser',
+	  function(editableDirectiveFactory, editableNgOptionsParser) {
+	    return editableDirectiveFactory({
+	      directiveName: 'editableRadiolist',
+	      inputTpl: '<span></span>',
+	      render: function() {
+	        this.parent.render.call(this);
+	        var parsed = editableNgOptionsParser(this.attrs.eNgOptions);
+	        
+	        var html = '<label data-ng-repeat="'+parsed.ngRepeat+'">'+
+	          '<input type="radio" data-ng-disabled="::' + this.attrs.eNgDisabled + '" data-ng-model="$parent.$parent.$data" value="{{::'+parsed.locals.valueFn+'}}">'+
+	          '<span data-ng-bind="::'+parsed.locals.displayFn+'"></span></label>';
+	
+	        this.inputEl.removeAttr('ng-model');
+	        this.inputEl.removeAttr('ng-options');
+	        this.inputEl.html(html);
+	      },
+	      autosubmit: function() {
+	        var self = this;
+	        self.inputEl.bind('change', function() {
+	          setTimeout(function() {
+	            self.scope.$apply(function() {
+	              self.scope.$form.$submit();
+	            });
+	          }, 500);
+	        });
+	      }
+	    });
+	}]);
+	
+	//select
+	angular.module('xeditable').directive('editableSelect', ['editableDirectiveFactory',
+	  function(editableDirectiveFactory) {
+	    return editableDirectiveFactory({
+	      directiveName: 'editableSelect',
+	      inputTpl: '<select></select>',
+	      render: function() {
+	        this.parent.render.call(this);
+	
+	        if (this.attrs.ePlaceholder) {
+	          var placeholder = angular.element('<option value="">' + this.attrs.ePlaceholder + '</option>');
+	          this.inputEl.append(placeholder);
+	        }
+	      },
+	      autosubmit: function() {
+	        var self = this;
+	        self.inputEl.bind('change', function() {
+	          self.scope.$apply(function() {
+	            self.scope.$form.$submit();
+	          });
+	        });
+	      }
+	    });
+	}]);
+	//textarea
+	angular.module('xeditable').directive('editableTextarea', ['editableDirectiveFactory',
+	  function(editableDirectiveFactory) {
+	    return editableDirectiveFactory({
+	      directiveName: 'editableTextarea',
+	      inputTpl: '<textarea></textarea>',
+	      addListeners: function() {
+	        var self = this;
+	        self.parent.addListeners.call(self);
+	        // submit textarea by ctrl+enter even with buttons
+	        if (self.single && self.buttons !== 'no') {
+	          self.autosubmit();
+	        }
+	      },
+	      autosubmit: function() {
+	        var self = this;
+	        self.inputEl.bind('keydown', function(e) {
+	          if ((e.ctrlKey || e.metaKey) && (e.keyCode === 13)) {
+	            self.scope.$apply(function() {
+	              self.scope.$form.$submit();
+	            });
+	          }
+	        });
+	      }
+	    });
+	}]);
+	
+	/*
+	 AngularJS-native version of Select2 and Selectize
+	 https://github.com/angular-ui/ui-select
+	 */
+	angular.module('xeditable').directive('editableUiSelect',['editableDirectiveFactory', 'editableUtils',
+	    function(editableDirectiveFactory, editableUtils) {
+	        var findElement = function(name) {
+	            for(var i = 0, len = match.length; i < len; i++) {
+	                  if (match[i].name === name) {
+	                      return i;
+	                  }
+	              }
+	        };
+	
+	        var match = [];
+	        var choices = [];
+	
+	        var dir = editableDirectiveFactory({
+	            directiveName: 'editableUiSelect',
+	            inputTpl: '<ui-select></ui-select>',
+	            render: function () {
+	                var index = findElement(this.name);
+	                this.parent.render.call(this);
+	                this.inputEl.append(editableUtils.rename('ui-select-match', match[index].element));
+	                this.inputEl.append(editableUtils.rename('ui-select-choices', choices[index].element));
+	                this.inputEl.removeAttr('ng-model');
+	                this.inputEl.attr('ng-model', '$parent.$parent.$data');
+	            }
+	        });
+	
+	        var linkOrg = dir.link;
+	
+	        dir.link = function (scope, el, attrs, ctrl) {
+	            var matchEl = el.find('editable-ui-select-match');
+	            var choicesEl = el.find('editable-ui-select-choices');
+	
+	            match.push({name : attrs.name || attrs.editableUiSelect, element : matchEl.clone()});
+	            choices.push({name : attrs.name || attrs.editableUiSelect, element : choicesEl.clone()});
+	
+	            matchEl.remove();
+	            choicesEl.remove();
+	
+	            return linkOrg(scope, el, attrs, ctrl);
+	        };
+	
+	        return dir;
+	    }]);
+	/**
+	 * EditableController class. 
+	 * Attached to element with `editable-xxx` directive.
+	 *
+	 * @namespace editable-element
+	 */
+	/*
+	TODO: this file should be refactored to work more clear without closures!
+	*/
+	angular.module('xeditable').factory('editableController', 
+	  ['$q', 'editableUtils',
+	  function($q, editableUtils) {
+	
+	  //EditableController function
+	  EditableController.$inject = ['$scope', '$attrs', '$element', '$parse', 'editableThemes', 'editableIcons', 'editableOptions', '$rootScope', '$compile', '$q'];
+	  function EditableController($scope, $attrs, $element, $parse, editableThemes, editableIcons, editableOptions, $rootScope, $compile, $q) {
+	    var valueGetter;
+	
+	    //if control is disabled - it does not participate in waiting process
+	    var inWaiting;
+	
+	    var self = this;
+	
+	    self.scope = $scope;
+	    self.elem = $element;
+	    self.attrs = $attrs;
+	    self.inputEl = null;
+	    self.editorEl = null;
+	    self.single = true;
+	    self.error = '';
+	    self.theme =  editableThemes[$attrs.editableTheme] || editableThemes[editableOptions.theme] || editableThemes['default'];
+	    self.parent = {};
+	
+	    //will be undefined if icon_set is default and theme is default
+	    self.icon_set = editableOptions.icon_set === 'default' ? editableIcons.default[editableOptions.theme] : editableIcons.external[editableOptions.icon_set];
+	
+	    //to be overwritten by directive
+	    self.inputTpl = '';
+	    self.directiveName = '';
+	
+	    // with majority of controls copy is not needed, but..
+	    // copy MUST NOT be used for `select-multiple` with objects as items
+	    // copy MUST be used for `checklist`
+	    self.useCopy = false;
+	
+	    //runtime (defaults)
+	    self.single = null;
+	
+	    /**
+	     * Attributes defined with `e-*` prefix automatically transferred from original element to
+	     * control.  
+	     * For example, if you set `<span editable-text="user.name" e-style="width: 100px"`>
+	     * then input will appear as `<input style="width: 100px">`.  
+	     * See [demo](#text-customize).
+	     * 
+	     * @var {any|attribute} e-*
+	     * @memberOf editable-element
+	     */ 
+	
+	    /**
+	     * Whether to show ok/cancel buttons. Values: `right|no`.
+	     * If set to `no` control automatically submitted when value changed.  
+	     * If control is part of form buttons will never be shown. 
+	     * 
+	     * @var {string|attribute} buttons
+	     * @memberOf editable-element
+	     */    
+	    self.buttons = 'right'; 
+	    /**
+	     * Action when control losses focus. Values: `cancel|submit|ignore`.
+	     * Has sense only for single editable element.
+	     * Otherwise, if control is part of form - you should set `blur` of form, not of individual element.
+	     * 
+	     * @var {string|attribute} blur
+	     * @memberOf editable-element
+	     */     
+	    // no real `blur` property as it is transferred to editable form
+	
+	    //init
+	    self.init = function(single) {
+	      self.single = single;
+	
+	      self.name = $attrs.eName || $attrs[self.directiveName];
+	      /*
+	      if(!$attrs[directiveName] && !$attrs.eNgModel && ($attrs.eValue === undefined)) {
+	        throw 'You should provide value for `'+directiveName+'` or `e-value` in editable element!';
+	      }
+	      */
+	      if($attrs[self.directiveName]) {
+	        valueGetter = $parse($attrs[self.directiveName]);
+	      } else {
+	        throw 'You should provide value for `'+self.directiveName+'` in editable element!';
+	      }
+	
+	      // settings for single and non-single
+	      if (!self.single) {
+	        // hide buttons for non-single
+	        self.buttons = 'no';
+	      } else {
+	        self.buttons = self.attrs.buttons || editableOptions.buttons;
+	      }
+	
+	      //if name defined --> watch changes and update $data in form
+	      if($attrs.eName) {
+	        self.scope.$watch('$data', function(newVal){
+	          self.scope.$form.$data[$attrs.eName] = newVal;
+	        });
+	      }
+	
+	      /**
+	       * Called when control is shown.  
+	       * See [demo](#select-remote).
+	       * 
+	       * @var {method|attribute} onshow
+	       * @memberOf editable-element
+	       */
+	      if($attrs.onshow) {
+	        self.onshow = function() {
+	          return self.catchError($parse($attrs.onshow)($scope));
+	        };
+	      }
+	
+	      /**
+	       * Called when control is hidden after both save or cancel.  
+	       * 
+	       * @var {method|attribute} onhide
+	       * @memberOf editable-element
+	       */
+	      if($attrs.onhide) {
+	        self.onhide = function() {
+	          return $parse($attrs.onhide)($scope);
+	        };
+	      }
+	
+	      /**
+	       * Called when control is cancelled.  
+	       * 
+	       * @var {method|attribute} oncancel
+	       * @memberOf editable-element
+	       */
+	      if($attrs.oncancel) {
+	        self.oncancel = function() {
+	          return $parse($attrs.oncancel)($scope);
+	        };
+	      }          
+	
+	      /**
+	       * Called during submit before value is saved to model.  
+	       * See [demo](#onbeforesave).
+	       * 
+	       * @var {method|attribute} onbeforesave
+	       * @memberOf editable-element
+	       */
+	      if ($attrs.onbeforesave) {
+	        self.onbeforesave = function() {
+	          return self.catchError($parse($attrs.onbeforesave)($scope));
+	        };
+	      }
+	
+	      /**
+	       * Called during submit after value is saved to model.  
+	       * See [demo](#onaftersave).
+	       * 
+	       * @var {method|attribute} onaftersave
+	       * @memberOf editable-element
+	       */
+	      if ($attrs.onaftersave) {
+	        self.onaftersave = function() {
+	          return self.catchError($parse($attrs.onaftersave)($scope));
+	        };
+	      }
+	
+	      // watch change of model to update editable element
+	      // now only add/remove `editable-empty` class.
+	      // Initially this method called with newVal = undefined, oldVal = undefined
+	      // so no need initially call handleEmpty() explicitly
+	      $scope.$parent.$watch($attrs[self.directiveName], function(newVal, oldVal) {
+	        self.setLocalValue();
+	        self.handleEmpty();
+	      });
+	    };
+	
+	    self.render = function() {
+	      var theme = self.theme;
+	
+	      //build input
+	      self.inputEl = angular.element(self.inputTpl);
+	
+	      //build controls
+	      self.controlsEl = angular.element(theme.controlsTpl);
+	      self.controlsEl.append(self.inputEl);
+	
+	      //build buttons
+	      if(self.buttons !== 'no') {
+	        self.buttonsEl = angular.element(theme.buttonsTpl);
+	        self.submitEl = angular.element(theme.submitTpl);
+	        self.cancelEl = angular.element(theme.cancelTpl);
+	        if(self.icon_set) {
+	          self.submitEl.find('span').addClass(self.icon_set.ok);
+	          self.cancelEl.find('span').addClass(self.icon_set.cancel);
+	        }
+	        self.buttonsEl.append(self.submitEl).append(self.cancelEl);
+	        self.controlsEl.append(self.buttonsEl);
+	        
+	        self.inputEl.addClass('editable-has-buttons');
+	      }
+	
+	      //build error
+	      self.errorEl = angular.element(theme.errorTpl);
+	      self.controlsEl.append(self.errorEl);
+	
+	      //build editor
+	      self.editorEl = angular.element(self.single ? theme.formTpl : theme.noformTpl);
+	      self.editorEl.append(self.controlsEl);
+	
+	      // transfer `e-*|data-e-*|x-e-*` attributes
+	      for(var k in $attrs.$attr) {
+	        if(k.length <= 1) {
+	          continue;
+	        }
+	        var transferAttr = false;
+	        var nextLetter = k.substring(1, 2);
+	
+	        // if starts with `e` + uppercase letter
+	        if(k.substring(0, 1) === 'e' && nextLetter === nextLetter.toUpperCase()) {
+	          transferAttr = k.substring(1); // cut `e`
+	        } else {
+	          continue;
+	        }
+	        
+	        // exclude `form` and `ng-submit`, 
+	        if(transferAttr === 'Form' || transferAttr === 'NgSubmit') {
+	          continue;
+	        }
+	
+	        // convert back to lowercase style
+	        transferAttr = transferAttr.substring(0, 1).toLowerCase() + editableUtils.camelToDash(transferAttr.substring(1));  
+	
+	        // workaround for attributes without value (e.g. `multiple = "multiple"`)
+	        // except for 'e-value'
+	        var attrValue = (transferAttr !== 'value' && $attrs[k] === '') ? transferAttr : $attrs[k];
+	
+	        // set attributes to input
+	        self.inputEl.attr(transferAttr, attrValue);
+	      }
+	
+	      self.inputEl.addClass('editable-input');
+	      self.inputEl.attr('ng-model', '$parent.$data');
+	
+	      // add directiveName class to editor, e.g. `editable-text`
+	      self.editorEl.addClass(editableUtils.camelToDash(self.directiveName));
+	
+	      if(self.single) {
+	        self.editorEl.attr('editable-form', '$form');
+	        // transfer `blur` to form
+	        self.editorEl.attr('blur', self.attrs.blur || (self.buttons === 'no' ? 'cancel' : editableOptions.blurElem));
+	      }
+	
+	      //apply `postrender` method of theme
+	      if(angular.isFunction(theme.postrender)) {
+	        theme.postrender.call(self);
+	      }
+	
+	    };
+	
+	    // with majority of controls copy is not needed, but..
+	    // copy MUST NOT be used for `select-multiple` with objects as items
+	    // copy MUST be used for `checklist`
+	    self.setLocalValue = function() {
+	      self.scope.$data = self.useCopy ? 
+	        angular.copy(valueGetter($scope.$parent)) : 
+	        valueGetter($scope.$parent);
+	    };
+	
+	    // reference of the scope to use for $compile
+	    var newScope = null;
+	    //show
+	    self.show = function() {
+	      // set value of scope.$data
+	      self.setLocalValue();
+	
+	      /*
+	      Originally render() was inside init() method, but some directives polluting editorEl,
+	      so it is broken on second openning.
+	      Cloning is not a solution as jqLite can not clone with event handler's.
+	      */
+	      self.render();
+	
+	      // insert into DOM
+	      $element.after(self.editorEl);
+	
+	      // compile (needed to attach ng-* events from markup)
+	      newScope = $scope.$new();
+	      $compile(self.editorEl)(newScope);
+	
+	      // attach listeners (`escape`, autosubmit, etc)
+	      self.addListeners();
+	
+	      // hide element
+	      $element.addClass('editable-hide');
+	
+	      // onshow
+	      return self.onshow();
+	    };
+	
+	    //hide
+	    self.hide = function() {
+	
+	      // destroy the scope to prevent memory leak
+	      newScope.$destroy();
+	
+	      self.controlsEl.remove();
+	      self.editorEl.remove();
+	      $element.removeClass('editable-hide');
+	
+	      // onhide
+	      return self.onhide();
+	    };
+	
+	    // cancel
+	    self.cancel = function() {
+	      // oncancel
+	      self.oncancel();
+	      // don't call hide() here as it called in form's code
+	    };
+	
+	    /*
+	    Called after show to attach listeners
+	    */
+	    self.addListeners = function() {
+	      // bind keyup for `escape`
+	      self.inputEl.bind('keyup', function(e) {
+	          if(!self.single) {
+	            return;
+	          }
+	
+	          // todo: move this to editable-form!
+	          switch(e.keyCode) {
+	            // hide on `escape` press
+	            case 27:
+	              self.scope.$apply(function() {
+	                self.scope.$form.$cancel();
+	              });
+	            break;
+	          }
+	      });
+	
+	      // autosubmit when `no buttons`
+	      if (self.single && self.buttons === 'no') {
+	        self.autosubmit();
+	      }
+	
+	      // click - mark element as clicked to exclude in document click handler
+	      self.editorEl.bind('click', function(e) {
+	        // ignore right/middle button click
+	        if (e.which && e.which !== 1) {
+	          return;
+	        }
+	
+	        if (self.scope.$form.$visible) {
+	          self.scope.$form._clicked = true;
+	        }
+	      });
+	    };
+	
+	    // setWaiting
+	    self.setWaiting = function(value) {
+	      if (value) {
+	        // participate in waiting only if not disabled
+	        inWaiting = !self.inputEl.attr('disabled') &&
+	                    !self.inputEl.attr('ng-disabled') &&
+	                    !self.inputEl.attr('ng-enabled');
+	        if (inWaiting) {
+	          self.inputEl.attr('disabled', 'disabled');
+	          if(self.buttonsEl) {
+	            self.buttonsEl.find('button').attr('disabled', 'disabled');
+	          }
+	        }
+	      } else {
+	        if (inWaiting) {
+	          self.inputEl.removeAttr('disabled');
+	          if (self.buttonsEl) {
+	            self.buttonsEl.find('button').removeAttr('disabled');
+	          }
+	        }
+	      }
+	    };
+	
+	    self.activate = function(start, end) {
+	      setTimeout(function() {
+	        var el = self.inputEl[0];
+	        if (editableOptions.activate === 'focus' && el.focus) {
+	          if(start){
+	            end = end || start;
+	            el.onfocus = function(){
+	              var that = this;
+	              setTimeout(function(){
+	                that.setSelectionRange(start,end);
+	              });
+	            };
+	          }
+	          el.focus();
+	        }
+	        if (editableOptions.activate === 'select' && el.select) {
+	          el.select();
+	        }
+	      }, 0);
+	    };
+	
+	    self.setError = function(msg) {
+	      if(!angular.isObject(msg)) {
+	        $scope.$error = msg;
+	        self.error = msg;
+	      }
+	    };
+	
+	    /*
+	    Checks that result is string or promise returned string and shows it as error message
+	    Applied to onshow, onbeforesave, onaftersave
+	    */
+	    self.catchError = function(result, noPromise) {
+	      if (angular.isObject(result) && noPromise !== true) {
+	        $q.when(result).then(
+	          //success and fail handlers are equal
+	          angular.bind(this, function(r) {
+	            this.catchError(r, true);
+	          }),
+	          angular.bind(this, function(r) {
+	            this.catchError(r, true);
+	          })
+	        );
+	      //check $http error
+	      } else if (noPromise && angular.isObject(result) && result.status &&
+	        (result.status !== 200) && result.data && angular.isString(result.data)) {
+	        this.setError(result.data);
+	        //set result to string: to let form know that there was error
+	        result = result.data;
+	      } else if (angular.isString(result)) {
+	        this.setError(result);
+	      }
+	      return result;
+	    };
+	
+	    self.save = function() {
+	      valueGetter.assign($scope.$parent,
+	          self.useCopy ? angular.copy(self.scope.$data) : self.scope.$data);
+	
+	      // no need to call handleEmpty here as we are watching change of model value
+	      // self.handleEmpty();
+	    };
+	
+	    /*
+	    attach/detach `editable-empty` class to element
+	    */
+	    self.handleEmpty = function() {
+	      var val = valueGetter($scope.$parent);
+	      var isEmpty = val === null || val === undefined || val === "" || (angular.isArray(val) && val.length === 0); 
+	      $element.toggleClass('editable-empty', isEmpty);
+	    };
+	
+	    /*
+	    Called when `buttons = "no"` to submit automatically
+	    */
+	    self.autosubmit = angular.noop;
+	
+	    self.onshow = angular.noop;
+	    self.onhide = angular.noop;
+	    self.oncancel = angular.noop;
+	    self.onbeforesave = angular.noop;
+	    self.onaftersave = angular.noop;
+	  }
+	
+	  return EditableController;
+	}]);
+	
+	/*
+	editableFactory is used to generate editable directives (see `/directives` folder)
+	Inside it does several things:
+	- detect form for editable element. Form may be one of three types:
+	  1. autogenerated form (for single editable elements)
+	  2. wrapper form (element wrapped by <form> tag)
+	  3. linked form (element has `e-form` attribute pointing to existing form)
+	
+	- attach editableController to element
+	
+	Depends on: editableController, editableFormFactory
+	*/
+	angular.module('xeditable').factory('editableDirectiveFactory',
+	['$parse', '$compile', 'editableThemes', '$rootScope', '$document', 'editableController', 'editableFormController', 'editableOptions',
+	function($parse, $compile, editableThemes, $rootScope, $document, editableController, editableFormController, editableOptions) {
+	
+	  //directive object
+	  return function(overwrites) {
+	    return {
+	      restrict: 'A',
+	      scope: true,
+	      require: [overwrites.directiveName, '?^form'],
+	      controller: editableController,
+	      link: function(scope, elem, attrs, ctrl) {
+	        // editable controller
+	        var eCtrl = ctrl[0];
+	
+	        // form controller
+	        var eFormCtrl;
+	
+	        // this variable indicates is element is bound to some existing form,
+	        // or it's single element who's form will be generated automatically
+	        // By default consider single element without any linked form.ß
+	        var hasForm = false;
+	
+	        // element wrapped by form
+	        if (ctrl[1]) {
+	          eFormCtrl = ctrl[1];
+	          hasForm = attrs.eSingle === undefined;
+	        } else if (attrs.eForm) { // element not wrapped by <form>, but we have `e-form` attr
+	          var getter = $parse(attrs.eForm)(scope);
+	          if (getter) { // form exists in scope (above), e.g. editable column
+	            eFormCtrl = getter;
+	            hasForm = true;
+	          } else if (elem && typeof elem.parents === "function" && elem.parents().last().find('form[name='+attrs.eForm+']').length) { // form exists below or not exist at all: check document.forms
+	            // form is below and not processed yet
+	            eFormCtrl = null;
+	            hasForm = true;
+	          } else {
+	            // form exists below or not exist at all: check document.forms
+	            for (var i=0; i<$document[0].forms.length;i++) {
+	              if ($document[0].forms[i].name === attrs.eForm) {
+	                // form is below and not processed yet
+	                eFormCtrl = null;
+	                hasForm = true;
+	                break;
+	              }
+	            }
+	          }
+	        }
+	
+	        /*
+	        if(hasForm && !attrs.eName) {
+	          throw 'You should provide `e-name` for editable element inside form!';
+	        }
+	        */
+	
+	        //check for `editable-form` attr in form
+	        /*
+	        if(eFormCtrl && ) {
+	          throw 'You should provide `e-name` for editable element inside form!';
+	        }
+	        */
+	
+	        // store original props to `parent` before merge
+	        angular.forEach(overwrites, function(v, k) {
+	          if(eCtrl[k] !== undefined) {
+	            eCtrl.parent[k] = eCtrl[k];
+	          }
+	        });
+	
+	        // merge overwrites to base editable controller
+	        angular.extend(eCtrl, overwrites);
+	
+	        // x-editable can be disabled using editableOption or edit-disabled attribute
+	        var disabled = angular.isDefined(attrs.editDisabled) ?
+	          scope.$eval(attrs.editDisabled) :
+	          editableOptions.isDisabled;
+	
+	        if (disabled) {
+	          return;
+	        }
+	
+	        // init editable ctrl
+	        eCtrl.init(!hasForm);
+	
+	        // publich editable controller as `$editable` to be referenced in html
+	        scope.$editable = eCtrl;
+	
+	        // add `editable` class to element
+	        elem.addClass('editable');
+	
+	        // hasForm
+	        if(hasForm) {
+	          if(eFormCtrl) {
+	            scope.$form = eFormCtrl;
+	            if(!scope.$form.$addEditable) {
+	              throw 'Form with editable elements should have `editable-form` attribute.';
+	            }
+	            scope.$form.$addEditable(eCtrl);
+	          } else {
+	            // future form (below): add editable controller to buffer and add to form later
+	            $rootScope.$$editableBuffer = $rootScope.$$editableBuffer || {};
+	            $rootScope.$$editableBuffer[attrs.eForm] = $rootScope.$$editableBuffer[attrs.eForm] || [];
+	            $rootScope.$$editableBuffer[attrs.eForm].push(eCtrl);
+	            scope.$form = null; //will be re-assigned later
+	          }
+	        // !hasForm
+	        } else {
+	          // create editableform controller
+	          scope.$form = editableFormController();
+	          // add self to editable controller
+	          scope.$form.$addEditable(eCtrl);
+	
+	          // if `e-form` provided, publish local $form in scope
+	          if(attrs.eForm) {
+	            ($parse(attrs.eForm).assign || angular.noop)(scope.$parent, scope.$form);
+	          }
+	
+	          // bind click - if no external form defined
+	          if(!attrs.eForm || attrs.eClickable) {
+	            elem.addClass('editable-click');
+	            elem.bind(editableOptions.activationEvent, function(e) {
+	              e.preventDefault();
+	              e.editable = eCtrl;
+	              scope.$apply(function(){
+	                scope.$form.$show();
+	              });
+	            });
+	          }
+	        }
+	
+	      }
+	    };
+	  };
+	}]);
+	
+	/*
+	Returns editableForm controller
+	*/
+	angular.module('xeditable').factory('editableFormController', 
+	  ['$parse', '$document', '$rootScope', 'editablePromiseCollection', 'editableUtils',
+	  function($parse, $document, $rootScope, editablePromiseCollection, editableUtils) {
+	
+	  // array of opened editable forms
+	  var shown = [];
+	
+	  //Check if the child element correspond or is a descendant of the parent element
+	  var isSelfOrDescendant = function (parent, child) {
+	    if (child == parent) {
+	      return true;
+	    }
+	
+	    var node = child.parentNode;
+	    while (node !== null) {
+	      if (node == parent) {
+	        return true;
+	      }
+	      node = node.parentNode;
+	    }
+	    return false;
+	  };
+	  
+	  //Check if it is a real blur : if the click event appear on a shown editable elem, this is not a blur.
+	  var isBlur = function(shown, event) {
+	    var isBlur = true;
+	
+	    var editables = shown.$editables;
+	    angular.forEach(editables, function(v){
+	      var element = v.editorEl[0];
+	      if (isSelfOrDescendant(element, event.target))
+	        isBlur = false;
+	      
+	    });
+	    return isBlur;
+	  };
+	  
+	  // bind click to body: cancel|submit|ignore forms
+	  $document.bind('click', function(e) {
+	    // ignore right/middle button click
+	    if (e.which && e.which !== 1) {
+	      return;
+	    }
+	
+	    var toCancel = [];
+	    var toSubmit = [];
+	    for (var i=0; i<shown.length; i++) {
+	
+	      // exclude clicked
+	      if (shown[i]._clicked) {
+	        shown[i]._clicked = false;
+	        continue;
+	      }
+	
+	      // exclude waiting
+	      if (shown[i].$waiting) {
+	        continue;
+	      }
+	
+	      if (shown[i]._blur === 'cancel' && isBlur(shown[i], e)) {
+	        toCancel.push(shown[i]);
+	      }
+	
+	      if (shown[i]._blur === 'submit' && isBlur(shown[i], e)) {
+	        toSubmit.push(shown[i]);
+	      }
+	    }
+	
+	    if (toCancel.length || toSubmit.length) {
+	      $rootScope.$apply(function() {
+	        angular.forEach(toCancel, function(v){ v.$cancel(); });
+	        angular.forEach(toSubmit, function(v){ v.$submit(); });
+	      });
+	    }
+	  });
+	 
+	  $rootScope.$on('closeEdit', function() {
+	    for(var i=0; i < shown.length; i++) {
+	      shown[i].$hide();
+	    }
+	  }); 
+	
+	  var base = {
+	    $addEditable: function(editable) {
+	      //console.log('add editable', editable.elem, editable.elem.bind);
+	      this.$editables.push(editable);
+	
+	      //'on' is not supported in angular 1.0.8
+	      editable.elem.bind('$destroy', angular.bind(this, this.$removeEditable, editable));
+	
+	      //bind editable's local $form to self (if not bound yet, below form) 
+	      if (!editable.scope.$form) {
+	        editable.scope.$form = this;
+	      }
+	
+	      //if form already shown - call show() of new editable
+	      if (this.$visible) {
+	        editable.catchError(editable.show());
+	      }
+	      editable.catchError(editable.setWaiting(this.$waiting));
+	    },
+	
+	    $removeEditable: function(editable) {
+	      //arrayRemove
+	      for(var i=0; i < this.$editables.length; i++) {
+	        if(this.$editables[i] === editable) {
+	          this.$editables.splice(i, 1);
+	          return;
+	        }
+	      }
+	    },
+	
+	    /**
+	     * Shows form with editable controls.
+	     * 
+	     * @method $show()
+	     * @memberOf editable-form
+	     */
+	    $show: function() {
+	      if (this.$visible) {
+	        return;
+	      }
+	
+	      this.$visible = true;
+	
+	      var pc = editablePromiseCollection();
+	
+	      //own show
+	      pc.when(this.$onshow());
+	
+	      //clear errors
+	      this.$setError(null, '');
+	
+	      //children show
+	      angular.forEach(this.$editables, function(editable) {
+	        pc.when(editable.show());
+	      });
+	
+	      //wait promises and activate
+	      pc.then({
+	        onWait: angular.bind(this, this.$setWaiting), 
+	        onTrue: angular.bind(this, this.$activate), 
+	        onFalse: angular.bind(this, this.$activate), 
+	        onString: angular.bind(this, this.$activate)
+	      });
+	
+	      // add to internal list of shown forms
+	      // setTimeout needed to prevent closing right after opening (e.g. when trigger by button)
+	      setTimeout(angular.bind(this, function() {
+	        // clear `clicked` to get ready for clicks on visible form
+	        this._clicked = false;
+	        if(editableUtils.indexOf(shown, this) === -1) {
+	          shown.push(this);
+	        }
+	      }), 0);      
+	    },
+	
+	    /**
+	     * Sets focus on form field specified by `name`.<br/>
+	     * When trying to set the focus on a form field of a new row in the editable table, the `$activate` call needs to be wrapped in a `$timeout` call so that the form is rendered before the `$activate` function is called.
+	     * 
+	     * @method $activate(name)
+	     * @param {string} name name of field
+	     * @memberOf editable-form
+	     */
+	    $activate: function(name) {
+	      var i;
+	      if (this.$editables.length) {
+	        //activate by name
+	        if (angular.isString(name)) {
+	          for(i=0; i<this.$editables.length; i++) {
+	            if (this.$editables[i].name === name) {
+	              this.$editables[i].activate();
+	              return;
+	            }
+	          }
+	        }
+	
+	        //try activate error field
+	        for(i=0; i<this.$editables.length; i++) {
+	          if (this.$editables[i].error) {
+	            this.$editables[i].activate();
+	            return;
+	          }
+	        }
+	
+	        //by default activate first field
+	        this.$editables[0].activate(this.$editables[0].elem[0].selectionStart, this.$editables[0].elem[0].selectionEnd);
+	      }
+	    },
+	
+	    /**
+	     * Hides form with editable controls without saving.
+	     * 
+	     * @method $hide()
+	     * @memberOf editable-form
+	     */
+	    $hide: function() {
+	      if (!this.$visible) {
+	        return;
+	      }      
+	      this.$visible = false;
+	      // self hide
+	      this.$onhide();
+	      // children's hide
+	      angular.forEach(this.$editables, function(editable) {
+	        editable.hide();
+	      });
+	
+	      // remove from internal list of shown forms
+	      editableUtils.arrayRemove(shown, this);
+	    },
+	
+	    /**
+	     * Triggers `oncancel` event and calls `$hide()`.
+	     * 
+	     * @method $cancel()
+	     * @memberOf editable-form
+	     */
+	    $cancel: function() {
+	      if (!this.$visible) {
+	        return;
+	      }      
+	      // self cancel
+	      this.$oncancel();
+	      // children's cancel      
+	      angular.forEach(this.$editables, function(editable) {
+	        editable.cancel();
+	      });
+	      // self hide
+	      this.$hide();
+	    },    
+	
+	    $setWaiting: function(value) {
+	      this.$waiting = !!value;
+	      // we can't just set $waiting variable and use it via ng-disabled in children
+	      // because in editable-row form is not accessible
+	      angular.forEach(this.$editables, function(editable) {
+	        editable.setWaiting(!!value);
+	      });
+	    },
+	
+	    /**
+	     * Shows error message for particular field.
+	     * 
+	     * @method $setError(name, msg)
+	     * @param {string} name name of field
+	     * @param {string} msg error message
+	     * @memberOf editable-form
+	     */
+	    $setError: function(name, msg) {
+	      angular.forEach(this.$editables, function(editable) {
+	        if(!name || editable.name === name) {
+	          editable.setError(msg);
+	        }
+	      });
+	    },
+	
+	    $submit: function() {
+	      if (this.$waiting) {
+	        return;
+	      } 
+	
+	      //clear errors
+	      this.$setError(null, '');
+	
+	      //children onbeforesave
+	      var pc = editablePromiseCollection();
+	      angular.forEach(this.$editables, function(editable) {
+	        pc.when(editable.onbeforesave());
+	      });
+	
+	      /*
+	      onbeforesave result:
+	      - true/undefined: save data and close form
+	      - false: close form without saving
+	      - string: keep form open and show error
+	      */
+	      pc.then({
+	        onWait: angular.bind(this, this.$setWaiting), 
+	        onTrue: angular.bind(this, checkSelf, true), 
+	        onFalse: angular.bind(this, checkSelf, false), 
+	        onString: angular.bind(this, this.$activate)
+	      });
+	
+	      //save
+	      function checkSelf(childrenTrue){
+	        var pc = editablePromiseCollection();
+	        pc.when(this.$onbeforesave());
+	        pc.then({
+	          onWait: angular.bind(this, this.$setWaiting), 
+	          onTrue: childrenTrue ? angular.bind(this, this.$save) : angular.bind(this, this.$hide), 
+	          onFalse: angular.bind(this, this.$hide), 
+	          onString: angular.bind(this, this.$activate)
+	        });
+	      }
+	    },
+	
+	    $save: function() {
+	      // write model for each editable
+	      angular.forEach(this.$editables, function(editable) {
+	        editable.save();
+	      });
+	
+	      //call onaftersave of self and children
+	      var pc = editablePromiseCollection();
+	      pc.when(this.$onaftersave());
+	      angular.forEach(this.$editables, function(editable) {
+	        pc.when(editable.onaftersave());
+	      });
+	
+	      /*
+	      onaftersave result:
+	      - true/undefined/false: just close form
+	      - string: keep form open and show error
+	      */
+	      pc.then({
+	        onWait: angular.bind(this, this.$setWaiting), 
+	        onTrue: angular.bind(this, this.$hide), 
+	        onFalse: angular.bind(this, this.$hide), 
+	        onString: angular.bind(this, this.$activate)
+	      });
+	    },
+	
+	    $onshow: angular.noop,
+	    $oncancel: angular.noop,
+	    $onhide: angular.noop,
+	    $onbeforesave: angular.noop,
+	    $onaftersave: angular.noop
+	  };
+	
+	  return function() {
+	    return angular.extend({
+	      $editables: [],
+	      /**
+	       * Form visibility flag.
+	       * 
+	       * @var {bool} $visible
+	       * @memberOf editable-form
+	       */
+	      $visible: false,
+	      /**
+	       * Form waiting flag. It becomes `true` when form is loading or saving data.
+	       * 
+	       * @var {bool} $waiting
+	       * @memberOf editable-form
+	       */
+	      $waiting: false,
+	      $data: {},
+	      _clicked: false,
+	      _blur: null
+	    }, base);
+	  };
+	}]);
+	
+	/**
+	 * EditableForm directive. Should be defined in <form> containing editable controls.  
+	 * It add some usefull methods to form variable exposed to scope by `name="myform"` attribute.
+	 *
+	 * @namespace editable-form
+	 */
+	angular.module('xeditable').directive('editableForm',
+	  ['$rootScope', '$parse', 'editableFormController', 'editableOptions',
+	  function($rootScope, $parse, editableFormController, editableOptions) {
+	    return {
+	      restrict: 'A',
+	      require: ['form'],
+	      //require: ['form', 'editableForm'],
+	      //controller: EditableFormController,
+	      compile: function() {
+	        return {
+	          pre: function(scope, elem, attrs, ctrl) {
+	            var form = ctrl[0];
+	            var eForm;
+	
+	            //if `editableForm` has value - publish smartly under this value
+	            //this is required only for single editor form that is created and removed
+	            if(attrs.editableForm) {
+	              if(scope[attrs.editableForm] && scope[attrs.editableForm].$show) {
+	                eForm = scope[attrs.editableForm];
+	                angular.extend(form, eForm);
+	              } else {
+	                eForm = editableFormController();
+	                scope[attrs.editableForm] = eForm;
+	                angular.extend(eForm, form);
+	              }
+	            } else { //just merge to form and publish if form has name
+	              eForm = editableFormController();
+	              angular.extend(form, eForm);
+	            }
+	
+	            //read editables from buffer (that appeared before FORM tag)
+	            var buf = $rootScope.$$editableBuffer;
+	            var name = form.$name;
+	            if(name && buf && buf[name]) {
+	              angular.forEach(buf[name], function(editable) {
+	                eForm.$addEditable(editable);
+	              });
+	              delete buf[name];
+	            }
+	          },
+	          post: function(scope, elem, attrs, ctrl) {
+	            var eForm;
+	
+	            if(attrs.editableForm && scope[attrs.editableForm] && scope[attrs.editableForm].$show) {
+	              eForm = scope[attrs.editableForm];
+	            } else {
+	              eForm = ctrl[0];
+	            }
+	
+	            /**
+	             * Called when form is shown.
+	             * 
+	             * @var {method|attribute} onshow 
+	             * @memberOf editable-form
+	             */
+	            if(attrs.onshow) {
+	              eForm.$onshow = angular.bind(eForm, $parse(attrs.onshow), scope);
+	            }
+	
+	            /**
+	             * Called when form hides after both save or cancel.
+	             * 
+	             * @var {method|attribute} onhide 
+	             * @memberOf editable-form
+	             */
+	            if(attrs.onhide) {
+	              eForm.$onhide = angular.bind(eForm, $parse(attrs.onhide), scope);
+	            }
+	
+	            /**
+	             * Called when form is cancelled.
+	             * 
+	             * @var {method|attribute} oncancel
+	             * @memberOf editable-form
+	             */
+	            if(attrs.oncancel) {
+	              eForm.$oncancel = angular.bind(eForm, $parse(attrs.oncancel), scope);
+	            }
+	
+	            /**
+	             * Whether form initially rendered in shown state.
+	             *
+	             * @var {bool|attribute} shown
+	             * @memberOf editable-form
+	             */
+	            if(attrs.shown && $parse(attrs.shown)(scope)) {
+	              eForm.$show();
+	            }
+	
+	            /**
+	             * Action when form losses focus. Values: `cancel|submit|ignore`.
+	             * Default is `ignore`.
+	             * 
+	             * @var {string|attribute} blur
+	             * @memberOf editable-form
+	             */
+	            eForm._blur = attrs.blur || editableOptions.blurForm;
+	
+	            // onbeforesave, onaftersave
+	            if(!attrs.ngSubmit && !attrs.submit) {
+	              /**
+	               * Called after all children `onbeforesave` callbacks but before saving form values
+	               * to model.  
+	               * If at least one children callback returns `non-string` - it will not not be called.  
+	               * See [editable-form demo](#editable-form) for details.
+	               * 
+	               * @var {method|attribute} onbeforesave
+	               * @memberOf editable-form
+	               * 
+	               */
+	              if(attrs.onbeforesave) {
+	                eForm.$onbeforesave = function() {
+	                  return $parse(attrs.onbeforesave)(scope, {$data: eForm.$data});
+	                };
+	              }
+	
+	              /**
+	               * Called when form values are saved to model.  
+	               * See [editable-form demo](#editable-form) for details.
+	               * 
+	               * @var {method|attribute} onaftersave 
+	               * @memberOf editable-form
+	               * 
+	               */
+	              if(attrs.onaftersave) {
+	                eForm.$onaftersave = function() {
+	                  return $parse(attrs.onaftersave)(scope, {$data: eForm.$data});
+	                };
+	              }
+	
+	              elem.bind('submit', function(event) {
+	                event.preventDefault();
+	                scope.$apply(function() {
+	                  eForm.$submit();
+	                });
+	              });
+	            }
+	
+	
+	            // click - mark form as clicked to exclude in document click handler
+	            elem.bind('click', function(e) {
+	              // ignore right/middle button click
+	              if (e.which && e.which !== 1) {
+	                return;
+	              }
+	
+	              if (eForm.$visible) {
+	                eForm._clicked = true;
+	              }
+	            });   
+	
+	          }
+	        };
+	      }
+	    };
+	}]);
+	/**
+	 * editablePromiseCollection
+	 *  
+	 * Collect results of function calls. Shows waiting if there are promises. 
+	 * Finally, applies callbacks if:
+	 * - onTrue(): all results are true and all promises resolved to true
+	 * - onFalse(): at least one result is false or promise resolved to false
+	 * - onString(): at least one result is string or promise rejected or promise resolved to string
+	 */
+	
+	angular.module('xeditable').factory('editablePromiseCollection', ['$q', function($q) { 
+	
+	  function promiseCollection() {
+	    return {
+	      promises: [],
+	      hasFalse: false,
+	      hasString: false,
+	      when: function(result, noPromise) {
+	        if (result === false) {
+	          this.hasFalse = true;
+	        } else if (!noPromise && angular.isObject(result)) {
+	          this.promises.push($q.when(result));
+	        } else if (angular.isString(result)){
+	          this.hasString = true;
+	        } else { //result === true || result === undefined || result === null
+	          return;
+	        }
+	      },
+	      //callbacks: onTrue, onFalse, onString
+	      then: function(callbacks) {
+	        callbacks = callbacks || {};
+	        var onTrue = callbacks.onTrue || angular.noop;
+	        var onFalse = callbacks.onFalse || angular.noop;
+	        var onString = callbacks.onString || angular.noop;
+	        var onWait = callbacks.onWait || angular.noop;
+	
+	        var self = this;
+	
+	        if (this.promises.length) {
+	          onWait(true);
+	          $q.all(this.promises).then(
+	            //all resolved       
+	            function(results) {
+	              onWait(false);
+	              //check all results via same `when` method (without checking promises)
+	              angular.forEach(results, function(result) {
+	                self.when(result, true);  
+	              });
+	              applyCallback();
+	            },
+	            //some rejected
+	            function(error) { 
+	              onWait(false);
+	              onString();
+	            }
+	            );
+	        } else {
+	          applyCallback();
+	        }
+	
+	        function applyCallback() {
+	          if (!self.hasString && !self.hasFalse) {
+	            onTrue();
+	          } else if (!self.hasString && self.hasFalse) {
+	            onFalse();
+	          } else {
+	            onString();
+	          }
+	        }
+	
+	      }
+	    };
+	  }
+	
+	  return promiseCollection;
+	
+	}]);
+	
+	/**
+	 * editableUtils
+	 */
+	 angular.module('xeditable').factory('editableUtils', [function() {
+	  return {
+	    indexOf: function (array, obj) {
+	      if (array.indexOf) return array.indexOf(obj);
+	
+	      for ( var i = 0; i < array.length; i++) {
+	        if (obj === array[i]) return i;
+	      }
+	      return -1;
+	    },
+	
+	    arrayRemove: function (array, value) {
+	      var index = this.indexOf(array, value);
+	      if (index >= 0) {
+	        array.splice(index, 1);
+	      }
+	      return value;
+	    },
+	
+	    // copy from https://github.com/angular/angular.js/blob/master/src/Angular.js
+	    camelToDash: function(str) {
+	      var SNAKE_CASE_REGEXP = /[A-Z]/g;
+	      return str.replace(SNAKE_CASE_REGEXP, function(letter, pos) {
+	        return (pos ? '-' : '') + letter.toLowerCase();
+	      });
+	    },
+	
+	    dashToCamel: function(str) {
+	      var SPECIAL_CHARS_REGEXP = /([\:\-\_]+(.))/g;
+	      var MOZ_HACK_REGEXP = /^moz([A-Z])/;
+	      return str.
+	      replace(SPECIAL_CHARS_REGEXP, function(_, separator, letter, offset) {
+	        return offset ? letter.toUpperCase() : letter;
+	      }).
+	      replace(MOZ_HACK_REGEXP, 'Moz$1');
+	    },
+	
+	    rename: function (tag, el) {
+	      var newEl = angular.element('<' + tag + '/>');
+	      newEl.html(el.html());
+	      var attrs = el[0].attributes;
+	      for (var i = 0; i < attrs.length; ++i) {
+	          newEl.attr(attrs.item(i).nodeName, attrs.item(i).value);
+	      }
+	      return newEl;
+	    }
+	  };
+	}]);
+	
+	/**
+	 * editableNgOptionsParser
+	 *
+	 * see: https://github.com/angular/angular.js/blob/master/src/ng/directive/select.js#L131
+	 */
+	 angular.module('xeditable').factory('editableNgOptionsParser', [function() {
+	  //0000111110000000000022220000000000000000000000333300000000000000444444444444444000000000555555555555555000000066666666666666600000000000000007777000000000000000000088888
+	  var NG_OPTIONS_REGEXP = /^\s*(.*?)(?:\s+as\s+(.*?))?(?:\s+group\s+by\s+(.*))?\s+for\s+(?:([\$\w][\$\w]*)|(?:\(\s*([\$\w][\$\w]*)\s*,\s*([\$\w][\$\w]*)\s*\)))\s+in\s+(.*?)(?:\s+track\s+by\s+(.*?))?$/;
+	
+	  function parser(optionsExp) {
+	    var match;
+	
+	    if (! (match = optionsExp.match(NG_OPTIONS_REGEXP))) {
+	      throw 'ng-options parse error';
+	    }
+	
+	    var 
+	    displayFn = match[2] || match[1],
+	    valueName = match[4] || match[6],
+	    keyName = match[5],
+	    groupByFn = match[3] || '',
+	    valueFn = match[2] ? match[1] : valueName,
+	    valuesFn = match[7],
+	    track = match[8],
+	    trackFn = track ? match[8] : null;
+	
+	    var ngRepeat;
+	    if (keyName === undefined) { // array
+	      ngRepeat = valueName + ' in ' + valuesFn;
+	      if (track !== undefined) {
+	        ngRepeat += ' track by '+trackFn;
+	      }
+	    } else { // object
+	      ngRepeat = '('+keyName+', '+valueName+') in '+valuesFn;
+	    }
+	    
+	    // group not supported yet
+	    return {
+	      ngRepeat: ngRepeat,
+	      locals: {
+	        valueName: valueName,
+	        keyName: keyName,
+	        valueFn: valueFn,
+	        displayFn: displayFn
+	      }
+	    };
+	  }
+	
+	  return parser;
+	}]);
+	
+	/**
+	 * editableCombodate
+	 *
+	 * angular version of https://github.com/vitalets/combodate
+	 */
+	angular.module('xeditable').factory('editableCombodate', [function() {
+	  function Combodate(element, options) {
+	    this.$element = angular.element(element);
+	
+	    if(this.$element[0].nodeName != 'INPUT') {
+	      throw 'Combodate should be applied to INPUT element';
+	    }
+	
+	    var currentYear = new Date().getFullYear();
+	    this.defaults = {
+	      //in this format value stored in original input
+	      format: 'YYYY-MM-DD HH:mm',
+	      //in this format items in dropdowns are displayed
+	      template: 'D / MMM / YYYY   H : mm',
+	      //initial value, can be `new Date()`
+	      value: null,
+	      minYear: 1970,
+	      maxYear: currentYear,
+	      yearDescending: true,
+	      minuteStep: 5,
+	      secondStep: 1,
+	      firstItem: 'empty', //'name', 'empty', 'none'
+	      errorClass: null,
+	      customClass: '',
+	      roundTime: true, // whether to round minutes and seconds if step > 1
+	      smartDays: true // whether days in combo depend on selected month: 31, 30, 28
+	    };
+	
+	    this.options = angular.extend({}, this.defaults, options);
+	    this.init();
+	  }
+	
+	  Combodate.prototype = {
+	    constructor: Combodate,
+	    init: function () {
+	      this.map = {
+	        //key   regexp    moment.method
+	        day:    ['D',    'date'], 
+	        month:  ['M',    'month'], 
+	        year:   ['Y',    'year'], 
+	        hour:   ['[Hh]', 'hours'],
+	        minute: ['m',    'minutes'], 
+	        second: ['s',    'seconds'],
+	        ampm:   ['[Aa]', ''] 
+	      };
+	      
+	      this.$widget = angular.element('<span class="combodate"></span>').html(this.getTemplate());
+	      
+	      this.initCombos();
+	      
+	      if (this.options.smartDays) {
+	        var combo = this;
+	        this.$widget.find('select').bind('change', function(e) {
+	          // update days count if month or year changes
+	          if (angular.element(e.target).hasClass('month') || angular.element(e.target).hasClass('year')) {
+	            combo.fillCombo('day');
+	          }
+	        });        
+	      }
+	
+	      this.$widget.find('select').css('width', 'auto');
+	
+	      // hide original input and insert widget                                       
+	      this.$element.css('display', 'none').after(this.$widget);
+	      
+	      // set initial value
+	      this.setValue(this.$element.val() || this.options.value);
+	    },
+	    
+	    /*
+	     Replace tokens in template with <select> elements 
+	     */         
+	     getTemplate: function() {
+	      var tpl = this.options.template;
+	      var customClass = this.options.customClass;
+	
+	      //first pass
+	      angular.forEach(this.map, function(v, k) {
+	        v = v[0]; 
+	        var r = new RegExp(v+'+');
+	        var token = v.length > 1 ? v.substring(1, 2) : v;
+	        
+	        tpl = tpl.replace(r, '{'+token+'}');
+	      });
+	
+	      //replace spaces with &nbsp;
+	      tpl = tpl.replace(/ /g, '&nbsp;');
+	
+	      //second pass
+	      angular.forEach(this.map, function(v, k) {
+	        v = v[0];
+	        var token = v.length > 1 ? v.substring(1, 2) : v;
+	
+	        tpl = tpl.replace('{'+token+'}', '<select class="'+k+' '+customClass+'"></select>');
+	      });   
+	
+	      return tpl;
+	    },
+	    
+	    /*
+	     Initialize combos that presents in template 
+	     */        
+	     initCombos: function() {
+	      for (var k in this.map) {
+	        var c = this.$widget[0].querySelectorAll('.'+k);
+	        // set properties like this.$day, this.$month etc.
+	        this['$'+k] = c.length ? angular.element(c) : null;
+	        // fill with items
+	        this.fillCombo(k);
+	      }
+	    },
+	
+	    /*
+	     Fill combo with items 
+	     */        
+	     fillCombo: function(k) {
+	      var $combo = this['$'+k];
+	      if (!$combo) {
+	        return;
+	      }
+	
+	      // define method name to fill items, e.g `fillDays`
+	      var f = 'fill' + k.charAt(0).toUpperCase() + k.slice(1); 
+	      var items = this[f]();
+	      var value = $combo.val();
+	
+	      $combo.html('');
+	      for(var i=0; i<items.length; i++) {
+	        $combo.append('<option value="'+items[i][0]+'">'+items[i][1]+'</option>');
+	      }
+	
+	      $combo.val(value);
+	    },
+	
+	    /*
+	     Initialize items of combos. Handles `firstItem` option 
+	     */
+	     fillCommon: function(key) {
+	      var values = [], relTime;
+	
+	      if(this.options.firstItem === 'name') {
+	        //need both to support moment ver < 2 and  >= 2
+	        relTime = moment.relativeTime || moment.langData()._relativeTime; 
+	        var header = typeof relTime[key] === 'function' ? relTime[key](1, true, key, false) : relTime[key];
+	        //take last entry (see momentjs lang files structure) 
+	        header = header.split(' ').reverse()[0];                
+	        values.push(['', header]);
+	      } else if(this.options.firstItem === 'empty') {
+	        values.push(['', '']);
+	      }
+	      return values;
+	    },  
+	
+	
+	    /*
+	    fill day
+	    */
+	    fillDay: function() {
+	      var items = this.fillCommon('d'), name, i,
+	      twoDigit = this.options.template.indexOf('DD') !== -1,
+	      daysCount = 31;
+	
+	      // detect days count (depends on month and year)
+	      // originally https://github.com/vitalets/combodate/pull/7
+	      if (this.options.smartDays && this.$month && this.$year) {
+	        var month = parseInt(this.$month.val(), 10);
+	        var year = parseInt(this.$year.val(), 10);
+	
+	        if (!isNaN(month) && !isNaN(year)) {
+	          daysCount = moment([year, month]).daysInMonth();
+	        }
+	      }
+	
+	      for (i = 1; i <= daysCount; i++) {
+	        name = twoDigit ? this.leadZero(i) : i;
+	        items.push([i, name]);
+	      }
+	      return items;
+	    },
+	    
+	    /*
+	    fill month
+	    */
+	    fillMonth: function() {
+	      var items = this.fillCommon('M'), name, i, 
+	      longNames = this.options.template.indexOf('MMMM') !== -1,
+	      shortNames = this.options.template.indexOf('MMM') !== -1,
+	      twoDigit = this.options.template.indexOf('MM') !== -1;
+	
+	      for(i=0; i<=11; i++) {
+	        if(longNames) {
+	          //see https://github.com/timrwood/momentjs.com/pull/36
+	          name = moment().date(1).month(i).format('MMMM');
+	        } else if(shortNames) {
+	          name = moment().date(1).month(i).format('MMM');
+	        } else if(twoDigit) {
+	          name = this.leadZero(i+1);
+	        } else {
+	          name = i+1;
+	        }
+	        items.push([i, name]);
+	      } 
+	      return items;
+	    },
+	    
+	    /*
+	    fill year
+	    */
+	    fillYear: function() {
+	      var items = [], name, i, 
+	      longNames = this.options.template.indexOf('YYYY') !== -1;
+	
+	      for(i=this.options.maxYear; i>=this.options.minYear; i--) {
+	        name = longNames ? i : (i+'').substring(2);
+	        items[this.options.yearDescending ? 'push' : 'unshift']([i, name]);
+	      }
+	      
+	      items = this.fillCommon('y').concat(items);
+	      
+	      return items;
+	    },
+	    
+	    /*
+	    fill hour
+	    */
+	    fillHour: function() {
+	      var items = this.fillCommon('h'), name, i,
+	      h12 = this.options.template.indexOf('h') !== -1,
+	      h24 = this.options.template.indexOf('H') !== -1,
+	      twoDigit = this.options.template.toLowerCase().indexOf('hh') !== -1,
+	      min = h12 ? 1 : 0, 
+	      max = h12 ? 12 : 23;
+	
+	      for(i=min; i<=max; i++) {
+	        name = twoDigit ? this.leadZero(i) : i;
+	        items.push([i, name]);
+	      } 
+	      return items;
+	    },
+	
+	    /*
+	    fill minute
+	    */
+	    fillMinute: function() {
+	      var items = this.fillCommon('m'), name, i,
+	      twoDigit = this.options.template.indexOf('mm') !== -1;
+	
+	      for(i=0; i<=59; i+= this.options.minuteStep) {
+	        name = twoDigit ? this.leadZero(i) : i;
+	        items.push([i, name]);
+	      }
+	      return items;
+	    },
+	    
+	    /*
+	    fill second
+	    */
+	    fillSecond: function() {
+	      var items = this.fillCommon('s'), name, i,
+	      twoDigit = this.options.template.indexOf('ss') !== -1;
+	
+	      for(i=0; i<=59; i+= this.options.secondStep) {
+	        name = twoDigit ? this.leadZero(i) : i;
+	        items.push([i, name]);
+	      }    
+	      return items;
+	    },
+	    
+	    /*
+	    fill ampm
+	    */
+	    fillAmpm: function() {
+	      var ampmL = this.options.template.indexOf('a') !== -1,
+	      ampmU = this.options.template.indexOf('A') !== -1,            
+	      items = [
+	      ['am', ampmL ? 'am' : 'AM'],
+	      ['pm', ampmL ? 'pm' : 'PM']
+	      ];
+	      return items;
+	    },
+	
+	    /*
+	     Returns current date value from combos. 
+	     If format not specified - `options.format` used.
+	     If format = `null` - Moment object returned.
+	     */
+	     getValue: function(format) {
+	      var dt, values = {}, 
+	      that = this,
+	      notSelected = false;
+	
+	      //getting selected values    
+	      angular.forEach(this.map, function(v, k) {
+	        if(k === 'ampm') {
+	          return;
+	        }
+	        var def = k === 'day' ? 1 : 0;
+	
+	        values[k] = that['$'+k] ? parseInt(that['$'+k].val(), 10) : def; 
+	        
+	        if(isNaN(values[k])) {
+	         notSelected = true;
+	         return false; 
+	       }
+	     });
+	      
+	      //if at least one visible combo not selected - return empty string
+	      if(notSelected) {
+	       return '';
+	     }
+	
+	      //convert hours 12h --> 24h 
+	      if(this.$ampm) {
+	        //12:00 pm --> 12:00 (24-h format, midday), 12:00 am --> 00:00 (24-h format, midnight, start of day)
+	        if(values.hour === 12) {
+	          values.hour = this.$ampm.val() === 'am' ? 0 : 12;                    
+	        } else {
+	          values.hour = this.$ampm.val() === 'am' ? values.hour : values.hour+12;
+	        }
+	      }
+	      
+	      dt = moment([values.year, values.month, values.day, values.hour, values.minute, values.second]);
+	      
+	      //highlight invalid date
+	      this.highlight(dt);
+	
+	      format = format === undefined ? this.options.format : format;
+	      if(format === null) {
+	       return dt.isValid() ? dt : null; 
+	     } else {
+	       return dt.isValid() ? dt.format(format) : ''; 
+	     }
+	   },
+	
+	   setValue: function(value) {
+	    if(!value) {
+	      return;
+	    }
+	
+	      // parse in strict mode (third param `true`)
+	      var dt = typeof value === 'string' ? moment(value, this.options.format, true) : moment(value),
+	      that = this,
+	      values = {};
+	      
+	      //function to find nearest value in select options
+	      function getNearest($select, value) {
+	        var delta = {};
+	        angular.forEach($select.children('option'), function(opt, i){
+	          var optValue = angular.element(opt).attr('value');
+	
+	          if(optValue === '') return;
+	          var distance = Math.abs(optValue - value); 
+	          if(typeof delta.distance === 'undefined' || distance < delta.distance) {
+	            delta = {value: optValue, distance: distance};
+	          } 
+	        }); 
+	        return delta.value;
+	      }
+	      
+	      if(dt.isValid()) {
+	        //read values from date object
+	        angular.forEach(this.map, function(v, k) {
+	          if(k === 'ampm') {
+	            return; 
+	          }
+	          values[k] = dt[v[1]]();
+	        });
+	
+	        if(this.$ampm) {
+	          //12:00 pm --> 12:00 (24-h format, midday), 12:00 am --> 00:00 (24-h format, midnight, start of day)
+	          if(values.hour >= 12) {
+	            values.ampm = 'pm';
+	            if(values.hour > 12) {
+	              values.hour -= 12;
+	            }
+	          } else {
+	            values.ampm = 'am';
+	            if(values.hour === 0) {
+	              values.hour = 12;
+	            }
+	          }
+	        }
+	
+	        angular.forEach(values, function(v, k) {
+	          //call val() for each existing combo, e.g. this.$hour.val()
+	          if(that['$'+k]) {
+	
+	            if(k === 'minute' && that.options.minuteStep > 1 && that.options.roundTime) {
+	             v = getNearest(that['$'+k], v);
+	           }
+	           
+	           if(k === 'second' && that.options.secondStep > 1 && that.options.roundTime) {
+	             v = getNearest(that['$'+k], v);
+	           }                       
+	           
+	           that['$'+k].val(v);
+	         }
+	       });
+	
+	        // update days count
+	        if (this.options.smartDays) {
+	          this.fillCombo('day');
+	        }
+	
+	        this.$element.val(dt.format(this.options.format)).triggerHandler('change');
+	      }
+	    },
+	    
+	    /*
+	     highlight combos if date is invalid
+	     */
+	     highlight: function(dt) {
+	      if(!dt.isValid()) {
+	        if(this.options.errorClass) {
+	          this.$widget.addClass(this.options.errorClass);
+	        } else {
+	          //store original border color
+	          if(!this.borderColor) {
+	            this.borderColor = this.$widget.find('select').css('border-color'); 
+	          }
+	          this.$widget.find('select').css('border-color', 'red');
+	        }
+	      } else {
+	        if(this.options.errorClass) {
+	          this.$widget.removeClass(this.options.errorClass);
+	        } else {
+	          this.$widget.find('select').css('border-color', this.borderColor);
+	        }  
+	      }
+	    },
+	    
+	    leadZero: function(v) {
+	      return v <= 9 ? '0' + v : v; 
+	    },
+	    
+	    destroy: function() {
+	      this.$widget.remove();
+	      this.$element.removeData('combodate').show();
+	    }
+	
+	  };
+	
+	  return {
+	    getInstance: function(element, options) {
+	      return new Combodate(element, options);
+	    }
+	  };
+	}]);
+	
+	/*
+	Editable icons:
+	- default
+	- font-awesome
+	
+	*/
+	angular.module('xeditable').factory('editableIcons', function() {
+	
+	  var icons = {
+	    //Icon-set to use, defaults to bootstrap icons
+	    default: {
+	      'bs2': {
+	        ok: 'icon-ok icon-white',
+	        cancel: 'icon-remove'
+	      },
+	      'bs3': {
+	        ok: 'glyphicon glyphicon-ok',
+	        cancel: 'glyphicon glyphicon-remove'
+	      }
+	    },
+	    external: {
+	      'font-awesome': {
+	        ok: 'fa fa-check',
+	        cancel: 'fa fa-times'
+	      }
+	    }
+	  };
+	
+	  return icons;
+	});
+	
+	/*
+	Editable themes:
+	- default
+	- bootstrap 2
+	- bootstrap 3
+	- semantic-ui
+	
+	Note: in postrender() `this` is instance of editableController
+	*/
+	angular.module('xeditable').factory('editableThemes', function() {
+	  var themes = {
+	    //default
+	    'default': {
+	      formTpl:      '<form class="editable-wrap"></form>',
+	      noformTpl:    '<span class="editable-wrap"></span>',
+	      controlsTpl:  '<span class="editable-controls"></span>',
+	      inputTpl:     '',
+	      errorTpl:     '<div class="editable-error" data-ng-if="$error" data-ng-bind="$error"></div>',
+	      buttonsTpl:   '<span class="editable-buttons"></span>',
+	      submitTpl:    '<button type="submit">save</button>',
+	      cancelTpl:    '<button type="button" ng-click="$form.$cancel()">cancel</button>'
+	    },
+	
+	    //bs2
+	    'bs2': {
+	      formTpl:     '<form class="form-inline editable-wrap" role="form"></form>',
+	      noformTpl:   '<span class="editable-wrap"></span>',
+	      controlsTpl: '<div class="editable-controls controls control-group" ng-class="{\'error\': $error}"></div>',
+	      inputTpl:    '',
+	      errorTpl:    '<div class="editable-error help-block" data-ng-if="$error" data-ng-bind="$error"></div>',
+	      buttonsTpl:  '<span class="editable-buttons"></span>',
+	      submitTpl:   '<button type="submit" class="btn btn-primary"><span></span></button>',
+	      cancelTpl:   '<button type="button" class="btn" ng-click="$form.$cancel()">'+
+	                      '<span></span>'+
+	                   '</button>'
+	
+	    },
+	
+	    //bs3
+	    'bs3': {
+	      formTpl:     '<form class="form-inline editable-wrap" role="form"></form>',
+	      noformTpl:   '<span class="editable-wrap"></span>',
+	      controlsTpl: '<div class="editable-controls form-group" ng-class="{\'has-error\': $error}"></div>',
+	      inputTpl:    '',
+	      errorTpl:    '<div class="editable-error help-block" data-ng-if="$error" data-ng-bind="$error"></div>',
+	      buttonsTpl:  '<span class="editable-buttons"></span>',
+	      submitTpl:   '<button type="submit" class="btn btn-primary"><span></span></button>',
+	      cancelTpl:   '<button type="button" class="btn btn-default" ng-click="$form.$cancel()">'+
+	                     '<span></span>'+
+	                   '</button>',
+	
+	      //bs3 specific prop to change buttons class: btn-sm, btn-lg
+	      buttonsClass: '',
+	      //bs3 specific prop to change standard inputs class: input-sm, input-lg
+	      inputClass: '',
+	      postrender: function() {
+	        //apply `form-control` class to std inputs
+	        switch(this.directiveName) {
+	          case 'editableText':
+	          case 'editableSelect':
+	          case 'editableTextarea':
+	          case 'editableEmail':
+	          case 'editableTel':
+	          case 'editableNumber':
+	          case 'editableUrl':
+	          case 'editableSearch':
+	          case 'editableDate':
+	          case 'editableDatetime':
+	          case 'editableBsdate':
+	          case 'editableTime':
+	          case 'editableMonth':
+	          case 'editableWeek':
+	          case 'editablePassword':
+	          case 'editableDatetimeLocal':
+	            this.inputEl.addClass('form-control');
+	            if(this.theme.inputClass) {
+	              // don`t apply `input-sm` and `input-lg` to select multiple
+	              // should be fixed in bs itself!
+	              if(this.inputEl.attr('multiple') &&
+	                (this.theme.inputClass === 'input-sm' || this.theme.inputClass === 'input-lg')) {
+	                  break;
+	              }
+	              this.inputEl.addClass(this.theme.inputClass);
+	            }
+	          break;
+	          case 'editableCheckbox':
+	              this.editorEl.addClass('checkbox');
+	        }
+	
+	        //apply buttonsClass (bs3 specific!)
+	        if(this.buttonsEl && this.theme.buttonsClass) {
+	          this.buttonsEl.find('button').addClass(this.theme.buttonsClass);
+	        }
+	      }
+	    },
+	    
+	    //semantic-ui
+	    'semantic': {
+	      formTpl:     '<form class="editable-wrap ui form" ng-class="{\'error\': $error}" role="form"></form>',
+	      noformTpl:   '<span class="editable-wrap"></span>',
+	      controlsTpl: '<div class="editable-controls ui fluid input" ng-class="{\'error\': $error}"></div>',
+	      inputTpl:    '',
+	      errorTpl:    '<div class="editable-error ui error message" data-ng-if="$error" data-ng-bind="$error"></div>',
+	      buttonsTpl:  '<span class="mini ui buttons"></span>',
+	      submitTpl:   '<button type="submit" class="ui primary button"><i class="ui check icon"></i></button>',
+	      cancelTpl:   '<button type="button" class="ui button" ng-click="$form.$cancel()">'+
+	                      '<i class="ui cancel icon"></i>'+
+	                   '</button>'
+	    }
+	  };
+	
+	  return themes;
+	});
+
+
+/***/ },
+/* 45 */
+/***/ function(module, exports, __webpack_require__) {
+
+	__webpack_require__(46);
+	module.exports = 'ngFileUpload';
+
+/***/ },
+/* 46 */
+/***/ function(module, exports) {
+
+	/**!
+	 * AngularJS file upload directives and services. Supports: file upload/drop/paste, resume, cancel/abort,
+	 * progress, resize, thumbnail, preview, validation and CORS
+	 * FileAPI Flash shim for old browsers not supporting FormData
+	 * @author  Danial  <danial.farid@gmail.com>
+	 * @version 12.2.9
+	 */
+	
+	(function () {
+	  /** @namespace FileAPI.noContentTimeout */
+	
+	  function patchXHR(fnName, newFn) {
+	    window.XMLHttpRequest.prototype[fnName] = newFn(window.XMLHttpRequest.prototype[fnName]);
+	  }
+	
+	  function redefineProp(xhr, prop, fn) {
+	    try {
+	      Object.defineProperty(xhr, prop, {get: fn});
+	    } catch (e) {/*ignore*/
+	    }
+	  }
+	
+	  if (!window.FileAPI) {
+	    window.FileAPI = {};
+	  }
+	
+	  if (!window.XMLHttpRequest) {
+	    throw 'AJAX is not supported. XMLHttpRequest is not defined.';
+	  }
+	
+	  FileAPI.shouldLoad = !window.FormData || FileAPI.forceLoad;
+	  if (FileAPI.shouldLoad) {
+	    var initializeUploadListener = function (xhr) {
+	      if (!xhr.__listeners) {
+	        if (!xhr.upload) xhr.upload = {};
+	        xhr.__listeners = [];
+	        var origAddEventListener = xhr.upload.addEventListener;
+	        xhr.upload.addEventListener = function (t, fn) {
+	          xhr.__listeners[t] = fn;
+	          if (origAddEventListener) origAddEventListener.apply(this, arguments);
+	        };
+	      }
+	    };
+	
+	    patchXHR('open', function (orig) {
+	      return function (m, url, b) {
+	        initializeUploadListener(this);
+	        this.__url = url;
+	        try {
+	          orig.apply(this, [m, url, b]);
+	        } catch (e) {
+	          if (e.message.indexOf('Access is denied') > -1) {
+	            this.__origError = e;
+	            orig.apply(this, [m, '_fix_for_ie_crossdomain__', b]);
+	          }
+	        }
+	      };
+	    });
+	
+	    patchXHR('getResponseHeader', function (orig) {
+	      return function (h) {
+	        return this.__fileApiXHR && this.__fileApiXHR.getResponseHeader ? this.__fileApiXHR.getResponseHeader(h) : (orig == null ? null : orig.apply(this, [h]));
+	      };
+	    });
+	
+	    patchXHR('getAllResponseHeaders', function (orig) {
+	      return function () {
+	        return this.__fileApiXHR && this.__fileApiXHR.getAllResponseHeaders ? this.__fileApiXHR.getAllResponseHeaders() : (orig == null ? null : orig.apply(this));
+	      };
+	    });
+	
+	    patchXHR('abort', function (orig) {
+	      return function () {
+	        return this.__fileApiXHR && this.__fileApiXHR.abort ? this.__fileApiXHR.abort() : (orig == null ? null : orig.apply(this));
+	      };
+	    });
+	
+	    patchXHR('setRequestHeader', function (orig) {
+	      return function (header, value) {
+	        if (header === '__setXHR_') {
+	          initializeUploadListener(this);
+	          var val = value(this);
+	          // fix for angular < 1.2.0
+	          if (val instanceof Function) {
+	            val(this);
+	          }
+	        } else {
+	          this.__requestHeaders = this.__requestHeaders || {};
+	          this.__requestHeaders[header] = value;
+	          orig.apply(this, arguments);
+	        }
+	      };
+	    });
+	
+	    patchXHR('send', function (orig) {
+	      return function () {
+	        var xhr = this;
+	        if (arguments[0] && arguments[0].__isFileAPIShim) {
+	          var formData = arguments[0];
+	          var config = {
+	            url: xhr.__url,
+	            jsonp: false, //removes the callback form param
+	            cache: true, //removes the ?fileapiXXX in the url
+	            complete: function (err, fileApiXHR) {
+	              if (err && angular.isString(err) && err.indexOf('#2174') !== -1) {
+	                // this error seems to be fine the file is being uploaded properly.
+	                err = null;
+	              }
+	              xhr.__completed = true;
+	              if (!err && xhr.__listeners.load)
+	                xhr.__listeners.load({
+	                  type: 'load',
+	                  loaded: xhr.__loaded,
+	                  total: xhr.__total,
+	                  target: xhr,
+	                  lengthComputable: true
+	                });
+	              if (!err && xhr.__listeners.loadend)
+	                xhr.__listeners.loadend({
+	                  type: 'loadend',
+	                  loaded: xhr.__loaded,
+	                  total: xhr.__total,
+	                  target: xhr,
+	                  lengthComputable: true
+	                });
+	              if (err === 'abort' && xhr.__listeners.abort)
+	                xhr.__listeners.abort({
+	                  type: 'abort',
+	                  loaded: xhr.__loaded,
+	                  total: xhr.__total,
+	                  target: xhr,
+	                  lengthComputable: true
+	                });
+	              if (fileApiXHR.status !== undefined) redefineProp(xhr, 'status', function () {
+	                return (fileApiXHR.status === 0 && err && err !== 'abort') ? 500 : fileApiXHR.status;
+	              });
+	              if (fileApiXHR.statusText !== undefined) redefineProp(xhr, 'statusText', function () {
+	                return fileApiXHR.statusText;
+	              });
+	              redefineProp(xhr, 'readyState', function () {
+	                return 4;
+	              });
+	              if (fileApiXHR.response !== undefined) redefineProp(xhr, 'response', function () {
+	                return fileApiXHR.response;
+	              });
+	              var resp = fileApiXHR.responseText || (err && fileApiXHR.status === 0 && err !== 'abort' ? err : undefined);
+	              redefineProp(xhr, 'responseText', function () {
+	                return resp;
+	              });
+	              redefineProp(xhr, 'response', function () {
+	                return resp;
+	              });
+	              if (err) redefineProp(xhr, 'err', function () {
+	                return err;
+	              });
+	              xhr.__fileApiXHR = fileApiXHR;
+	              if (xhr.onreadystatechange) xhr.onreadystatechange();
+	              if (xhr.onload) xhr.onload();
+	            },
+	            progress: function (e) {
+	              e.target = xhr;
+	              if (xhr.__listeners.progress) xhr.__listeners.progress(e);
+	              xhr.__total = e.total;
+	              xhr.__loaded = e.loaded;
+	              if (e.total === e.loaded) {
+	                // fix flash issue that doesn't call complete if there is no response text from the server
+	                var _this = this;
+	                setTimeout(function () {
+	                  if (!xhr.__completed) {
+	                    xhr.getAllResponseHeaders = function () {
+	                    };
+	                    _this.complete(null, {status: 204, statusText: 'No Content'});
+	                  }
+	                }, FileAPI.noContentTimeout || 10000);
+	              }
+	            },
+	            headers: xhr.__requestHeaders
+	          };
+	          config.data = {};
+	          config.files = {};
+	          for (var i = 0; i < formData.data.length; i++) {
+	            var item = formData.data[i];
+	            if (item.val != null && item.val.name != null && item.val.size != null && item.val.type != null) {
+	              config.files[item.key] = item.val;
+	            } else {
+	              config.data[item.key] = item.val;
+	            }
+	          }
+	
+	          setTimeout(function () {
+	            if (!FileAPI.hasFlash) {
+	              throw 'Adode Flash Player need to be installed. To check ahead use "FileAPI.hasFlash"';
+	            }
+	            xhr.__fileApiXHR = FileAPI.upload(config);
+	          }, 1);
+	        } else {
+	          if (this.__origError) {
+	            throw this.__origError;
+	          }
+	          orig.apply(xhr, arguments);
+	        }
+	      };
+	    });
+	    window.XMLHttpRequest.__isFileAPIShim = true;
+	    window.FormData = FormData = function () {
+	      return {
+	        append: function (key, val, name) {
+	          if (val.__isFileAPIBlobShim) {
+	            val = val.data[0];
+	          }
+	          this.data.push({
+	            key: key,
+	            val: val,
+	            name: name
+	          });
+	        },
+	        data: [],
+	        __isFileAPIShim: true
+	      };
+	    };
+	
+	    window.Blob = Blob = function (b) {
+	      return {
+	        data: b,
+	        __isFileAPIBlobShim: true
+	      };
+	    };
+	  }
+	
+	})();
+	
+	(function () {
+	  /** @namespace FileAPI.forceLoad */
+	  /** @namespace window.FileAPI.jsUrl */
+	  /** @namespace window.FileAPI.jsPath */
+	
+	  function isInputTypeFile(elem) {
+	    return elem[0].tagName.toLowerCase() === 'input' && elem.attr('type') && elem.attr('type').toLowerCase() === 'file';
+	  }
+	
+	  function hasFlash() {
+	    try {
+	      var fo = new ActiveXObject('ShockwaveFlash.ShockwaveFlash');
+	      if (fo) return true;
+	    } catch (e) {
+	      if (navigator.mimeTypes['application/x-shockwave-flash'] !== undefined) return true;
+	    }
+	    return false;
+	  }
+	
+	  function getOffset(obj) {
+	    var left = 0, top = 0;
+	
+	    if (window.jQuery) {
+	      return jQuery(obj).offset();
+	    }
+	
+	    if (obj.offsetParent) {
+	      do {
+	        left += (obj.offsetLeft - obj.scrollLeft);
+	        top += (obj.offsetTop - obj.scrollTop);
+	        obj = obj.offsetParent;
+	      } while (obj);
+	    }
+	    return {
+	      left: left,
+	      top: top
+	    };
+	  }
+	
+	  if (FileAPI.shouldLoad) {
+	    FileAPI.hasFlash = hasFlash();
+	
+	    //load FileAPI
+	    if (FileAPI.forceLoad) {
+	      FileAPI.html5 = false;
+	    }
+	
+	    if (!FileAPI.upload) {
+	      var jsUrl, basePath, script = document.createElement('script'), allScripts = document.getElementsByTagName('script'), i, index, src;
+	      if (window.FileAPI.jsUrl) {
+	        jsUrl = window.FileAPI.jsUrl;
+	      } else if (window.FileAPI.jsPath) {
+	        basePath = window.FileAPI.jsPath;
+	      } else {
+	        for (i = 0; i < allScripts.length; i++) {
+	          src = allScripts[i].src;
+	          index = src.search(/\/ng\-file\-upload[\-a-zA-z0-9\.]*\.js/);
+	          if (index > -1) {
+	            basePath = src.substring(0, index + 1);
+	            break;
+	          }
+	        }
+	      }
+	
+	      if (FileAPI.staticPath == null) FileAPI.staticPath = basePath;
+	      script.setAttribute('src', jsUrl || basePath + 'FileAPI.min.js');
+	      document.getElementsByTagName('head')[0].appendChild(script);
+	    }
+	
+	    FileAPI.ngfFixIE = function (elem, fileElem, changeFn) {
+	      if (!hasFlash()) {
+	        throw 'Adode Flash Player need to be installed. To check ahead use "FileAPI.hasFlash"';
+	      }
+	      var fixInputStyle = function () {
+	        var label = fileElem.parent();
+	        if (elem.attr('disabled')) {
+	          if (label) label.removeClass('js-fileapi-wrapper');
+	        } else {
+	          if (!fileElem.attr('__ngf_flash_')) {
+	            fileElem.unbind('change');
+	            fileElem.unbind('click');
+	            fileElem.bind('change', function (evt) {
+	              fileApiChangeFn.apply(this, [evt]);
+	              changeFn.apply(this, [evt]);
+	            });
+	            fileElem.attr('__ngf_flash_', 'true');
+	          }
+	          label.addClass('js-fileapi-wrapper');
+	          if (!isInputTypeFile(elem)) {
+	            label.css('position', 'absolute')
+	              .css('top', getOffset(elem[0]).top + 'px').css('left', getOffset(elem[0]).left + 'px')
+	              .css('width', elem[0].offsetWidth + 'px').css('height', elem[0].offsetHeight + 'px')
+	              .css('filter', 'alpha(opacity=0)').css('display', elem.css('display'))
+	              .css('overflow', 'hidden').css('z-index', '900000')
+	              .css('visibility', 'visible');
+	            fileElem.css('width', elem[0].offsetWidth + 'px').css('height', elem[0].offsetHeight + 'px')
+	              .css('position', 'absolute').css('top', '0px').css('left', '0px');
+	          }
+	        }
+	      };
+	
+	      elem.bind('mouseenter', fixInputStyle);
+	
+	      var fileApiChangeFn = function (evt) {
+	        var files = FileAPI.getFiles(evt);
+	        //just a double check for #233
+	        for (var i = 0; i < files.length; i++) {
+	          if (files[i].size === undefined) files[i].size = 0;
+	          if (files[i].name === undefined) files[i].name = 'file';
+	          if (files[i].type === undefined) files[i].type = 'undefined';
+	        }
+	        if (!evt.target) {
+	          evt.target = {};
+	        }
+	        evt.target.files = files;
+	        // if evt.target.files is not writable use helper field
+	        if (evt.target.files !== files) {
+	          evt.__files_ = files;
+	        }
+	        (evt.__files_ || evt.target.files).item = function (i) {
+	          return (evt.__files_ || evt.target.files)[i] || null;
+	        };
+	      };
+	    };
+	
+	    FileAPI.disableFileInput = function (elem, disable) {
+	      if (disable) {
+	        elem.removeClass('js-fileapi-wrapper');
+	      } else {
+	        elem.addClass('js-fileapi-wrapper');
+	      }
+	    };
+	  }
+	})();
+	
+	if (!window.FileReader) {
+	  window.FileReader = function () {
+	    var _this = this, loadStarted = false;
+	    this.listeners = {};
+	    this.addEventListener = function (type, fn) {
+	      _this.listeners[type] = _this.listeners[type] || [];
+	      _this.listeners[type].push(fn);
+	    };
+	    this.removeEventListener = function (type, fn) {
+	      if (_this.listeners[type]) _this.listeners[type].splice(_this.listeners[type].indexOf(fn), 1);
+	    };
+	    this.dispatchEvent = function (evt) {
+	      var list = _this.listeners[evt.type];
+	      if (list) {
+	        for (var i = 0; i < list.length; i++) {
+	          list[i].call(_this, evt);
+	        }
+	      }
+	    };
+	    this.onabort = this.onerror = this.onload = this.onloadstart = this.onloadend = this.onprogress = null;
+	
+	    var constructEvent = function (type, evt) {
+	      var e = {type: type, target: _this, loaded: evt.loaded, total: evt.total, error: evt.error};
+	      if (evt.result != null) e.target.result = evt.result;
+	      return e;
+	    };
+	    var listener = function (evt) {
+	      if (!loadStarted) {
+	        loadStarted = true;
+	        if (_this.onloadstart) _this.onloadstart(constructEvent('loadstart', evt));
+	      }
+	      var e;
+	      if (evt.type === 'load') {
+	        if (_this.onloadend) _this.onloadend(constructEvent('loadend', evt));
+	        e = constructEvent('load', evt);
+	        if (_this.onload) _this.onload(e);
+	        _this.dispatchEvent(e);
+	      } else if (evt.type === 'progress') {
+	        e = constructEvent('progress', evt);
+	        if (_this.onprogress) _this.onprogress(e);
+	        _this.dispatchEvent(e);
+	      } else {
+	        e = constructEvent('error', evt);
+	        if (_this.onerror) _this.onerror(e);
+	        _this.dispatchEvent(e);
+	      }
+	    };
+	    this.readAsDataURL = function (file) {
+	      FileAPI.readAsDataURL(file, listener);
+	    };
+	    this.readAsText = function (file) {
+	      FileAPI.readAsText(file, listener);
+	    };
+	  };
+	}
+	
+	/**!
+	 * AngularJS file upload directives and services. Supoorts: file upload/drop/paste, resume, cancel/abort,
+	 * progress, resize, thumbnail, preview, validation and CORS
+	 * @author  Danial  <danial.farid@gmail.com>
+	 * @version 12.2.9
+	 */
+	
+	if (window.XMLHttpRequest && !(window.FileAPI && FileAPI.shouldLoad)) {
+	  window.XMLHttpRequest.prototype.setRequestHeader = (function (orig) {
+	    return function (header, value) {
+	      if (header === '__setXHR_') {
+	        var val = value(this);
+	        // fix for angular < 1.2.0
+	        if (val instanceof Function) {
+	          val(this);
+	        }
+	      } else {
+	        orig.apply(this, arguments);
+	      }
+	    };
+	  })(window.XMLHttpRequest.prototype.setRequestHeader);
+	}
+	
+	var ngFileUpload = angular.module('ngFileUpload', []);
+	
+	ngFileUpload.version = '12.2.9';
+	
+	ngFileUpload.service('UploadBase', ['$http', '$q', '$timeout', function ($http, $q, $timeout) {
+	  var upload = this;
+	  upload.promisesCount = 0;
+	
+	  this.isResumeSupported = function () {
+	    return window.Blob && window.Blob.prototype.slice;
+	  };
+	
+	  var resumeSupported = this.isResumeSupported();
+	
+	  function sendHttp(config) {
+	    config.method = config.method || 'POST';
+	    config.headers = config.headers || {};
+	
+	    var deferred = config._deferred = config._deferred || $q.defer();
+	    var promise = deferred.promise;
+	
+	    function notifyProgress(e) {
+	      if (deferred.notify) {
+	        deferred.notify(e);
+	      }
+	      if (promise.progressFunc) {
+	        $timeout(function () {
+	          promise.progressFunc(e);
+	        });
+	      }
+	    }
+	
+	    function getNotifyEvent(n) {
+	      if (config._start != null && resumeSupported) {
+	        return {
+	          loaded: n.loaded + config._start,
+	          total: (config._file && config._file.size) || n.total,
+	          type: n.type, config: config,
+	          lengthComputable: true, target: n.target
+	        };
+	      } else {
+	        return n;
+	      }
+	    }
+	
+	    if (!config.disableProgress) {
+	      config.headers.__setXHR_ = function () {
+	        return function (xhr) {
+	          if (!xhr || !xhr.upload || !xhr.upload.addEventListener) return;
+	          config.__XHR = xhr;
+	          if (config.xhrFn) config.xhrFn(xhr);
+	          xhr.upload.addEventListener('progress', function (e) {
+	            e.config = config;
+	            notifyProgress(getNotifyEvent(e));
+	          }, false);
+	          //fix for firefox not firing upload progress end, also IE8-9
+	          xhr.upload.addEventListener('load', function (e) {
+	            if (e.lengthComputable) {
+	              e.config = config;
+	              notifyProgress(getNotifyEvent(e));
+	            }
+	          }, false);
+	        };
+	      };
+	    }
+	
+	    function uploadWithAngular() {
+	      $http(config).then(function (r) {
+	          if (resumeSupported && config._chunkSize && !config._finished && config._file) {
+	            var fileSize = config._file && config._file.size || 0;
+	            notifyProgress({
+	                loaded: Math.min(config._end, fileSize),
+	                total: fileSize,
+	                config: config,
+	                type: 'progress'
+	              }
+	            );
+	            upload.upload(config, true);
+	          } else {
+	            if (config._finished) delete config._finished;
+	            deferred.resolve(r);
+	          }
+	        }, function (e) {
+	          deferred.reject(e);
+	        }, function (n) {
+	          deferred.notify(n);
+	        }
+	      );
+	    }
+	
+	    if (!resumeSupported) {
+	      uploadWithAngular();
+	    } else if (config._chunkSize && config._end && !config._finished) {
+	      config._start = config._end;
+	      config._end += config._chunkSize;
+	      uploadWithAngular();
+	    } else if (config.resumeSizeUrl) {
+	      $http.get(config.resumeSizeUrl).then(function (resp) {
+	        if (config.resumeSizeResponseReader) {
+	          config._start = config.resumeSizeResponseReader(resp.data);
+	        } else {
+	          config._start = parseInt((resp.data.size == null ? resp.data : resp.data.size).toString());
+	        }
+	        if (config._chunkSize) {
+	          config._end = config._start + config._chunkSize;
+	        }
+	        uploadWithAngular();
+	      }, function (e) {
+	        throw e;
+	      });
+	    } else if (config.resumeSize) {
+	      config.resumeSize().then(function (size) {
+	        config._start = size;
+	        if (config._chunkSize) {
+	          config._end = config._start + config._chunkSize;
+	        }
+	        uploadWithAngular();
+	      }, function (e) {
+	        throw e;
+	      });
+	    } else {
+	      if (config._chunkSize) {
+	        config._start = 0;
+	        config._end = config._start + config._chunkSize;
+	      }
+	      uploadWithAngular();
+	    }
+	
+	
+	    promise.success = function (fn) {
+	      promise.then(function (response) {
+	        fn(response.data, response.status, response.headers, config);
+	      });
+	      return promise;
+	    };
+	
+	    promise.error = function (fn) {
+	      promise.then(null, function (response) {
+	        fn(response.data, response.status, response.headers, config);
+	      });
+	      return promise;
+	    };
+	
+	    promise.progress = function (fn) {
+	      promise.progressFunc = fn;
+	      promise.then(null, null, function (n) {
+	        fn(n);
+	      });
+	      return promise;
+	    };
+	    promise.abort = promise.pause = function () {
+	      if (config.__XHR) {
+	        $timeout(function () {
+	          config.__XHR.abort();
+	        });
+	      }
+	      return promise;
+	    };
+	    promise.xhr = function (fn) {
+	      config.xhrFn = (function (origXhrFn) {
+	        return function () {
+	          if (origXhrFn) origXhrFn.apply(promise, arguments);
+	          fn.apply(promise, arguments);
+	        };
+	      })(config.xhrFn);
+	      return promise;
+	    };
+	
+	    upload.promisesCount++;
+	    if (promise['finally'] && promise['finally'] instanceof Function) {
+	      promise['finally'](function () {
+	        upload.promisesCount--;
+	      });
+	    }
+	    return promise;
+	  }
+	
+	  this.isUploadInProgress = function () {
+	    return upload.promisesCount > 0;
+	  };
+	
+	  this.rename = function (file, name) {
+	    file.ngfName = name;
+	    return file;
+	  };
+	
+	  this.jsonBlob = function (val) {
+	    if (val != null && !angular.isString(val)) {
+	      val = JSON.stringify(val);
+	    }
+	    var blob = new window.Blob([val], {type: 'application/json'});
+	    blob._ngfBlob = true;
+	    return blob;
+	  };
+	
+	  this.json = function (val) {
+	    return angular.toJson(val);
+	  };
+	
+	  function copy(obj) {
+	    var clone = {};
+	    for (var key in obj) {
+	      if (obj.hasOwnProperty(key)) {
+	        clone[key] = obj[key];
+	      }
+	    }
+	    return clone;
+	  }
+	
+	  this.isFile = function (file) {
+	    return file != null && (file instanceof window.Blob || (file.flashId && file.name && file.size));
+	  };
+	
+	  this.upload = function (config, internal) {
+	    function toResumeFile(file, formData) {
+	      if (file._ngfBlob) return file;
+	      config._file = config._file || file;
+	      if (config._start != null && resumeSupported) {
+	        if (config._end && config._end >= file.size) {
+	          config._finished = true;
+	          config._end = file.size;
+	        }
+	        var slice = file.slice(config._start, config._end || file.size);
+	        slice.name = file.name;
+	        slice.ngfName = file.ngfName;
+	        if (config._chunkSize) {
+	          formData.append('_chunkSize', config._chunkSize);
+	          formData.append('_currentChunkSize', config._end - config._start);
+	          formData.append('_chunkNumber', Math.floor(config._start / config._chunkSize));
+	          formData.append('_totalSize', config._file.size);
+	        }
+	        return slice;
+	      }
+	      return file;
+	    }
+	
+	    function addFieldToFormData(formData, val, key) {
+	      if (val !== undefined) {
+	        if (angular.isDate(val)) {
+	          val = val.toISOString();
+	        }
+	        if (angular.isString(val)) {
+	          formData.append(key, val);
+	        } else if (upload.isFile(val)) {
+	          var file = toResumeFile(val, formData);
+	          var split = key.split(',');
+	          if (split[1]) {
+	            file.ngfName = split[1].replace(/^\s+|\s+$/g, '');
+	            key = split[0];
+	          }
+	          config._fileKey = config._fileKey || key;
+	          formData.append(key, file, file.ngfName || file.name);
+	        } else {
+	          if (angular.isObject(val)) {
+	            if (val.$$ngfCircularDetection) throw 'ngFileUpload: Circular reference in config.data. Make sure specified data for Upload.upload() has no circular reference: ' + key;
+	
+	            val.$$ngfCircularDetection = true;
+	            try {
+	              for (var k in val) {
+	                if (val.hasOwnProperty(k) && k !== '$$ngfCircularDetection') {
+	                  var objectKey = config.objectKey == null ? '[i]' : config.objectKey;
+	                  if (val.length && parseInt(k) > -1) {
+	                    objectKey = config.arrayKey == null ? objectKey : config.arrayKey;
+	                  }
+	                  addFieldToFormData(formData, val[k], key + objectKey.replace(/[ik]/g, k));
+	                }
+	              }
+	            } finally {
+	              delete val.$$ngfCircularDetection;
+	            }
+	          } else {
+	            formData.append(key, val);
+	          }
+	        }
+	      }
+	    }
+	
+	    function digestConfig() {
+	      config._chunkSize = upload.translateScalars(config.resumeChunkSize);
+	      config._chunkSize = config._chunkSize ? parseInt(config._chunkSize.toString()) : null;
+	
+	      config.headers = config.headers || {};
+	      config.headers['Content-Type'] = undefined;
+	      config.transformRequest = config.transformRequest ?
+	        (angular.isArray(config.transformRequest) ?
+	          config.transformRequest : [config.transformRequest]) : [];
+	      config.transformRequest.push(function (data) {
+	        var formData = new window.FormData(), key;
+	        data = data || config.fields || {};
+	        if (config.file) {
+	          data.file = config.file;
+	        }
+	        for (key in data) {
+	          if (data.hasOwnProperty(key)) {
+	            var val = data[key];
+	            if (config.formDataAppender) {
+	              config.formDataAppender(formData, key, val);
+	            } else {
+	              addFieldToFormData(formData, val, key);
+	            }
+	          }
+	        }
+	
+	        return formData;
+	      });
+	    }
+	
+	    if (!internal) config = copy(config);
+	    if (!config._isDigested) {
+	      config._isDigested = true;
+	      digestConfig();
+	    }
+	
+	    return sendHttp(config);
+	  };
+	
+	  this.http = function (config) {
+	    config = copy(config);
+	    config.transformRequest = config.transformRequest || function (data) {
+	        if ((window.ArrayBuffer && data instanceof window.ArrayBuffer) || data instanceof window.Blob) {
+	          return data;
+	        }
+	        return $http.defaults.transformRequest[0].apply(this, arguments);
+	      };
+	    config._chunkSize = upload.translateScalars(config.resumeChunkSize);
+	    config._chunkSize = config._chunkSize ? parseInt(config._chunkSize.toString()) : null;
+	
+	    return sendHttp(config);
+	  };
+	
+	  this.translateScalars = function (str) {
+	    if (angular.isString(str)) {
+	      if (str.search(/kb/i) === str.length - 2) {
+	        return parseFloat(str.substring(0, str.length - 2) * 1024);
+	      } else if (str.search(/mb/i) === str.length - 2) {
+	        return parseFloat(str.substring(0, str.length - 2) * 1048576);
+	      } else if (str.search(/gb/i) === str.length - 2) {
+	        return parseFloat(str.substring(0, str.length - 2) * 1073741824);
+	      } else if (str.search(/b/i) === str.length - 1) {
+	        return parseFloat(str.substring(0, str.length - 1));
+	      } else if (str.search(/s/i) === str.length - 1) {
+	        return parseFloat(str.substring(0, str.length - 1));
+	      } else if (str.search(/m/i) === str.length - 1) {
+	        return parseFloat(str.substring(0, str.length - 1) * 60);
+	      } else if (str.search(/h/i) === str.length - 1) {
+	        return parseFloat(str.substring(0, str.length - 1) * 3600);
+	      }
+	    }
+	    return str;
+	  };
+	
+	  this.urlToBlob = function(url) {
+	    var defer = $q.defer();
+	    $http({url: url, method: 'get', responseType: 'arraybuffer'}).then(function (resp) {
+	      var arrayBufferView = new Uint8Array(resp.data);
+	      var type = resp.headers('content-type') || 'image/WebP';
+	      var blob = new window.Blob([arrayBufferView], {type: type});
+	      var matches = url.match(/.*\/(.+?)(\?.*)?$/);
+	      if (matches.length > 1) {
+	        blob.name = matches[1];
+	      }
+	      defer.resolve(blob);
+	    }, function (e) {
+	      defer.reject(e);
+	    });
+	    return defer.promise;
+	  };
+	
+	  this.setDefaults = function (defaults) {
+	    this.defaults = defaults || {};
+	  };
+	
+	  this.defaults = {};
+	  this.version = ngFileUpload.version;
+	}
+	
+	]);
+	
+	ngFileUpload.service('Upload', ['$parse', '$timeout', '$compile', '$q', 'UploadExif', function ($parse, $timeout, $compile, $q, UploadExif) {
+	  var upload = UploadExif;
+	  upload.getAttrWithDefaults = function (attr, name) {
+	    if (attr[name] != null) return attr[name];
+	    var def = upload.defaults[name];
+	    return (def == null ? def : (angular.isString(def) ? def : JSON.stringify(def)));
+	  };
+	
+	  upload.attrGetter = function (name, attr, scope, params) {
+	    var attrVal = this.getAttrWithDefaults(attr, name);
+	    if (scope) {
+	      try {
+	        if (params) {
+	          return $parse(attrVal)(scope, params);
+	        } else {
+	          return $parse(attrVal)(scope);
+	        }
+	      } catch (e) {
+	        // hangle string value without single qoute
+	        if (name.search(/min|max|pattern/i)) {
+	          return attrVal;
+	        } else {
+	          throw e;
+	        }
+	      }
+	    } else {
+	      return attrVal;
+	    }
+	  };
+	
+	  upload.shouldUpdateOn = function (type, attr, scope) {
+	    var modelOptions = upload.attrGetter('ngfModelOptions', attr, scope);
+	    if (modelOptions && modelOptions.updateOn) {
+	      return modelOptions.updateOn.split(' ').indexOf(type) > -1;
+	    }
+	    return true;
+	  };
+	
+	  upload.emptyPromise = function () {
+	    var d = $q.defer();
+	    var args = arguments;
+	    $timeout(function () {
+	      d.resolve.apply(d, args);
+	    });
+	    return d.promise;
+	  };
+	
+	  upload.rejectPromise = function () {
+	    var d = $q.defer();
+	    var args = arguments;
+	    $timeout(function () {
+	      d.reject.apply(d, args);
+	    });
+	    return d.promise;
+	  };
+	
+	  upload.happyPromise = function (promise, data) {
+	    var d = $q.defer();
+	    promise.then(function (result) {
+	      d.resolve(result);
+	    }, function (error) {
+	      $timeout(function () {
+	        throw error;
+	      });
+	      d.resolve(data);
+	    });
+	    return d.promise;
+	  };
+	
+	  function applyExifRotations(files, attr, scope) {
+	    var promises = [upload.emptyPromise()];
+	    angular.forEach(files, function (f, i) {
+	      if (f.type.indexOf('image/jpeg') === 0 && upload.attrGetter('ngfFixOrientation', attr, scope, {$file: f})) {
+	        promises.push(upload.happyPromise(upload.applyExifRotation(f), f).then(function (fixedFile) {
+	          files.splice(i, 1, fixedFile);
+	        }));
+	      }
+	    });
+	    return $q.all(promises);
+	  }
+	
+	  function resize(files, attr, scope) {
+	    var resizeVal = upload.attrGetter('ngfResize', attr, scope);
+	    if (!resizeVal || !upload.isResizeSupported() || !files.length) return upload.emptyPromise();
+	    if (resizeVal instanceof Function) {
+	      var defer = $q.defer();
+	      return resizeVal(files).then(function (p) {
+	        resizeWithParams(p, files, attr, scope).then(function (r) {
+	          defer.resolve(r);
+	        }, function (e) {
+	          defer.reject(e);
+	        });
+	      }, function (e) {
+	        defer.reject(e);
+	      });
+	    } else {
+	      return resizeWithParams(resizeVal, files, attr, scope);
+	    }
+	  }
+	
+	  function resizeWithParams(params, files, attr, scope) {
+	    var promises = [upload.emptyPromise()];
+	
+	    function handleFile(f, i) {
+	      if (f.type.indexOf('image') === 0) {
+	        if (params.pattern && !upload.validatePattern(f, params.pattern)) return;
+	        params.resizeIf = function (width, height) {
+	          return upload.attrGetter('ngfResizeIf', attr, scope,
+	            {$width: width, $height: height, $file: f});
+	        };
+	        var promise = upload.resize(f, params);
+	        promises.push(promise);
+	        promise.then(function (resizedFile) {
+	          files.splice(i, 1, resizedFile);
+	        }, function (e) {
+	          f.$error = 'resize';
+	          f.$errorParam = (e ? (e.message ? e.message : e) + ': ' : '') + (f && f.name);
+	        });
+	      }
+	    }
+	
+	    for (var i = 0; i < files.length; i++) {
+	      handleFile(files[i], i);
+	    }
+	    return $q.all(promises);
+	  }
+	
+	  upload.updateModel = function (ngModel, attr, scope, fileChange, files, evt, noDelay) {
+	    function update(files, invalidFiles, newFiles, dupFiles, isSingleModel) {
+	      attr.$$ngfPrevValidFiles = files;
+	      attr.$$ngfPrevInvalidFiles = invalidFiles;
+	      var file = files && files.length ? files[0] : null;
+	      var invalidFile = invalidFiles && invalidFiles.length ? invalidFiles[0] : null;
+	
+	      if (ngModel) {
+	        upload.applyModelValidation(ngModel, files);
+	        ngModel.$setViewValue(isSingleModel ? file : files);
+	      }
+	
+	      if (fileChange) {
+	        $parse(fileChange)(scope, {
+	          $files: files,
+	          $file: file,
+	          $newFiles: newFiles,
+	          $duplicateFiles: dupFiles,
+	          $invalidFiles: invalidFiles,
+	          $invalidFile: invalidFile,
+	          $event: evt
+	        });
+	      }
+	
+	      var invalidModel = upload.attrGetter('ngfModelInvalid', attr);
+	      if (invalidModel) {
+	        $timeout(function () {
+	          $parse(invalidModel).assign(scope, isSingleModel ? invalidFile : invalidFiles);
+	        });
+	      }
+	      $timeout(function () {
+	        // scope apply changes
+	      });
+	    }
+	
+	    var allNewFiles, dupFiles = [], prevValidFiles, prevInvalidFiles,
+	      invalids = [], valids = [];
+	
+	    function removeDuplicates() {
+	      function equals(f1, f2) {
+	        return f1.name === f2.name && (f1.$ngfOrigSize || f1.size) === (f2.$ngfOrigSize || f2.size) &&
+	          f1.type === f2.type;
+	      }
+	
+	      function isInPrevFiles(f) {
+	        var j;
+	        for (j = 0; j < prevValidFiles.length; j++) {
+	          if (equals(f, prevValidFiles[j])) {
+	            return true;
+	          }
+	        }
+	        for (j = 0; j < prevInvalidFiles.length; j++) {
+	          if (equals(f, prevInvalidFiles[j])) {
+	            return true;
+	          }
+	        }
+	        return false;
+	      }
+	
+	      if (files) {
+	        allNewFiles = [];
+	        dupFiles = [];
+	        for (var i = 0; i < files.length; i++) {
+	          if (isInPrevFiles(files[i])) {
+	            dupFiles.push(files[i]);
+	          } else {
+	            allNewFiles.push(files[i]);
+	          }
+	        }
+	      }
+	    }
+	
+	    function toArray(v) {
+	      return angular.isArray(v) ? v : [v];
+	    }
+	
+	    function resizeAndUpdate() {
+	      function updateModel() {
+	        $timeout(function () {
+	          update(keep ? prevValidFiles.concat(valids) : valids,
+	            keep ? prevInvalidFiles.concat(invalids) : invalids,
+	            files, dupFiles, isSingleModel);
+	        }, options && options.debounce ? options.debounce.change || options.debounce : 0);
+	      }
+	
+	      resize(validateAfterResize ? allNewFiles : valids, attr, scope).then(function () {
+	        if (validateAfterResize) {
+	          upload.validate(allNewFiles, keep ? prevValidFiles.length : 0, ngModel, attr, scope)
+	            .then(function (validationResult) {
+	              valids = validationResult.validsFiles;
+	              invalids = validationResult.invalidsFiles;
+	              updateModel();
+	            });
+	        } else {
+	          updateModel();
+	        }
+	      }, function (e) {
+	        throw 'Could not resize files ' + e;
+	      });
+	    }
+	
+	    prevValidFiles = attr.$$ngfPrevValidFiles || [];
+	    prevInvalidFiles = attr.$$ngfPrevInvalidFiles || [];
+	    if (ngModel && ngModel.$modelValue) {
+	      prevValidFiles = toArray(ngModel.$modelValue);
+	    }
+	
+	    var keep = upload.attrGetter('ngfKeep', attr, scope);
+	    allNewFiles = (files || []).slice(0);
+	    if (keep === 'distinct' || upload.attrGetter('ngfKeepDistinct', attr, scope) === true) {
+	      removeDuplicates(attr, scope);
+	    }
+	
+	    var isSingleModel = !keep && !upload.attrGetter('ngfMultiple', attr, scope) && !upload.attrGetter('multiple', attr);
+	
+	    if (keep && !allNewFiles.length) return;
+	
+	    upload.attrGetter('ngfBeforeModelChange', attr, scope, {
+	      $files: files,
+	      $file: files && files.length ? files[0] : null,
+	      $newFiles: allNewFiles,
+	      $duplicateFiles: dupFiles,
+	      $event: evt
+	    });
+	
+	    var validateAfterResize = upload.attrGetter('ngfValidateAfterResize', attr, scope);
+	
+	    var options = upload.attrGetter('ngfModelOptions', attr, scope);
+	    upload.validate(allNewFiles, keep ? prevValidFiles.length : 0, ngModel, attr, scope)
+	      .then(function (validationResult) {
+	      if (noDelay) {
+	        update(allNewFiles, [], files, dupFiles, isSingleModel);
+	      } else {
+	        if ((!options || !options.allowInvalid) && !validateAfterResize) {
+	          valids = validationResult.validFiles;
+	          invalids = validationResult.invalidFiles;
+	        } else {
+	          valids = allNewFiles;
+	        }
+	        if (upload.attrGetter('ngfFixOrientation', attr, scope) && upload.isExifSupported()) {
+	          applyExifRotations(valids, attr, scope).then(function () {
+	            resizeAndUpdate();
+	          });
+	        } else {
+	          resizeAndUpdate();
+	        }
+	      }
+	    });
+	  };
+	
+	  return upload;
+	}]);
+	
+	ngFileUpload.directive('ngfSelect', ['$parse', '$timeout', '$compile', 'Upload', function ($parse, $timeout, $compile, Upload) {
+	  var generatedElems = [];
+	
+	  function isDelayedClickSupported(ua) {
+	    // fix for android native browser < 4.4 and safari windows
+	    var m = ua.match(/Android[^\d]*(\d+)\.(\d+)/);
+	    if (m && m.length > 2) {
+	      var v = Upload.defaults.androidFixMinorVersion || 4;
+	      return parseInt(m[1]) < 4 || (parseInt(m[1]) === v && parseInt(m[2]) < v);
+	    }
+	
+	    // safari on windows
+	    return ua.indexOf('Chrome') === -1 && /.*Windows.*Safari.*/.test(ua);
+	  }
+	
+	  function linkFileSelect(scope, elem, attr, ngModel, $parse, $timeout, $compile, upload) {
+	    /** @namespace attr.ngfSelect */
+	    /** @namespace attr.ngfChange */
+	    /** @namespace attr.ngModel */
+	    /** @namespace attr.ngfModelOptions */
+	    /** @namespace attr.ngfMultiple */
+	    /** @namespace attr.ngfCapture */
+	    /** @namespace attr.ngfValidate */
+	    /** @namespace attr.ngfKeep */
+	    var attrGetter = function (name, scope) {
+	      return upload.attrGetter(name, attr, scope);
+	    };
+	
+	    function isInputTypeFile() {
+	      return elem[0].tagName.toLowerCase() === 'input' && attr.type && attr.type.toLowerCase() === 'file';
+	    }
+	
+	    function fileChangeAttr() {
+	      return attrGetter('ngfChange') || attrGetter('ngfSelect');
+	    }
+	
+	    function changeFn(evt) {
+	      if (upload.shouldUpdateOn('change', attr, scope)) {
+	        var fileList = evt.__files_ || (evt.target && evt.target.files), files = [];
+	        /* Handle duplicate call in  IE11 */
+	        if (!fileList) return;
+	        for (var i = 0; i < fileList.length; i++) {
+	          files.push(fileList[i]);
+	        }
+	        upload.updateModel(ngModel, attr, scope, fileChangeAttr(),
+	          files.length ? files : null, evt);
+	      }
+	    }
+	
+	    upload.registerModelChangeValidator(ngModel, attr, scope);
+	
+	    var unwatches = [];
+	    if (attrGetter('ngfMultiple')) {
+	      unwatches.push(scope.$watch(attrGetter('ngfMultiple'), function () {
+	        fileElem.attr('multiple', attrGetter('ngfMultiple', scope));
+	      }));
+	    }
+	    if (attrGetter('ngfCapture')) {
+	      unwatches.push(scope.$watch(attrGetter('ngfCapture'), function () {
+	        fileElem.attr('capture', attrGetter('ngfCapture', scope));
+	      }));
+	    }
+	    if (attrGetter('ngfAccept')) {
+	      unwatches.push(scope.$watch(attrGetter('ngfAccept'), function () {
+	        fileElem.attr('accept', attrGetter('ngfAccept', scope));
+	      }));
+	    }
+	    attr.$observe('accept', function () {
+	      fileElem.attr('accept', attrGetter('accept'));
+	    });
+	    unwatches.push(function () {
+	      if (attr.$$observers) delete attr.$$observers.accept;
+	    });
+	    function bindAttrToFileInput(fileElem) {
+	      for (var i = 0; i < elem[0].attributes.length; i++) {
+	        var attribute = elem[0].attributes[i];
+	        if (attribute.name !== 'type' && attribute.name !== 'class' && attribute.name !== 'style') {
+	          if (attribute.value == null || attribute.value === '') {
+	            if (attribute.name === 'required') attribute.value = 'required';
+	            if (attribute.name === 'multiple') attribute.value = 'multiple';
+	          }
+	          fileElem.attr(attribute.name, attribute.name === 'id' ? 'ngf-' + attribute.value : attribute.value);
+	        }
+	      }
+	    }
+	
+	    function createFileInput() {
+	      if (isInputTypeFile()) {
+	        return elem;
+	      }
+	
+	      var fileElem = angular.element('<input type="file">');
+	
+	      bindAttrToFileInput(fileElem);
+	
+	      var label = angular.element('<label>upload</label>');
+	      label.css('visibility', 'hidden').css('position', 'absolute').css('overflow', 'hidden')
+	        .css('width', '0px').css('height', '0px').css('border', 'none')
+	        .css('margin', '0px').css('padding', '0px').attr('tabindex', '-1');
+	      if (elem.attr('id')) {
+	        label.attr('id', 'ngf-label-' + elem.attr('id'));
+	      }
+	      generatedElems.push({el: elem, ref: label});
+	
+	      document.body.appendChild(label.append(fileElem)[0]);
+	
+	      return fileElem;
+	    }
+	
+	    function clickHandler(evt) {
+	      if (elem.attr('disabled')) return false;
+	      if (attrGetter('ngfSelectDisabled', scope)) return;
+	
+	      var r = detectSwipe(evt);
+	      // prevent the click if it is a swipe
+	      if (r != null) return r;
+	
+	      resetModel(evt);
+	
+	      // fix for md when the element is removed from the DOM and added back #460
+	      try {
+	        if (!isInputTypeFile() && !document.body.contains(fileElem[0])) {
+	          generatedElems.push({el: elem, ref: fileElem.parent()});
+	          document.body.appendChild(fileElem.parent()[0]);
+	          fileElem.bind('change', changeFn);
+	        }
+	      } catch(e){/*ignore*/}
+	
+	      if (isDelayedClickSupported(navigator.userAgent)) {
+	        setTimeout(function () {
+	          fileElem[0].click();
+	        }, 0);
+	      } else {
+	        fileElem[0].click();
+	      }
+	
+	      return false;
+	    }
+	
+	
+	    var initialTouchStartY = 0;
+	    var initialTouchStartX = 0;
+	
+	    function detectSwipe(evt) {
+	      var touches = evt.changedTouches || (evt.originalEvent && evt.originalEvent.changedTouches);
+	      if (touches) {
+	        if (evt.type === 'touchstart') {
+	          initialTouchStartX = touches[0].clientX;
+	          initialTouchStartY = touches[0].clientY;
+	          return true; // don't block event default
+	        } else {
+	          // prevent scroll from triggering event
+	          if (evt.type === 'touchend') {
+	            var currentX = touches[0].clientX;
+	            var currentY = touches[0].clientY;
+	            if ((Math.abs(currentX - initialTouchStartX) > 20) ||
+	            (Math.abs(currentY - initialTouchStartY) > 20)) {
+	              evt.stopPropagation();
+	              evt.preventDefault();
+	              return false;
+	            }
+	          }
+	          return true;
+	        }
+	      }
+	    }
+	
+	    var fileElem = elem;
+	
+	    function resetModel(evt) {
+	      if (upload.shouldUpdateOn('click', attr, scope) && fileElem.val()) {
+	        fileElem.val(null);
+	        upload.updateModel(ngModel, attr, scope, fileChangeAttr(), null, evt, true);
+	      }
+	    }
+	
+	    if (!isInputTypeFile()) {
+	      fileElem = createFileInput();
+	    }
+	    fileElem.bind('change', changeFn);
+	
+	    if (!isInputTypeFile()) {
+	      elem.bind('click touchstart touchend', clickHandler);
+	    } else {
+	      elem.bind('click', resetModel);
+	    }
+	
+	    function ie10SameFileSelectFix(evt) {
+	      if (fileElem && !fileElem.attr('__ngf_ie10_Fix_')) {
+	        if (!fileElem[0].parentNode) {
+	          fileElem = null;
+	          return;
+	        }
+	        evt.preventDefault();
+	        evt.stopPropagation();
+	        fileElem.unbind('click');
+	        var clone = fileElem.clone();
+	        fileElem.replaceWith(clone);
+	        fileElem = clone;
+	        fileElem.attr('__ngf_ie10_Fix_', 'true');
+	        fileElem.bind('change', changeFn);
+	        fileElem.bind('click', ie10SameFileSelectFix);
+	        fileElem[0].click();
+	        return false;
+	      } else {
+	        fileElem.removeAttr('__ngf_ie10_Fix_');
+	      }
+	    }
+	
+	    if (navigator.appVersion.indexOf('MSIE 10') !== -1) {
+	      fileElem.bind('click', ie10SameFileSelectFix);
+	    }
+	
+	    if (ngModel) ngModel.$formatters.push(function (val) {
+	      if (val == null || val.length === 0) {
+	        if (fileElem.val()) {
+	          fileElem.val(null);
+	        }
+	      }
+	      return val;
+	    });
+	
+	    scope.$on('$destroy', function () {
+	      if (!isInputTypeFile()) fileElem.parent().remove();
+	      angular.forEach(unwatches, function (unwatch) {
+	        unwatch();
+	      });
+	    });
+	
+	    $timeout(function () {
+	      for (var i = 0; i < generatedElems.length; i++) {
+	        var g = generatedElems[i];
+	        if (!document.body.contains(g.el[0])) {
+	          generatedElems.splice(i, 1);
+	          g.ref.remove();
+	        }
+	      }
+	    });
+	
+	    if (window.FileAPI && window.FileAPI.ngfFixIE) {
+	      window.FileAPI.ngfFixIE(elem, fileElem, changeFn);
+	    }
+	  }
+	
+	  return {
+	    restrict: 'AEC',
+	    require: '?ngModel',
+	    link: function (scope, elem, attr, ngModel) {
+	      linkFileSelect(scope, elem, attr, ngModel, $parse, $timeout, $compile, Upload);
+	    }
+	  };
+	}]);
+	
+	(function () {
+	
+	  ngFileUpload.service('UploadDataUrl', ['UploadBase', '$timeout', '$q', function (UploadBase, $timeout, $q) {
+	    var upload = UploadBase;
+	    upload.base64DataUrl = function (file) {
+	      if (angular.isArray(file)) {
+	        var d = $q.defer(), count = 0;
+	        angular.forEach(file, function (f) {
+	          upload.dataUrl(f, true)['finally'](function () {
+	            count++;
+	            if (count === file.length) {
+	              var urls = [];
+	              angular.forEach(file, function (ff) {
+	                urls.push(ff.$ngfDataUrl);
+	              });
+	              d.resolve(urls, file);
+	            }
+	          });
+	        });
+	        return d.promise;
+	      } else {
+	        return upload.dataUrl(file, true);
+	      }
+	    };
+	    upload.dataUrl = function (file, disallowObjectUrl) {
+	      if (!file) return upload.emptyPromise(file, file);
+	      if ((disallowObjectUrl && file.$ngfDataUrl != null) || (!disallowObjectUrl && file.$ngfBlobUrl != null)) {
+	        return upload.emptyPromise(disallowObjectUrl ? file.$ngfDataUrl : file.$ngfBlobUrl, file);
+	      }
+	      var p = disallowObjectUrl ? file.$$ngfDataUrlPromise : file.$$ngfBlobUrlPromise;
+	      if (p) return p;
+	
+	      var deferred = $q.defer();
+	      $timeout(function () {
+	        if (window.FileReader && file &&
+	          (!window.FileAPI || navigator.userAgent.indexOf('MSIE 8') === -1 || file.size < 20000) &&
+	          (!window.FileAPI || navigator.userAgent.indexOf('MSIE 9') === -1 || file.size < 4000000)) {
+	          //prefer URL.createObjectURL for handling refrences to files of all sizes
+	          //since it doesn´t build a large string in memory
+	          var URL = window.URL || window.webkitURL;
+	          if (URL && URL.createObjectURL && !disallowObjectUrl) {
+	            var url;
+	            try {
+	              url = URL.createObjectURL(file);
+	            } catch (e) {
+	              $timeout(function () {
+	                file.$ngfBlobUrl = '';
+	                deferred.reject();
+	              });
+	              return;
+	            }
+	            $timeout(function () {
+	              file.$ngfBlobUrl = url;
+	              if (url) {
+	                deferred.resolve(url, file);
+	                upload.blobUrls = upload.blobUrls || [];
+	                upload.blobUrlsTotalSize = upload.blobUrlsTotalSize || 0;
+	                upload.blobUrls.push({url: url, size: file.size});
+	                upload.blobUrlsTotalSize += file.size || 0;
+	                var maxMemory = upload.defaults.blobUrlsMaxMemory || 268435456;
+	                var maxLength = upload.defaults.blobUrlsMaxQueueSize || 200;
+	                while ((upload.blobUrlsTotalSize > maxMemory || upload.blobUrls.length > maxLength) && upload.blobUrls.length > 1) {
+	                  var obj = upload.blobUrls.splice(0, 1)[0];
+	                  URL.revokeObjectURL(obj.url);
+	                  upload.blobUrlsTotalSize -= obj.size;
+	                }
+	              }
+	            });
+	          } else {
+	            var fileReader = new FileReader();
+	            fileReader.onload = function (e) {
+	              $timeout(function () {
+	                file.$ngfDataUrl = e.target.result;
+	                deferred.resolve(e.target.result, file);
+	                $timeout(function () {
+	                  delete file.$ngfDataUrl;
+	                }, 1000);
+	              });
+	            };
+	            fileReader.onerror = function () {
+	              $timeout(function () {
+	                file.$ngfDataUrl = '';
+	                deferred.reject();
+	              });
+	            };
+	            fileReader.readAsDataURL(file);
+	          }
+	        } else {
+	          $timeout(function () {
+	            file[disallowObjectUrl ? '$ngfDataUrl' : '$ngfBlobUrl'] = '';
+	            deferred.reject();
+	          });
+	        }
+	      });
+	
+	      if (disallowObjectUrl) {
+	        p = file.$$ngfDataUrlPromise = deferred.promise;
+	      } else {
+	        p = file.$$ngfBlobUrlPromise = deferred.promise;
+	      }
+	      p['finally'](function () {
+	        delete file[disallowObjectUrl ? '$$ngfDataUrlPromise' : '$$ngfBlobUrlPromise'];
+	      });
+	      return p;
+	    };
+	    return upload;
+	  }]);
+	
+	  function getTagType(el) {
+	    if (el.tagName.toLowerCase() === 'img') return 'image';
+	    if (el.tagName.toLowerCase() === 'audio') return 'audio';
+	    if (el.tagName.toLowerCase() === 'video') return 'video';
+	    return /./;
+	  }
+	
+	  function linkFileDirective(Upload, $timeout, scope, elem, attr, directiveName, resizeParams, isBackground) {
+	    function constructDataUrl(file) {
+	      var disallowObjectUrl = Upload.attrGetter('ngfNoObjectUrl', attr, scope);
+	      Upload.dataUrl(file, disallowObjectUrl)['finally'](function () {
+	        $timeout(function () {
+	          var src = (disallowObjectUrl ? file.$ngfDataUrl : file.$ngfBlobUrl) || file.$ngfDataUrl;
+	          if (isBackground) {
+	            elem.css('background-image', 'url(\'' + (src || '') + '\')');
+	          } else {
+	            elem.attr('src', src);
+	          }
+	          if (src) {
+	            elem.removeClass('ng-hide');
+	          } else {
+	            elem.addClass('ng-hide');
+	          }
+	        });
+	      });
+	    }
+	
+	    $timeout(function () {
+	      var unwatch = scope.$watch(attr[directiveName], function (file) {
+	        var size = resizeParams;
+	        if (directiveName === 'ngfThumbnail') {
+	          if (!size) {
+	            size = {width: elem[0].naturalWidth || elem[0].clientWidth,
+	              height: elem[0].naturalHeight || elem[0].clientHeight};
+	          }
+	          if (size.width === 0 && window.getComputedStyle) {
+	            var style = getComputedStyle(elem[0]);
+	            size = {
+	              width: parseInt(style.width.slice(0, -2)),
+	              height: parseInt(style.height.slice(0, -2))
+	            };
+	          }
+	        }
+	
+	        if (angular.isString(file)) {
+	          elem.removeClass('ng-hide');
+	          if (isBackground) {
+	            return elem.css('background-image', 'url(\'' + file + '\')');
+	          } else {
+	            return elem.attr('src', file);
+	          }
+	        }
+	        if (file && file.type && file.type.search(getTagType(elem[0])) === 0 &&
+	          (!isBackground || file.type.indexOf('image') === 0)) {
+	          if (size && Upload.isResizeSupported()) {
+	            size.resizeIf = function (width, height) {
+	              return Upload.attrGetter('ngfResizeIf', attr, scope,
+	                {$width: width, $height: height, $file: file});
+	            };
+	            Upload.resize(file, size).then(
+	              function (f) {
+	                constructDataUrl(f);
+	              }, function (e) {
+	                throw e;
+	              }
+	            );
+	          } else {
+	            constructDataUrl(file);
+	          }
+	        } else {
+	          elem.addClass('ng-hide');
+	        }
+	      });
+	
+	      scope.$on('$destroy', function () {
+	        unwatch();
+	      });
+	    });
+	  }
+	
+	
+	  /** @namespace attr.ngfSrc */
+	  /** @namespace attr.ngfNoObjectUrl */
+	  ngFileUpload.directive('ngfSrc', ['Upload', '$timeout', function (Upload, $timeout) {
+	    return {
+	      restrict: 'AE',
+	      link: function (scope, elem, attr) {
+	        linkFileDirective(Upload, $timeout, scope, elem, attr, 'ngfSrc',
+	          Upload.attrGetter('ngfResize', attr, scope), false);
+	      }
+	    };
+	  }]);
+	
+	  /** @namespace attr.ngfBackground */
+	  /** @namespace attr.ngfNoObjectUrl */
+	  ngFileUpload.directive('ngfBackground', ['Upload', '$timeout', function (Upload, $timeout) {
+	    return {
+	      restrict: 'AE',
+	      link: function (scope, elem, attr) {
+	        linkFileDirective(Upload, $timeout, scope, elem, attr, 'ngfBackground',
+	          Upload.attrGetter('ngfResize', attr, scope), true);
+	      }
+	    };
+	  }]);
+	
+	  /** @namespace attr.ngfThumbnail */
+	  /** @namespace attr.ngfAsBackground */
+	  /** @namespace attr.ngfSize */
+	  /** @namespace attr.ngfNoObjectUrl */
+	  ngFileUpload.directive('ngfThumbnail', ['Upload', '$timeout', function (Upload, $timeout) {
+	    return {
+	      restrict: 'AE',
+	      link: function (scope, elem, attr) {
+	        var size = Upload.attrGetter('ngfSize', attr, scope);
+	        linkFileDirective(Upload, $timeout, scope, elem, attr, 'ngfThumbnail', size,
+	          Upload.attrGetter('ngfAsBackground', attr, scope));
+	      }
+	    };
+	  }]);
+	
+	  ngFileUpload.config(['$compileProvider', function ($compileProvider) {
+	    if ($compileProvider.imgSrcSanitizationWhitelist) $compileProvider.imgSrcSanitizationWhitelist(/^\s*(https?|ftp|mailto|tel|webcal|local|file|data|blob):/);
+	    if ($compileProvider.aHrefSanitizationWhitelist) $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|mailto|tel|webcal|local|file|data|blob):/);
+	  }]);
+	
+	  ngFileUpload.filter('ngfDataUrl', ['UploadDataUrl', '$sce', function (UploadDataUrl, $sce) {
+	    return function (file, disallowObjectUrl, trustedUrl) {
+	      if (angular.isString(file)) {
+	        return $sce.trustAsResourceUrl(file);
+	      }
+	      var src = file && ((disallowObjectUrl ? file.$ngfDataUrl : file.$ngfBlobUrl) || file.$ngfDataUrl);
+	      if (file && !src) {
+	        if (!file.$ngfDataUrlFilterInProgress && angular.isObject(file)) {
+	          file.$ngfDataUrlFilterInProgress = true;
+	          UploadDataUrl.dataUrl(file, disallowObjectUrl);
+	        }
+	        return '';
+	      }
+	      if (file) delete file.$ngfDataUrlFilterInProgress;
+	      return (file && src ? (trustedUrl ? $sce.trustAsResourceUrl(src) : src) : file) || '';
+	    };
+	  }]);
+	
+	})();
+	
+	ngFileUpload.service('UploadValidate', ['UploadDataUrl', '$q', '$timeout', function (UploadDataUrl, $q, $timeout) {
+	  var upload = UploadDataUrl;
+	
+	  function globStringToRegex(str) {
+	    var regexp = '', excludes = [];
+	    if (str.length > 2 && str[0] === '/' && str[str.length - 1] === '/') {
+	      regexp = str.substring(1, str.length - 1);
+	    } else {
+	      var split = str.split(',');
+	      if (split.length > 1) {
+	        for (var i = 0; i < split.length; i++) {
+	          var r = globStringToRegex(split[i]);
+	          if (r.regexp) {
+	            regexp += '(' + r.regexp + ')';
+	            if (i < split.length - 1) {
+	              regexp += '|';
+	            }
+	          } else {
+	            excludes = excludes.concat(r.excludes);
+	          }
+	        }
+	      } else {
+	        if (str.indexOf('!') === 0) {
+	          excludes.push('^((?!' + globStringToRegex(str.substring(1)).regexp + ').)*$');
+	        } else {
+	          if (str.indexOf('.') === 0) {
+	            str = '*' + str;
+	          }
+	          regexp = '^' + str.replace(new RegExp('[.\\\\+*?\\[\\^\\]$(){}=!<>|:\\-]', 'g'), '\\$&') + '$';
+	          regexp = regexp.replace(/\\\*/g, '.*').replace(/\\\?/g, '.');
+	        }
+	      }
+	    }
+	    return {regexp: regexp, excludes: excludes};
+	  }
+	
+	  upload.validatePattern = function (file, val) {
+	    if (!val) {
+	      return true;
+	    }
+	    var pattern = globStringToRegex(val), valid = true;
+	    if (pattern.regexp && pattern.regexp.length) {
+	      var regexp = new RegExp(pattern.regexp, 'i');
+	      valid = (file.type != null && regexp.test(file.type)) ||
+	        (file.name != null && regexp.test(file.name));
+	    }
+	    var len = pattern.excludes.length;
+	    while (len--) {
+	      var exclude = new RegExp(pattern.excludes[len], 'i');
+	      valid = valid && (file.type == null || exclude.test(file.type)) &&
+	        (file.name == null || exclude.test(file.name));
+	    }
+	    return valid;
+	  };
+	
+	  upload.ratioToFloat = function (val) {
+	    var r = val.toString(), xIndex = r.search(/[x:]/i);
+	    if (xIndex > -1) {
+	      r = parseFloat(r.substring(0, xIndex)) / parseFloat(r.substring(xIndex + 1));
+	    } else {
+	      r = parseFloat(r);
+	    }
+	    return r;
+	  };
+	
+	  upload.registerModelChangeValidator = function (ngModel, attr, scope) {
+	    if (ngModel) {
+	      ngModel.$formatters.push(function (files) {
+	        if (ngModel.$dirty) {
+	          if (files && !angular.isArray(files)) {
+	            files = [files];
+	          }
+	          upload.validate(files, 0, ngModel, attr, scope).then(function () {
+	            upload.applyModelValidation(ngModel, files);
+	          });
+	        }
+	      });
+	    }
+	  };
+	
+	  function markModelAsDirty(ngModel, files) {
+	    if (files != null && !ngModel.$dirty) {
+	      if (ngModel.$setDirty) {
+	        ngModel.$setDirty();
+	      } else {
+	        ngModel.$dirty = true;
+	      }
+	    }
+	  }
+	
+	  upload.applyModelValidation = function (ngModel, files) {
+	    markModelAsDirty(ngModel, files);
+	    angular.forEach(ngModel.$ngfValidations, function (validation) {
+	      ngModel.$setValidity(validation.name, validation.valid);
+	    });
+	  };
+	
+	  upload.getValidationAttr = function (attr, scope, name, validationName, file) {
+	    var dName = 'ngf' + name[0].toUpperCase() + name.substr(1);
+	    var val = upload.attrGetter(dName, attr, scope, {$file: file});
+	    if (val == null) {
+	      val = upload.attrGetter('ngfValidate', attr, scope, {$file: file});
+	      if (val) {
+	        var split = (validationName || name).split('.');
+	        val = val[split[0]];
+	        if (split.length > 1) {
+	          val = val && val[split[1]];
+	        }
+	      }
+	    }
+	    return val;
+	  };
+	
+	  upload.validate = function (files, prevLength, ngModel, attr, scope) {
+	    ngModel = ngModel || {};
+	    ngModel.$ngfValidations = ngModel.$ngfValidations || [];
+	
+	    angular.forEach(ngModel.$ngfValidations, function (v) {
+	      v.valid = true;
+	    });
+	
+	    var attrGetter = function (name, params) {
+	      return upload.attrGetter(name, attr, scope, params);
+	    };
+	
+	    var ignoredErrors = (upload.attrGetter('ngfIgnoreInvalid', attr, scope) || '').split(' ');
+	    var runAllValidation = upload.attrGetter('ngfRunAllValidations', attr, scope);
+	
+	    if (files == null || files.length === 0) {
+	      return upload.emptyPromise({'validFiles': files, 'invalidFiles': []});
+	    }
+	
+	    files = files.length === undefined ? [files] : files.slice(0);
+	    var invalidFiles = [];
+	
+	    function validateSync(name, validationName, fn) {
+	      if (files) {
+	        var i = files.length, valid = null;
+	        while (i--) {
+	          var file = files[i];
+	          if (file) {
+	            var val = upload.getValidationAttr(attr, scope, name, validationName, file);
+	            if (val != null) {
+	              if (!fn(file, val, i)) {
+	                if (ignoredErrors.indexOf(name) === -1) {
+	                  file.$error = name;
+	                  (file.$errorMessages = (file.$errorMessages || {}))[name] = true;
+	                  file.$errorParam = val;
+	                  if (invalidFiles.indexOf(file) === -1) {
+	                    invalidFiles.push(file);
+	                  }
+	                  if (!runAllValidation) {
+	                    files.splice(i, 1);
+	                  }
+	                  valid = false;
+	                } else {
+	                  files.splice(i, 1);
+	                }
+	              }
+	            }
+	          }
+	        }
+	        if (valid !== null) {
+	          ngModel.$ngfValidations.push({name: name, valid: valid});
+	        }
+	      }
+	    }
+	
+	    validateSync('pattern', null, upload.validatePattern);
+	    validateSync('minSize', 'size.min', function (file, val) {
+	      return file.size + 0.1 >= upload.translateScalars(val);
+	    });
+	    validateSync('maxSize', 'size.max', function (file, val) {
+	      return file.size - 0.1 <= upload.translateScalars(val);
+	    });
+	    var totalSize = 0;
+	    validateSync('maxTotalSize', null, function (file, val) {
+	      totalSize += file.size;
+	      if (totalSize > upload.translateScalars(val)) {
+	        files.splice(0, files.length);
+	        return false;
+	      }
+	      return true;
+	    });
+	
+	    validateSync('validateFn', null, function (file, r) {
+	      return r === true || r === null || r === '';
+	    });
+	
+	    if (!files.length) {
+	      return upload.emptyPromise({'validFiles': [], 'invalidFiles': invalidFiles});
+	    }
+	
+	    function validateAsync(name, validationName, type, asyncFn, fn) {
+	      function resolveResult(defer, file, val) {
+	        function resolveInternal(fn) {
+	          if (fn()) {
+	            if (ignoredErrors.indexOf(name) === -1) {
+	              file.$error = name;
+	              (file.$errorMessages = (file.$errorMessages || {}))[name] = true;
+	              file.$errorParam = val;
+	              if (invalidFiles.indexOf(file) === -1) {
+	                invalidFiles.push(file);
+	              }
+	              if (!runAllValidation) {
+	                files.splice(files.indexOf(file), 1);
+	              }
+	              defer.resolve(false);
+	            } else {
+	              files.splice(files.indexOf(file), 1);
+	              defer.resolve(true);
+	            }
+	          } else {
+	            defer.resolve(true);
+	          }
+	        }
+	
+	        if (val != null) {
+	          asyncFn(file, val).then(function (d) {
+	            resolveInternal(function () {
+	              return !fn(d, val);
+	            });
+	          }, function () {
+	            resolveInternal(function () {
+	              return attrGetter('ngfValidateForce', {$file: file});
+	            });
+	          });
+	        } else {
+	          defer.resolve(true);
+	        }
+	      }
+	
+	      var promises = [upload.emptyPromise(true)];
+	      if (files) {
+	        files = files.length === undefined ? [files] : files;
+	        angular.forEach(files, function (file) {
+	          var defer = $q.defer();
+	          promises.push(defer.promise);
+	          if (type && (file.type == null || file.type.search(type) !== 0)) {
+	            defer.resolve(true);
+	            return;
+	          }
+	          if (name === 'dimensions' && upload.attrGetter('ngfDimensions', attr) != null) {
+	            upload.imageDimensions(file).then(function (d) {
+	              resolveResult(defer, file,
+	                attrGetter('ngfDimensions', {$file: file, $width: d.width, $height: d.height}));
+	            }, function () {
+	              defer.resolve(false);
+	            });
+	          } else if (name === 'duration' && upload.attrGetter('ngfDuration', attr) != null) {
+	            upload.mediaDuration(file).then(function (d) {
+	              resolveResult(defer, file,
+	                attrGetter('ngfDuration', {$file: file, $duration: d}));
+	            }, function () {
+	              defer.resolve(false);
+	            });
+	          } else {
+	            resolveResult(defer, file,
+	              upload.getValidationAttr(attr, scope, name, validationName, file));
+	          }
+	        });
+	      }
+	      var deffer = $q.defer();
+	      $q.all(promises).then(function (values) {
+	        var isValid = true;
+	        for (var i = 0; i < values.length; i++) {
+	          if (!values[i]) {
+	            isValid = false;
+	            break;
+	          }
+	        }
+	        ngModel.$ngfValidations.push({name: name, valid: isValid});
+	        deffer.resolve(isValid);
+	      });
+	      return deffer.promise;
+	    }
+	
+	    var deffer = $q.defer();
+	    var promises = [];
+	
+	    promises.push(validateAsync('maxHeight', 'height.max', /image/,
+	      this.imageDimensions, function (d, val) {
+	        return d.height <= val;
+	      }));
+	    promises.push(validateAsync('minHeight', 'height.min', /image/,
+	      this.imageDimensions, function (d, val) {
+	        return d.height >= val;
+	      }));
+	    promises.push(validateAsync('maxWidth', 'width.max', /image/,
+	      this.imageDimensions, function (d, val) {
+	        return d.width <= val;
+	      }));
+	    promises.push(validateAsync('minWidth', 'width.min', /image/,
+	      this.imageDimensions, function (d, val) {
+	        return d.width >= val;
+	      }));
+	    promises.push(validateAsync('dimensions', null, /image/,
+	      function (file, val) {
+	        return upload.emptyPromise(val);
+	      }, function (r) {
+	        return r;
+	      }));
+	    promises.push(validateAsync('ratio', null, /image/,
+	      this.imageDimensions, function (d, val) {
+	        var split = val.toString().split(','), valid = false;
+	        for (var i = 0; i < split.length; i++) {
+	          if (Math.abs((d.width / d.height) - upload.ratioToFloat(split[i])) < 0.01) {
+	            valid = true;
+	          }
+	        }
+	        return valid;
+	      }));
+	    promises.push(validateAsync('maxRatio', 'ratio.max', /image/,
+	      this.imageDimensions, function (d, val) {
+	        return (d.width / d.height) - upload.ratioToFloat(val) < 0.0001;
+	      }));
+	    promises.push(validateAsync('minRatio', 'ratio.min', /image/,
+	      this.imageDimensions, function (d, val) {
+	        return (d.width / d.height) - upload.ratioToFloat(val) > -0.0001;
+	      }));
+	    promises.push(validateAsync('maxDuration', 'duration.max', /audio|video/,
+	      this.mediaDuration, function (d, val) {
+	        return d <= upload.translateScalars(val);
+	      }));
+	    promises.push(validateAsync('minDuration', 'duration.min', /audio|video/,
+	      this.mediaDuration, function (d, val) {
+	        return d >= upload.translateScalars(val);
+	      }));
+	    promises.push(validateAsync('duration', null, /audio|video/,
+	      function (file, val) {
+	        return upload.emptyPromise(val);
+	      }, function (r) {
+	        return r;
+	      }));
+	
+	    promises.push(validateAsync('validateAsyncFn', null, null,
+	      function (file, val) {
+	        return val;
+	      }, function (r) {
+	        return r === true || r === null || r === '';
+	      }));
+	
+	    $q.all(promises).then(function () {
+	
+	      if (runAllValidation) {
+	        for (var i = 0; i < files.length; i++) {
+	          var file = files[i];
+	          if (file.$error) {
+	            files.splice(i--, 1);
+	          }
+	        }
+	      }
+	
+	      runAllValidation = false;
+	      validateSync('maxFiles', null, function (file, val, i) {
+	        return prevLength + i < val;
+	      });
+	
+	      deffer.resolve({'validFiles': files, 'invalidFiles': invalidFiles});
+	    });
+	    return deffer.promise;
+	  };
+	
+	  upload.imageDimensions = function (file) {
+	    if (file.$ngfWidth && file.$ngfHeight) {
+	      var d = $q.defer();
+	      $timeout(function () {
+	        d.resolve({width: file.$ngfWidth, height: file.$ngfHeight});
+	      });
+	      return d.promise;
+	    }
+	    if (file.$ngfDimensionPromise) return file.$ngfDimensionPromise;
+	
+	    var deferred = $q.defer();
+	    $timeout(function () {
+	      if (file.type.indexOf('image') !== 0) {
+	        deferred.reject('not image');
+	        return;
+	      }
+	      upload.dataUrl(file).then(function (dataUrl) {
+	        var img = angular.element('<img>').attr('src', dataUrl)
+	          .css('visibility', 'hidden').css('position', 'fixed')
+	          .css('max-width', 'none !important').css('max-height', 'none !important');
+	
+	        function success() {
+	          var width = img[0].naturalWidth || img[0].clientWidth;
+	          var height = img[0].naturalHeight || img[0].clientHeight;
+	          img.remove();
+	          file.$ngfWidth = width;
+	          file.$ngfHeight = height;
+	          deferred.resolve({width: width, height: height});
+	        }
+	
+	        function error() {
+	          img.remove();
+	          deferred.reject('load error');
+	        }
+	
+	        img.on('load', success);
+	        img.on('error', error);
+	
+	        var secondsCounter = 0;
+	        function checkLoadErrorInCaseOfNoCallback() {
+	          $timeout(function () {
+	            if (img[0].parentNode) {
+	              if (img[0].clientWidth) {
+	                success();
+	              } else if (secondsCounter++ > 10) {
+	                error();
+	              } else {
+	                checkLoadErrorInCaseOfNoCallback();
+	              }
+	            }
+	          }, 1000);
+	        }
+	
+	        checkLoadErrorInCaseOfNoCallback();
+	
+	        angular.element(document.getElementsByTagName('body')[0]).append(img);
+	      }, function () {
+	        deferred.reject('load error');
+	      });
+	    });
+	
+	    file.$ngfDimensionPromise = deferred.promise;
+	    file.$ngfDimensionPromise['finally'](function () {
+	      delete file.$ngfDimensionPromise;
+	    });
+	    return file.$ngfDimensionPromise;
+	  };
+	
+	  upload.mediaDuration = function (file) {
+	    if (file.$ngfDuration) {
+	      var d = $q.defer();
+	      $timeout(function () {
+	        d.resolve(file.$ngfDuration);
+	      });
+	      return d.promise;
+	    }
+	    if (file.$ngfDurationPromise) return file.$ngfDurationPromise;
+	
+	    var deferred = $q.defer();
+	    $timeout(function () {
+	      if (file.type.indexOf('audio') !== 0 && file.type.indexOf('video') !== 0) {
+	        deferred.reject('not media');
+	        return;
+	      }
+	      upload.dataUrl(file).then(function (dataUrl) {
+	        var el = angular.element(file.type.indexOf('audio') === 0 ? '<audio>' : '<video>')
+	          .attr('src', dataUrl).css('visibility', 'none').css('position', 'fixed');
+	
+	        function success() {
+	          var duration = el[0].duration;
+	          file.$ngfDuration = duration;
+	          el.remove();
+	          deferred.resolve(duration);
+	        }
+	
+	        function error() {
+	          el.remove();
+	          deferred.reject('load error');
+	        }
+	
+	        el.on('loadedmetadata', success);
+	        el.on('error', error);
+	        var count = 0;
+	
+	        function checkLoadError() {
+	          $timeout(function () {
+	            if (el[0].parentNode) {
+	              if (el[0].duration) {
+	                success();
+	              } else if (count > 10) {
+	                error();
+	              } else {
+	                checkLoadError();
+	              }
+	            }
+	          }, 1000);
+	        }
+	
+	        checkLoadError();
+	
+	        angular.element(document.body).append(el);
+	      }, function () {
+	        deferred.reject('load error');
+	      });
+	    });
+	
+	    file.$ngfDurationPromise = deferred.promise;
+	    file.$ngfDurationPromise['finally'](function () {
+	      delete file.$ngfDurationPromise;
+	    });
+	    return file.$ngfDurationPromise;
+	  };
+	  return upload;
+	}
+	]);
+	
+	ngFileUpload.service('UploadResize', ['UploadValidate', '$q', function (UploadValidate, $q) {
+	  var upload = UploadValidate;
+	
+	  /**
+	   * Conserve aspect ratio of the original region. Useful when shrinking/enlarging
+	   * images to fit into a certain area.
+	   * Source:  http://stackoverflow.com/a/14731922
+	   *
+	   * @param {Number} srcWidth Source area width
+	   * @param {Number} srcHeight Source area height
+	   * @param {Number} maxWidth Nestable area maximum available width
+	   * @param {Number} maxHeight Nestable area maximum available height
+	   * @return {Object} { width, height }
+	   */
+	  var calculateAspectRatioFit = function (srcWidth, srcHeight, maxWidth, maxHeight, centerCrop) {
+	    var ratio = centerCrop ? Math.max(maxWidth / srcWidth, maxHeight / srcHeight) :
+	      Math.min(maxWidth / srcWidth, maxHeight / srcHeight);
+	    return {
+	      width: srcWidth * ratio, height: srcHeight * ratio,
+	      marginX: srcWidth * ratio - maxWidth, marginY: srcHeight * ratio - maxHeight
+	    };
+	  };
+	
+	  // Extracted from https://github.com/romelgomez/angular-firebase-image-upload/blob/master/app/scripts/fileUpload.js#L89
+	  var resize = function (imagen, width, height, quality, type, ratio, centerCrop, resizeIf) {
+	    var deferred = $q.defer();
+	    var canvasElement = document.createElement('canvas');
+	    var imageElement = document.createElement('img');
+	    imageElement.setAttribute('style', 'visibility:hidden;position:fixed;z-index:-100000');
+	    document.body.appendChild(imageElement);
+	
+	    imageElement.onload = function () {
+	      var imgWidth = imageElement.width, imgHeight = imageElement.height;
+	      imageElement.parentNode.removeChild(imageElement);
+	      if (resizeIf != null && resizeIf(imgWidth, imgHeight) === false) {
+	        deferred.reject('resizeIf');
+	        return;
+	      }
+	      try {
+	        if (ratio) {
+	          var ratioFloat = upload.ratioToFloat(ratio);
+	          var imgRatio = imgWidth / imgHeight;
+	          if (imgRatio < ratioFloat) {
+	            width = imgWidth;
+	            height = width / ratioFloat;
+	          } else {
+	            height = imgHeight;
+	            width = height * ratioFloat;
+	          }
+	        }
+	        if (!width) {
+	          width = imgWidth;
+	        }
+	        if (!height) {
+	          height = imgHeight;
+	        }
+	        var dimensions = calculateAspectRatioFit(imgWidth, imgHeight, width, height, centerCrop);
+	        canvasElement.width = Math.min(dimensions.width, width);
+	        canvasElement.height = Math.min(dimensions.height, height);
+	        var context = canvasElement.getContext('2d');
+	        context.drawImage(imageElement,
+	          Math.min(0, -dimensions.marginX / 2), Math.min(0, -dimensions.marginY / 2),
+	          dimensions.width, dimensions.height);
+	        deferred.resolve(canvasElement.toDataURL(type || 'image/WebP', quality || 0.934));
+	      } catch (e) {
+	        deferred.reject(e);
+	      }
+	    };
+	    imageElement.onerror = function () {
+	      imageElement.parentNode.removeChild(imageElement);
+	      deferred.reject();
+	    };
+	    imageElement.src = imagen;
+	    return deferred.promise;
+	  };
+	
+	  upload.dataUrltoBlob = function (dataurl, name, origSize) {
+	    var arr = dataurl.split(','), mime = arr[0].match(/:(.*?);/)[1],
+	      bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
+	    while (n--) {
+	      u8arr[n] = bstr.charCodeAt(n);
+	    }
+	    var blob = new window.Blob([u8arr], {type: mime});
+	    blob.name = name;
+	    blob.$ngfOrigSize = origSize;
+	    return blob;
+	  };
+	
+	  upload.isResizeSupported = function () {
+	    var elem = document.createElement('canvas');
+	    return window.atob && elem.getContext && elem.getContext('2d') && window.Blob;
+	  };
+	
+	  if (upload.isResizeSupported()) {
+	    // add name getter to the blob constructor prototype
+	    Object.defineProperty(window.Blob.prototype, 'name', {
+	      get: function () {
+	        return this.$ngfName;
+	      },
+	      set: function (v) {
+	        this.$ngfName = v;
+	      },
+	      configurable: true
+	    });
+	  }
+	
+	  upload.resize = function (file, options) {
+	    if (file.type.indexOf('image') !== 0) return upload.emptyPromise(file);
+	
+	    var deferred = $q.defer();
+	    upload.dataUrl(file, true).then(function (url) {
+	      resize(url, options.width, options.height, options.quality, options.type || file.type,
+	        options.ratio, options.centerCrop, options.resizeIf)
+	        .then(function (dataUrl) {
+	          if (file.type === 'image/jpeg' && options.restoreExif !== false) {
+	            try {
+	              dataUrl = upload.restoreExif(url, dataUrl);
+	            } catch (e) {
+	              setTimeout(function () {throw e;}, 1);
+	            }
+	          }
+	          try {
+	            var blob = upload.dataUrltoBlob(dataUrl, file.name, file.size);
+	            deferred.resolve(blob);
+	          } catch (e) {
+	            deferred.reject(e);
+	          }
+	        }, function (r) {
+	          if (r === 'resizeIf') {
+	            deferred.resolve(file);
+	          }
+	          deferred.reject(r);
+	        });
+	    }, function (e) {
+	      deferred.reject(e);
+	    });
+	    return deferred.promise;
+	  };
+	
+	  return upload;
+	}]);
+	
+	(function () {
+	  ngFileUpload.directive('ngfDrop', ['$parse', '$timeout', '$window', 'Upload', '$http', '$q',
+	    function ($parse, $timeout, $window, Upload, $http, $q) {
+	      return {
+	        restrict: 'AEC',
+	        require: '?ngModel',
+	        link: function (scope, elem, attr, ngModel) {
+	          linkDrop(scope, elem, attr, ngModel, $parse, $timeout, $window, Upload, $http, $q);
+	        }
+	      };
+	    }]);
+	
+	  ngFileUpload.directive('ngfNoFileDrop', function () {
+	    return function (scope, elem) {
+	      if (dropAvailable()) elem.css('display', 'none');
+	    };
+	  });
+	
+	  ngFileUpload.directive('ngfDropAvailable', ['$parse', '$timeout', 'Upload', function ($parse, $timeout, Upload) {
+	    return function (scope, elem, attr) {
+	      if (dropAvailable()) {
+	        var model = $parse(Upload.attrGetter('ngfDropAvailable', attr));
+	        $timeout(function () {
+	          model(scope);
+	          if (model.assign) {
+	            model.assign(scope, true);
+	          }
+	        });
+	      }
+	    };
+	  }]);
+	
+	  function linkDrop(scope, elem, attr, ngModel, $parse, $timeout, $window, upload, $http, $q) {
+	    var available = dropAvailable();
+	
+	    var attrGetter = function (name, scope, params) {
+	      return upload.attrGetter(name, attr, scope, params);
+	    };
+	
+	    if (attrGetter('dropAvailable')) {
+	      $timeout(function () {
+	        if (scope[attrGetter('dropAvailable')]) {
+	          scope[attrGetter('dropAvailable')].value = available;
+	        } else {
+	          scope[attrGetter('dropAvailable')] = available;
+	        }
+	      });
+	    }
+	    if (!available) {
+	      if (attrGetter('ngfHideOnDropNotAvailable', scope) === true) {
+	        elem.css('display', 'none');
+	      }
+	      return;
+	    }
+	
+	    function isDisabled() {
+	      return elem.attr('disabled') || attrGetter('ngfDropDisabled', scope);
+	    }
+	
+	    if (attrGetter('ngfSelect') == null) {
+	      upload.registerModelChangeValidator(ngModel, attr, scope);
+	    }
+	
+	    var leaveTimeout = null;
+	    var stopPropagation = $parse(attrGetter('ngfStopPropagation'));
+	    var dragOverDelay = 1;
+	    var actualDragOverClass;
+	
+	    elem[0].addEventListener('dragover', function (evt) {
+	      if (isDisabled() || !upload.shouldUpdateOn('drop', attr, scope)) return;
+	      evt.preventDefault();
+	      if (stopPropagation(scope)) evt.stopPropagation();
+	      // handling dragover events from the Chrome download bar
+	      if (navigator.userAgent.indexOf('Chrome') > -1) {
+	        var b = evt.dataTransfer.effectAllowed;
+	        evt.dataTransfer.dropEffect = ('move' === b || 'linkMove' === b) ? 'move' : 'copy';
+	      }
+	      $timeout.cancel(leaveTimeout);
+	      if (!actualDragOverClass) {
+	        actualDragOverClass = 'C';
+	        calculateDragOverClass(scope, attr, evt, function (clazz) {
+	          actualDragOverClass = clazz;
+	          elem.addClass(actualDragOverClass);
+	          attrGetter('ngfDrag', scope, {$isDragging: true, $class: actualDragOverClass, $event: evt});
+	        });
+	      }
+	    }, false);
+	    elem[0].addEventListener('dragenter', function (evt) {
+	      if (isDisabled() || !upload.shouldUpdateOn('drop', attr, scope)) return;
+	      evt.preventDefault();
+	      if (stopPropagation(scope)) evt.stopPropagation();
+	    }, false);
+	    elem[0].addEventListener('dragleave', function (evt) {
+	      if (isDisabled() || !upload.shouldUpdateOn('drop', attr, scope)) return;
+	      evt.preventDefault();
+	      if (stopPropagation(scope)) evt.stopPropagation();
+	      leaveTimeout = $timeout(function () {
+	        if (actualDragOverClass) elem.removeClass(actualDragOverClass);
+	        actualDragOverClass = null;
+	        attrGetter('ngfDrag', scope, {$isDragging: false, $event: evt});
+	      }, dragOverDelay || 100);
+	    }, false);
+	    elem[0].addEventListener('drop', function (evt) {
+	      if (isDisabled() || !upload.shouldUpdateOn('drop', attr, scope)) return;
+	      evt.preventDefault();
+	      if (stopPropagation(scope)) evt.stopPropagation();
+	      if (actualDragOverClass) elem.removeClass(actualDragOverClass);
+	      actualDragOverClass = null;
+	      var items = evt.dataTransfer.items;
+	      var html;
+	      try {
+	        html = evt.dataTransfer && evt.dataTransfer.getData && evt.dataTransfer.getData('text/html');
+	      } catch (e) {/* Fix IE11 that throw error calling getData */
+	      }
+	
+	      extractFiles(items, evt.dataTransfer.files, attrGetter('ngfAllowDir', scope) !== false,
+	        attrGetter('multiple') || attrGetter('ngfMultiple', scope)).then(function (files) {
+	        if (files.length) {
+	          updateModel(files, evt);
+	        } else {
+	          extractFilesFromHtml('dropUrl', html).then(function (files) {
+	            updateModel(files, evt);
+	          });
+	        }
+	      });
+	    }, false);
+	    elem[0].addEventListener('paste', function (evt) {
+	      if (navigator.userAgent.toLowerCase().indexOf('firefox') > -1 &&
+	        attrGetter('ngfEnableFirefoxPaste', scope)) {
+	        evt.preventDefault();
+	      }
+	      if (isDisabled() || !upload.shouldUpdateOn('paste', attr, scope)) return;
+	      var files = [];
+	      var clipboard = evt.clipboardData || evt.originalEvent.clipboardData;
+	      if (clipboard && clipboard.items) {
+	        for (var k = 0; k < clipboard.items.length; k++) {
+	          if (clipboard.items[k].type.indexOf('image') !== -1) {
+	            files.push(clipboard.items[k].getAsFile());
+	          }
+	        }
+	      }
+	      if (files.length) {
+	        updateModel(files, evt);
+	      } else {
+	        extractFilesFromHtml('pasteUrl', clipboard).then(function (files) {
+	          updateModel(files, evt);
+	        });
+	      }
+	    }, false);
+	
+	    if (navigator.userAgent.toLowerCase().indexOf('firefox') > -1 &&
+	      attrGetter('ngfEnableFirefoxPaste', scope)) {
+	      elem.attr('contenteditable', true);
+	      elem.on('keypress', function (e) {
+	        if (!e.metaKey && !e.ctrlKey) {
+	          e.preventDefault();
+	        }
+	      });
+	    }
+	
+	    function updateModel(files, evt) {
+	      upload.updateModel(ngModel, attr, scope, attrGetter('ngfChange') || attrGetter('ngfDrop'), files, evt);
+	    }
+	
+	    function extractFilesFromHtml(updateOn, html) {
+	      if (!upload.shouldUpdateOn(updateOn, attr, scope) || typeof html !== 'string') return upload.rejectPromise([]);
+	      var urls = [];
+	      html.replace(/<(img src|img [^>]* src) *=\"([^\"]*)\"/gi, function (m, n, src) {
+	        urls.push(src);
+	      });
+	      var promises = [], files = [];
+	      if (urls.length) {
+	        angular.forEach(urls, function (url) {
+	          promises.push(upload.urlToBlob(url).then(function (blob) {
+	            files.push(blob);
+	          }));
+	        });
+	        var defer = $q.defer();
+	        $q.all(promises).then(function () {
+	          defer.resolve(files);
+	        }, function (e) {
+	          defer.reject(e);
+	        });
+	        return defer.promise;
+	      }
+	      return upload.emptyPromise();
+	    }
+	
+	    function calculateDragOverClass(scope, attr, evt, callback) {
+	      var obj = attrGetter('ngfDragOverClass', scope, {$event: evt}), dClass = 'dragover';
+	      if (angular.isString(obj)) {
+	        dClass = obj;
+	      } else if (obj) {
+	        if (obj.delay) dragOverDelay = obj.delay;
+	        if (obj.accept || obj.reject) {
+	          var items = evt.dataTransfer.items;
+	          if (items == null || !items.length) {
+	            dClass = obj.accept;
+	          } else {
+	            var pattern = obj.pattern || attrGetter('ngfPattern', scope, {$event: evt});
+	            var len = items.length;
+	            while (len--) {
+	              if (!upload.validatePattern(items[len], pattern)) {
+	                dClass = obj.reject;
+	                break;
+	              } else {
+	                dClass = obj.accept;
+	              }
+	            }
+	          }
+	        }
+	      }
+	      callback(dClass);
+	    }
+	
+	    function extractFiles(items, fileList, allowDir, multiple) {
+	      var maxFiles = upload.getValidationAttr(attr, scope, 'maxFiles');
+	      if (maxFiles == null) {
+	        maxFiles = Number.MAX_VALUE;
+	      }
+	      var maxTotalSize = upload.getValidationAttr(attr, scope, 'maxTotalSize');
+	      if (maxTotalSize == null) {
+	        maxTotalSize = Number.MAX_VALUE;
+	      }
+	      var includeDir = attrGetter('ngfIncludeDir', scope);
+	      var files = [], totalSize = 0;
+	
+	      function traverseFileTree(entry, path) {
+	        var defer = $q.defer();
+	        if (entry != null) {
+	          if (entry.isDirectory) {
+	            var promises = [upload.emptyPromise()];
+	            if (includeDir) {
+	              var file = {type: 'directory'};
+	              file.name = file.path = (path || '') + entry.name;
+	              files.push(file);
+	            }
+	            var dirReader = entry.createReader();
+	            var entries = [];
+	            var readEntries = function () {
+	              dirReader.readEntries(function (results) {
+	                try {
+	                  if (!results.length) {
+	                    angular.forEach(entries.slice(0), function (e) {
+	                      if (files.length <= maxFiles && totalSize <= maxTotalSize) {
+	                        promises.push(traverseFileTree(e, (path ? path : '') + entry.name + '/'));
+	                      }
+	                    });
+	                    $q.all(promises).then(function () {
+	                      defer.resolve();
+	                    }, function (e) {
+	                      defer.reject(e);
+	                    });
+	                  } else {
+	                    entries = entries.concat(Array.prototype.slice.call(results || [], 0));
+	                    readEntries();
+	                  }
+	                } catch (e) {
+	                  defer.reject(e);
+	                }
+	              }, function (e) {
+	                defer.reject(e);
+	              });
+	            };
+	            readEntries();
+	          } else {
+	            entry.file(function (file) {
+	              try {
+	                file.path = (path ? path : '') + file.name;
+	                if (includeDir) {
+	                  file = upload.rename(file, file.path);
+	                }
+	                files.push(file);
+	                totalSize += file.size;
+	                defer.resolve();
+	              } catch (e) {
+	                defer.reject(e);
+	              }
+	            }, function (e) {
+	              defer.reject(e);
+	            });
+	          }
+	        }
+	        return defer.promise;
+	      }
+	
+	      var promises = [upload.emptyPromise()];
+	
+	      if (items && items.length > 0 && $window.location.protocol !== 'file:') {
+	        for (var i = 0; i < items.length; i++) {
+	          if (items[i].webkitGetAsEntry && items[i].webkitGetAsEntry() && items[i].webkitGetAsEntry().isDirectory) {
+	            var entry = items[i].webkitGetAsEntry();
+	            if (entry.isDirectory && !allowDir) {
+	              continue;
+	            }
+	            if (entry != null) {
+	              promises.push(traverseFileTree(entry));
+	            }
+	          } else {
+	            var f = items[i].getAsFile();
+	            if (f != null) {
+	              files.push(f);
+	              totalSize += f.size;
+	            }
+	          }
+	          if (files.length > maxFiles || totalSize > maxTotalSize ||
+	            (!multiple && files.length > 0)) break;
+	        }
+	      } else {
+	        if (fileList != null) {
+	          for (var j = 0; j < fileList.length; j++) {
+	            var file = fileList.item(j);
+	            if (file.type || file.size > 0) {
+	              files.push(file);
+	              totalSize += file.size;
+	            }
+	            if (files.length > maxFiles || totalSize > maxTotalSize ||
+	              (!multiple && files.length > 0)) break;
+	          }
+	        }
+	      }
+	
+	      var defer = $q.defer();
+	      $q.all(promises).then(function () {
+	        if (!multiple && !includeDir && files.length) {
+	          var i = 0;
+	          while (files[i] && files[i].type === 'directory') i++;
+	          defer.resolve([files[i]]);
+	        } else {
+	          defer.resolve(files);
+	        }
+	      }, function (e) {
+	        defer.reject(e);
+	      });
+	
+	      return defer.promise;
+	    }
+	  }
+	
+	  function dropAvailable() {
+	    var div = document.createElement('div');
+	    return ('draggable' in div) && ('ondrop' in div) && !/Edge\/12./i.test(navigator.userAgent);
+	  }
+	
+	})();
+	
+	// customized version of https://github.com/exif-js/exif-js
+	ngFileUpload.service('UploadExif', ['UploadResize', '$q', function (UploadResize, $q) {
+	  var upload = UploadResize;
+	
+	  upload.isExifSupported = function () {
+	    return window.FileReader && new FileReader().readAsArrayBuffer && upload.isResizeSupported();
+	  };
+	
+	  function applyTransform(ctx, orientation, width, height) {
+	    switch (orientation) {
+	      case 2:
+	        return ctx.transform(-1, 0, 0, 1, width, 0);
+	      case 3:
+	        return ctx.transform(-1, 0, 0, -1, width, height);
+	      case 4:
+	        return ctx.transform(1, 0, 0, -1, 0, height);
+	      case 5:
+	        return ctx.transform(0, 1, 1, 0, 0, 0);
+	      case 6:
+	        return ctx.transform(0, 1, -1, 0, height, 0);
+	      case 7:
+	        return ctx.transform(0, -1, -1, 0, height, width);
+	      case 8:
+	        return ctx.transform(0, -1, 1, 0, 0, width);
+	    }
+	  }
+	
+	  upload.readOrientation = function (file) {
+	    var defer = $q.defer();
+	    var reader = new FileReader();
+	    var slicedFile = file.slice ? file.slice(0, 64 * 1024) : file;
+	    reader.readAsArrayBuffer(slicedFile);
+	    reader.onerror = function (e) {
+	      return defer.reject(e);
+	    };
+	    reader.onload = function (e) {
+	      var result = {orientation: 1};
+	      var view = new DataView(this.result);
+	      if (view.getUint16(0, false) !== 0xFFD8) return defer.resolve(result);
+	
+	      var length = view.byteLength,
+	        offset = 2;
+	      while (offset < length) {
+	        var marker = view.getUint16(offset, false);
+	        offset += 2;
+	        if (marker === 0xFFE1) {
+	          if (view.getUint32(offset += 2, false) !== 0x45786966) return defer.resolve(result);
+	
+	          var little = view.getUint16(offset += 6, false) === 0x4949;
+	          offset += view.getUint32(offset + 4, little);
+	          var tags = view.getUint16(offset, little);
+	          offset += 2;
+	          for (var i = 0; i < tags; i++)
+	            if (view.getUint16(offset + (i * 12), little) === 0x0112) {
+	              var orientation = view.getUint16(offset + (i * 12) + 8, little);
+	              if (orientation >= 2 && orientation <= 8) {
+	                view.setUint16(offset + (i * 12) + 8, 1, little);
+	                result.fixedArrayBuffer = e.target.result;
+	              }
+	              result.orientation = orientation;
+	              return defer.resolve(result);
+	            }
+	        } else if ((marker & 0xFF00) !== 0xFF00) break;
+	        else offset += view.getUint16(offset, false);
+	      }
+	      return defer.resolve(result);
+	    };
+	    return defer.promise;
+	  };
+	
+	  function arrayBufferToBase64(buffer) {
+	    var binary = '';
+	    var bytes = new Uint8Array(buffer);
+	    var len = bytes.byteLength;
+	    for (var i = 0; i < len; i++) {
+	      binary += String.fromCharCode(bytes[i]);
+	    }
+	    return window.btoa(binary);
+	  }
+	
+	  upload.applyExifRotation = function (file) {
+	    if (file.type.indexOf('image/jpeg') !== 0) {
+	      return upload.emptyPromise(file);
+	    }
+	
+	    var deferred = $q.defer();
+	    upload.readOrientation(file).then(function (result) {
+	      if (result.orientation < 2 || result.orientation > 8) {
+	        return deferred.resolve(file);
+	      }
+	      upload.dataUrl(file, true).then(function (url) {
+	        var canvas = document.createElement('canvas');
+	        var img = document.createElement('img');
+	
+	        img.onload = function () {
+	          try {
+	            canvas.width = result.orientation > 4 ? img.height : img.width;
+	            canvas.height = result.orientation > 4 ? img.width : img.height;
+	            var ctx = canvas.getContext('2d');
+	            applyTransform(ctx, result.orientation, img.width, img.height);
+	            ctx.drawImage(img, 0, 0);
+	            var dataUrl = canvas.toDataURL(file.type || 'image/WebP', 0.934);
+	            dataUrl = upload.restoreExif(arrayBufferToBase64(result.fixedArrayBuffer), dataUrl);
+	            var blob = upload.dataUrltoBlob(dataUrl, file.name);
+	            deferred.resolve(blob);
+	          } catch (e) {
+	            return deferred.reject(e);
+	          }
+	        };
+	        img.onerror = function () {
+	          deferred.reject();
+	        };
+	        img.src = url;
+	      }, function (e) {
+	        deferred.reject(e);
+	      });
+	    }, function (e) {
+	      deferred.reject(e);
+	    });
+	    return deferred.promise;
+	  };
+	
+	  upload.restoreExif = function (orig, resized) {
+	    var ExifRestorer = {};
+	
+	    ExifRestorer.KEY_STR = 'ABCDEFGHIJKLMNOP' +
+	      'QRSTUVWXYZabcdef' +
+	      'ghijklmnopqrstuv' +
+	      'wxyz0123456789+/' +
+	      '=';
+	
+	    ExifRestorer.encode64 = function (input) {
+	      var output = '',
+	        chr1, chr2, chr3 = '',
+	        enc1, enc2, enc3, enc4 = '',
+	        i = 0;
+	
+	      do {
+	        chr1 = input[i++];
+	        chr2 = input[i++];
+	        chr3 = input[i++];
+	
+	        enc1 = chr1 >> 2;
+	        enc2 = ((chr1 & 3) << 4) | (chr2 >> 4);
+	        enc3 = ((chr2 & 15) << 2) | (chr3 >> 6);
+	        enc4 = chr3 & 63;
+	
+	        if (isNaN(chr2)) {
+	          enc3 = enc4 = 64;
+	        } else if (isNaN(chr3)) {
+	          enc4 = 64;
+	        }
+	
+	        output = output +
+	          this.KEY_STR.charAt(enc1) +
+	          this.KEY_STR.charAt(enc2) +
+	          this.KEY_STR.charAt(enc3) +
+	          this.KEY_STR.charAt(enc4);
+	        chr1 = chr2 = chr3 = '';
+	        enc1 = enc2 = enc3 = enc4 = '';
+	      } while (i < input.length);
+	
+	      return output;
+	    };
+	
+	    ExifRestorer.restore = function (origFileBase64, resizedFileBase64) {
+	      if (origFileBase64.match('data:image/jpeg;base64,')) {
+	        origFileBase64 = origFileBase64.replace('data:image/jpeg;base64,', '');
+	      }
+	
+	      var rawImage = this.decode64(origFileBase64);
+	      var segments = this.slice2Segments(rawImage);
+	
+	      var image = this.exifManipulation(resizedFileBase64, segments);
+	
+	      return 'data:image/jpeg;base64,' + this.encode64(image);
+	    };
+	
+	
+	    ExifRestorer.exifManipulation = function (resizedFileBase64, segments) {
+	      var exifArray = this.getExifArray(segments),
+	        newImageArray = this.insertExif(resizedFileBase64, exifArray);
+	      return new Uint8Array(newImageArray);
+	    };
+	
+	
+	    ExifRestorer.getExifArray = function (segments) {
+	      var seg;
+	      for (var x = 0; x < segments.length; x++) {
+	        seg = segments[x];
+	        if (seg[0] === 255 & seg[1] === 225) //(ff e1)
+	        {
+	          return seg;
+	        }
+	      }
+	      return [];
+	    };
+	
+	
+	    ExifRestorer.insertExif = function (resizedFileBase64, exifArray) {
+	      var imageData = resizedFileBase64.replace('data:image/jpeg;base64,', ''),
+	        buf = this.decode64(imageData),
+	        separatePoint = buf.indexOf(255, 3),
+	        mae = buf.slice(0, separatePoint),
+	        ato = buf.slice(separatePoint),
+	        array = mae;
+	
+	      array = array.concat(exifArray);
+	      array = array.concat(ato);
+	      return array;
+	    };
+	
+	
+	    ExifRestorer.slice2Segments = function (rawImageArray) {
+	      var head = 0,
+	        segments = [];
+	
+	      while (1) {
+	        if (rawImageArray[head] === 255 & rawImageArray[head + 1] === 218) {
+	          break;
+	        }
+	        if (rawImageArray[head] === 255 & rawImageArray[head + 1] === 216) {
+	          head += 2;
+	        }
+	        else {
+	          var length = rawImageArray[head + 2] * 256 + rawImageArray[head + 3],
+	            endPoint = head + length + 2,
+	            seg = rawImageArray.slice(head, endPoint);
+	          segments.push(seg);
+	          head = endPoint;
+	        }
+	        if (head > rawImageArray.length) {
+	          break;
+	        }
+	      }
+	
+	      return segments;
+	    };
+	
+	
+	    ExifRestorer.decode64 = function (input) {
+	      var chr1, chr2, chr3 = '',
+	        enc1, enc2, enc3, enc4 = '',
+	        i = 0,
+	        buf = [];
+	
+	      // remove all characters that are not A-Z, a-z, 0-9, +, /, or =
+	      var base64test = /[^A-Za-z0-9\+\/\=]/g;
+	      if (base64test.exec(input)) {
+	        console.log('There were invalid base64 characters in the input text.\n' +
+	          'Valid base64 characters are A-Z, a-z, 0-9, ' + ', ' / ',and "="\n' +
+	          'Expect errors in decoding.');
+	      }
+	      input = input.replace(/[^A-Za-z0-9\+\/\=]/g, '');
+	
+	      do {
+	        enc1 = this.KEY_STR.indexOf(input.charAt(i++));
+	        enc2 = this.KEY_STR.indexOf(input.charAt(i++));
+	        enc3 = this.KEY_STR.indexOf(input.charAt(i++));
+	        enc4 = this.KEY_STR.indexOf(input.charAt(i++));
+	
+	        chr1 = (enc1 << 2) | (enc2 >> 4);
+	        chr2 = ((enc2 & 15) << 4) | (enc3 >> 2);
+	        chr3 = ((enc3 & 3) << 6) | enc4;
+	
+	        buf.push(chr1);
+	
+	        if (enc3 !== 64) {
+	          buf.push(chr2);
+	        }
+	        if (enc4 !== 64) {
+	          buf.push(chr3);
+	        }
+	
+	        chr1 = chr2 = chr3 = '';
+	        enc1 = enc2 = enc3 = enc4 = '';
+	
+	      } while (i < input.length);
+	
+	      return buf;
+	    };
+	
+	    return ExifRestorer.restore(orig, resized);  //<= EXIF
+	  };
+	
+	  return upload;
+	}]);
+	
+
+
+/***/ },
+/* 47 */
+/***/ function(module, exports) {
+
+	// removed by extract-text-webpack-plugin
+
+/***/ },
+/* 48 */,
+/* 49 */
+/***/ function(module, exports) {
+
+	module.exports = "<div ng-controller=\"tileController\">\r\n    <div class=\"btn-toolbar\">\r\n        <div class=\"btn-group-sm\">\r\n            <button class=\"btn btn-primary\" ng-click=\"add()\"><span class=\"glyphicon glyphicon-plus\"></span><span>添加</span></button>\r\n        </div>\r\n    </div>\r\n    <br/>\r\n    <div class=\"product-grid admin\">\r\n        <div class=\"col-md-4 product-grid item\" ng-repeat=\"item in tile.Items\">\r\n            <a href=\"#\" class=\"b-link-stripe b-animate-go1 swipebox\" title=\"\">\r\n                <img ng-src=\"/common/image?path={{item.ImgPath}}\" alt=\"\" class=\"img-responsive\" ng-if=\"item.ImgPath\">\r\n                <img ng-src=\"/images/18.jpg\" alt=\"\" class=\"img-responsive\" ng-if=\"!item.ImgPath\">\r\n                <div class=\"button btn btn-info btn-sm upload\" ngf-select ng-model=\"file\" name=\"file\" ngf-pattern=\"'image/*'\"\r\n                     ngf-accept=\"'image/*'\" ngf-max-size=\"20MB\" ngf-min-height=\"100\" ngf-change=\"upload($file,$index)\">\r\n                    上传或替换图片</div>\r\n            </a>\r\n            <div class=\"project-grid-text1\">\r\n                <h4><a href=\"#\" editable-text=\"item.Title\">{{item.Title || '磁贴' + $index}}</a></h4>\r\n                <p><a href=\"#\" editable-text=\"item.Memo\">{{item.Memo || '简介'}}</a></p>\r\n            </div>\r\n        </div>\r\n    </div>\r\n</div>\r\n"
+
+/***/ },
+/* 50 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * Created by 扬 on 2016/9/21.
+	 */
+	"use strict";
+	
+	var app = __webpack_require__(35);
+	app.config(["$routeProvider", function ($routeProvider) {
+	    $routeProvider.when('/column', { template: __webpack_require__(51) });
+	}]);
+	app.factory('Column', ['$resource', function ($resource) {
+	    return $resource('/admin/column/:Index', null, {
+	        update: { method: 'PUT' }
+	    });
+	}]);
+	
+	app.controller('columnController', ["$scope", "$http", "Column", function ($scope, $http, Column) {}]);
+
+/***/ },
+/* 51 */
+/***/ function(module, exports) {
+
+	module.exports = "<div ng-controller=\"columnController\">\r\n    <h1>columnController</h1>\r\n</div>"
+
+/***/ },
+/* 52 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * Created by 扬 on 2016/9/23.
+	 */
+	"use strict";
+	
+	var app = __webpack_require__(35);
+	app.config(["$routeProvider", function ($routeProvider) {
+	    $routeProvider.when('/menu', { template: __webpack_require__(53) });
+	}]);
+	app.factory('Menus', ['$resource', function ($resource) {
+	    return $resource('/admin/menu/:id', null, {
+	        update: { method: 'PUT' }
+	    });
+	}]);
+	app.controller('menuController', ["$scope", "$http", "Menus", function ($scope, $http, Menus) {
+	    $scope.menus = [];
+	    Menus.query(function (menus) {
+	        $scope.menus = menus;
+	    });
+	    $scope.addMenu = function () {
+	        var menu = new Menus({
+	            Title: "新菜单" + $scope.menus.length,
+	            Path: "/",
+	            Code: "M" + $scope.menus.length,
+	            Index: $scope.menus.length
+	        });
+	        menu.$save().then(function (result) {
+	            $scope.inserted = result;
+	            $scope.menus.push(result);
+	        });
+	        return false;
+	    };
+	    $scope.saveMenu = function (data, index) {
+	        var old = $scope.menus[index];
+	        var nm = new Menus({
+	            Id: old.Id,
+	            Path: data.path,
+	            Title: data.title,
+	            Index: index,
+	            Code: data.code
+	        });
+	        return nm.$update();
+	    };
+	    $scope.removeMenu = function (index) {
+	        var old = $scope.menus[index];
+	        old.$delete({ id: old.Id }).then(function () {
+	            $scope.menus.splice(index, 1);
+	        });
+	    };
+	}]);
+
+/***/ },
+/* 53 */
+/***/ function(module, exports) {
+
+	module.exports = "<div ng-controller=\"menuController\">\r\n    <div class=\"manager menus\">\r\n        <table class=\"table table-hover table-striped\">\r\n            <thead><tr><th>标题</th><th>地址</th><th>代码</th><th></th></tr></thead>\r\n            <tr class=\"item\" id=\"{{item.Id}}\" ng-repeat=\"item in menus\">\r\n                <td width=\"25%\"><span e-style=\"width:160px;\" e-name=\"title\" editable-text=\"item.Title\" e-form=\"rowform\">{{item.Title || '请输入菜单标题'}}</span></td>\r\n                <td width=\"50%\"><span e-style=\"width:320px;\" e-name=\"path\" editable-text=\"item.Path\" e-form=\"rowform\">{{item.Path || '请输入菜单地址'}}</span></td>\r\n                <td><span e-style=\"width:80px;\" e-name=\"code\" editable-text=\"item.Code\" e-form=\"rowform\">{{item.Code || '请输入菜单代码'}}</span></td>\r\n                <td>\r\n                    <!-- form -->\r\n                    <form editable-form name=\"rowform\" onbeforesave=\"saveMenu($data, $index)\" ng-show=\"rowform.$visible\" class=\"form-buttons form-inline btn-group btn-group-sm\" shown=\"inserted == item\">\r\n                        <button type=\"submit\" ng-disabled=\"rowform.$waiting\" class=\"btn btn-primary\">提交</button>\r\n                        <button type=\"button\" ng-disabled=\"rowform.$waiting\" ng-click=\"rowform.$cancel()\" class=\"btn btn-default\">\r\n                            取消\r\n                        </button>\r\n                    </form>\r\n                    <div class=\"btn-group btn-group-sm\" ng-show=\"!rowform.$visible\">\r\n                        <button class=\"btn btn-primary\" ng-click=\"rowform.$show()\">修改</button>\r\n                        <button class=\"btn btn-danger\" ng-click=\"removeMenu($index)\">删除</button>\r\n                    </div>\r\n                </td>\r\n            </tr>\r\n            <tr><td><button class=\"btn btn-block btn-primary\" ng-click=\"addMenu()\"><span class=\"glyphicon glyphicon-plus\"></span> 添加菜单</button></td></tr>\r\n        </table>\r\n    </div>\r\n</div>"
 
 /***/ }
 /******/ ]);
