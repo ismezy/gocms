@@ -695,7 +695,7 @@
 	    $routeProvider.when('/tile', { template: __webpack_require__(49) });
 	}]);
 	app.factory('Tiles', ['$resource', function ($resource) {
-	    return $resource('/admin/tile/:Index', null, {
+	    return $resource('/admin/tile/item/:index', null, {
 	        update: { method: 'PUT' }
 	    });
 	}]);
@@ -703,7 +703,9 @@
 	    $scope.tile = {
 	        Items: []
 	    };
+	    $scope.addEnable = true;
 	    $scope.add = function () {
+	        $scope.addEnable = false;
 	        var tile = new Tiles({
 	            Title: "磁贴" + $scope.tile.Items.length,
 	            Memo: "描述",
@@ -712,7 +714,10 @@
 	        });
 	        tile.$save().then(function (result) {
 	            $scope.tile.Items.push(tile);
-	        }, function (error) {});
+	            $scope.addEnable = true;
+	        }, function (error) {
+	            $scope.addEnable = true;
+	        });
 	    };
 	    $scope.upload = function (file, index) {
 	        Upload.upload({
@@ -723,15 +728,13 @@
 	        });
 	    };
 	    $scope.$watch("tile.Items", function (val, old) {
-	        for (var i = 0; i < val.length || i < old.length; i++) {
+	        if (val.length != old.length) return;
+	        for (var i = 0; i < val.length; i++) {
 	            var ni = val[i];
 	            var oi = old[i];
 	            if (!ni || !oi) return;
-	            console.log(ni, oi);
 	            if (ni.Title != oi.Title || ni.Memo != oi.Memo || ni.ImgPath != oi.ImgPath || ni.Url != oi.Url) {
-	                ni.$update().then(function (e, e1) {
-	                    console.log(e, e1);
-	                }, function () {
+	                ni.$update().then(function (e, e1) {}, function () {
 	                    $scope.tile.Itmes[i].Title = oi.Title;
 	                    $scope.tile.Itmes[i].Memo = oi.Memo;
 	                    $scope.tile.Itmes[i].ImgPath = oi.ImgPath;
@@ -743,9 +746,11 @@
 	    Tiles.query(function (tiles, header) {
 	        $scope.tile.Items = tiles;
 	    });
-	    //$http.get("/admin/tile/list").success(function(res){
-	    //   $scope.tile = res
-	    //})
+	    $scope.removeTile = function (index) {
+	        Tiles.delete({ index: index }, {}, function () {
+	            $scope.tile.Items.splice(index, 1);
+	        });
+	    };
 	}]);
 
 /***/ },
@@ -44018,7 +44023,7 @@
 /* 49 */
 /***/ function(module, exports) {
 
-	module.exports = "<div ng-controller=\"tileController\">\r\n    <div class=\"btn-toolbar\">\r\n        <div class=\"btn-group-sm\">\r\n            <button class=\"btn btn-primary\" ng-click=\"add()\"><span class=\"glyphicon glyphicon-plus\"></span><span>添加</span></button>\r\n        </div>\r\n    </div>\r\n    <br/>\r\n    <div class=\"product-grid admin\">\r\n        <div class=\"col-md-4 product-grid item\" ng-repeat=\"item in tile.Items\">\r\n            <a href=\"#\" class=\"b-link-stripe b-animate-go1 swipebox\" title=\"\">\r\n                <img ng-src=\"/common/image?path={{item.ImgPath}}\" alt=\"\" class=\"img-responsive\" ng-if=\"item.ImgPath\">\r\n                <img ng-src=\"/images/18.jpg\" alt=\"\" class=\"img-responsive\" ng-if=\"!item.ImgPath\">\r\n                <div class=\"button btn btn-info btn-sm upload\" ngf-select ng-model=\"file\" name=\"file\" ngf-pattern=\"'image/*'\"\r\n                     ngf-accept=\"'image/*'\" ngf-max-size=\"20MB\" ngf-min-height=\"100\" ngf-change=\"upload($file,$index)\">\r\n                    上传或替换图片</div>\r\n            </a>\r\n            <div class=\"project-grid-text1\">\r\n                <h4><a href=\"#\" editable-text=\"item.Title\">{{item.Title || '磁贴' + $index}}</a></h4>\r\n                <p><a href=\"#\" editable-text=\"item.Memo\">{{item.Memo || '简介'}}</a></p>\r\n            </div>\r\n        </div>\r\n    </div>\r\n</div>\r\n"
+	module.exports = "<div ng-controller=\"tileController\">\r\n    <div class=\"btn-toolbar\">\r\n        <div class=\"btn-group-sm\">\r\n            <button class=\"btn btn-primary\" ng-disabled=\"!addEnable\" ng-click=\"add()\">\r\n                <span class=\"glyphicon glyphicon-plus\"/>\r\n                <span ng-if=\"addEnable\">添加</span>\r\n                <span ng-if=\"!addEnable\">正在处理...</span>\r\n            </button>\r\n        </div>\r\n    </div>\r\n    <br/>\r\n    <div class=\"product-grid admin\">\r\n        <div class=\"col-md-4 product-grid item\" ng-repeat=\"item in tile.Items\">\r\n            <a href=\"javascript:void(0)\" class=\"b-link-stripe b-animate-go1 swipebox\" title=\"\">\r\n                <button type=\"button\" class=\"close\" ng-click=\"removeTile($index)\"><span aria-hidden=\"true\" class=\"glyphicon glyphicon-trash\"></span><span class=\"sr-only\">Close</span></button>\r\n                <img ng-src=\"/common/image?path={{item.ImgPath}}\" alt=\"\" class=\"img-responsive\" ng-if=\"item.ImgPath\">\r\n                <img ng-src=\"/images/18.jpg\" alt=\"\" class=\"img-responsive\" ng-if=\"!item.ImgPath\">\r\n                <div class=\"button btn btn-info btn-sm upload\" ngf-select ng-model=\"file\" name=\"file\" ngf-pattern=\"'image/*'\"\r\n                     ngf-accept=\"'image/*'\" ngf-max-size=\"20MB\" ngf-min-height=\"100\" ngf-change=\"upload($file,$index)\">\r\n                    上传或替换图片</div>\r\n            </a>\r\n            <div class=\"project-grid-text1\">\r\n                <h4><a href=\"#\" editable-text=\"item.Title\">{{item.Title || '磁贴' + $index}}</a></h4>\r\n                <p><a href=\"#\" editable-text=\"item.Memo\">{{item.Memo || '简介'}}</a></p>\r\n            </div>\r\n        </div>\r\n    </div>\r\n    <div class=\"clearfix\"></div>\r\n</div>\r\n"
 
 /***/ },
 /* 50 */

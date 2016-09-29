@@ -2,38 +2,22 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="50c660e2-c289-411c-af49-4aee180313bc" name="Default" comment="zy">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/router/MenuRouter.go" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/webpack/js/module/admin/column.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/webpack/js/module/admin/column.js" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/webpack/js/module/admin/menu.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/webpack/js/module/admin/menu.js" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/assets/templates/admin-tile.html" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/router/MenuManager.go" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/target/cms-run.exe" afterPath="" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/assets/app.bundle.js.map" afterPath="$PROJECT_DIR$/assets/app.bundle.js.map" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/assets/app.css" afterPath="$PROJECT_DIR$/assets/app.css" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/assets/app.css.map" afterPath="$PROJECT_DIR$/assets/app.css.map" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/assets/ngapp.bundle.js" afterPath="$PROJECT_DIR$/assets/ngapp.bundle.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/assets/ngapp.bundle.js.map" afterPath="$PROJECT_DIR$/assets/ngapp.bundle.js.map" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/assets/ngapp.css" afterPath="$PROJECT_DIR$/assets/ngapp.css" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/assets/ngapp.css.map" afterPath="$PROJECT_DIR$/assets/ngapp.css.map" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/db/Menu.go" afterPath="$PROJECT_DIR$/db/Menu.go" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/router/BannerRouter.go" afterPath="$PROJECT_DIR$/router/BannerRouter.go" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/router/Common.go" afterPath="$PROJECT_DIR$/router/Common.go" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/templates/layout/admin/layout.html" afterPath="$PROJECT_DIR$/templates/layout/admin/layout.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/templates/layout/ngadmin/layout.html" afterPath="$PROJECT_DIR$/templates/layout/ngadmin/layout.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/webpack/css/main.css" afterPath="$PROJECT_DIR$/webpack/css/main.css" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/webpack/js/module/main.js" afterPath="$PROJECT_DIR$/webpack/js/module/main.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/webpack/js/ngapp.js" afterPath="$PROJECT_DIR$/webpack/js/ngapp.js" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/webpack/js/module/admin/admin-tile.html" afterPath="$PROJECT_DIR$/webpack/js/module/admin/tile.html" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/webpack/js/module/admin/admin-tile.js" afterPath="$PROJECT_DIR$/webpack/js/module/admin/tile.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/db/Tile.go" afterPath="$PROJECT_DIR$/db/Tile.go" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/router/MenuRouter.go" afterPath="$PROJECT_DIR$/router/MenuRouter.go" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/router/TileRouter.go" afterPath="$PROJECT_DIR$/router/TileRouter.go" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/webpack/js/module/admin/tile.html" afterPath="$PROJECT_DIR$/webpack/js/module/admin/tile.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/webpack/js/module/admin/tile.js" afterPath="$PROJECT_DIR$/webpack/js/module/admin/tile.js" />
     </list>
     <ignored path="cms.iws" />
     <ignored path=".idea/workspace.xml" />
     <ignored path="$PROJECT_DIR$/out/" />
     <ignored path=".idea/dataSources.local.xml" />
     <ignored path="webpack/node_modules/" />
+    <ignored path="target/*" />
+    <ignored path="target/cms-run.exe" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -53,46 +37,52 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="MenuRouter.go" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/router/MenuRouter.go">
+      <file leaf-file-name="TileRouter.go" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/router/TileRouter.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="209">
-              <caret line="49" column="22" selection-start-line="49" selection-start-column="22" selection-end-line="49" selection-end-column="22" />
-              <folding>
-                <element signature="e#16#196#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="77">
+              <caret line="34" column="5" selection-start-line="34" selection-start-column="5" selection-end-line="34" selection-end-column="5" />
+              <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Menu.go" pinned="false" current-in-tab="true">
+      <file leaf-file-name="Menu.go" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/db/Menu.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="118">
-              <caret line="70" column="8" selection-start-line="70" selection-start-column="8" selection-end-line="70" selection-end-column="8" />
+            <state relative-caret-position="190">
+              <caret line="22" column="34" selection-start-line="22" selection-start-column="34" selection-end-line="22" selection-end-column="34" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="tile.js" pinned="false" current-in-tab="false">
+      <file leaf-file-name="Tile.go" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/db/Tile.go">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="77">
+              <caret line="39" column="42" selection-start-line="39" selection-start-column="42" selection-end-line="39" selection-end-column="42" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="tile.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/webpack/js/module/admin/tile.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="171">
-              <caret line="46" column="22" selection-start-line="46" selection-start-column="22" selection-end-line="46" selection-end-column="22" />
+            <state relative-caret-position="323">
+              <caret line="62" column="42" selection-start-line="62" selection-start-column="42" selection-end-line="62" selection-end-column="42" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="ngapp.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/webpack/js/ngapp.js">
+      <file leaf-file-name="tile.html" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/webpack/js/module/admin/tile.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="304">
-              <caret line="18" column="29" selection-start-line="18" selection-start-column="29" selection-end-line="18" selection-end-column="29" />
-              <folding>
-                <element signature="e#0#37#0" expanded="false" />
-              </folding>
+            <state relative-caret-position="114">
+              <caret line="9" column="9" selection-start-line="9" selection-start-column="9" selection-end-line="9" selection-end-column="9" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -100,28 +90,8 @@
       <file leaf-file-name="menu.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/webpack/js/module/admin/menu.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="194">
-              <caret line="43" column="36" selection-start-line="43" selection-start-column="36" selection-end-line="43" selection-end-column="36" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="menu.html" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/webpack/js/module/admin/menu.html">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="228">
-              <caret line="18" column="74" selection-start-line="18" selection-start-column="74" selection-end-line="18" selection-end-column="74" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="main.css" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/webpack/css/main.css">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="185">
-              <caret line="299" column="0" selection-start-line="299" selection-start-column="0" selection-end-line="299" selection-end-column="0" />
+            <state relative-caret-position="247">
+              <caret line="16" column="27" selection-start-line="16" selection-start-column="27" selection-end-line="16" selection-end-column="27" />
               <folding />
             </state>
           </provider>
@@ -178,11 +148,8 @@
         <option value="$PROJECT_DIR$/templates/layout/default/layout.html" />
         <option value="$PROJECT_DIR$/templates/layout/column/layout.html" />
         <option value="$PROJECT_DIR$/templates/admin/tile.html" />
-        <option value="$PROJECT_DIR$/webpack/js/module/admin/tile.html" />
         <option value="$PROJECT_DIR$/webpack/webpack.config.js" />
         <option value="$PROJECT_DIR$/db/LoginUser.go" />
-        <option value="$PROJECT_DIR$/router/TileRouter.go" />
-        <option value="$PROJECT_DIR$/db/Tile.go" />
         <option value="$PROJECT_DIR$/router/Ueditor.go" />
         <option value="$PROJECT_DIR$/router/Index.go" />
         <option value="$PROJECT_DIR$/templates/index.html" />
@@ -193,7 +160,6 @@
         <option value="$PROJECT_DIR$/webpack/js/module/main.js" />
         <option value="$PROJECT_DIR$/webpack/js/module/admin/admin-column.js" />
         <option value="$PROJECT_DIR$/router/BannerRouter.go" />
-        <option value="$PROJECT_DIR$/webpack/js/module/admin/tile.js" />
         <option value="$PROJECT_DIR$/webpack/js/module/admin/column.js" />
         <option value="$PROJECT_DIR$/templates/layout/ngadmin/layout.html" />
         <option value="$PROJECT_DIR$/webpack/js/ngapp.js" />
@@ -203,8 +169,12 @@
         <option value="$PROJECT_DIR$/templates/layout/admin/layout.html" />
         <option value="$PROJECT_DIR$/db/Menu.go" />
         <option value="$PROJECT_DIR$/webpack/js/module/admin/menu.html" />
-        <option value="$PROJECT_DIR$/router/MenuRouter.go" />
         <option value="$PROJECT_DIR$/webpack/js/module/admin/menu.js" />
+        <option value="$PROJECT_DIR$/router/MenuRouter.go" />
+        <option value="$PROJECT_DIR$/router/TileRouter.go" />
+        <option value="$PROJECT_DIR$/db/Tile.go" />
+        <option value="$PROJECT_DIR$/webpack/js/module/admin/tile.html" />
+        <option value="$PROJECT_DIR$/webpack/js/module/admin/tile.js" />
       </list>
     </option>
   </component>
@@ -317,7 +287,7 @@
     <property name="Repository.Attach.JavaDocs" value="false" />
     <property name="Repository.Attach.Sources" value="false" />
     <property name="DefaultHtmlFileTemplate" value="HTML File" />
-    <property name="SearchEverywhereHistoryKey" value="tile.js&#9;FILE&#9;file://D:/Go/workspace/cms/webpack/js/module/admin/tile.js&#10;tile.html&#9;FILE&#9;file://D:/Go/workspace/cms/webpack/js/module/admin/tile.html&#10;layout&#9;FILE&#9;file://D:/Go/workspace/cms/templates/layout/admin/layout.html&#10;main.css&#9;FILE&#9;file://D:/Go/workspace/cms/webpack/css/main.css&#10;header&#9;FILE&#9;file://D:/Go/workspace/cms/templates/layout/header.html&#10;newslist&#9;FILE&#9;file://D:/Go/workspace/cms/templates/admin/newslist.html&#10;server.go&#9;FILE&#9;file://D:/Go/workspace/cms/server.go&#10;news&#9;FILE&#9;file://D:/Go/workspace/cms/db/News.go&#10;banner&#9;FILE&#9;file://D:/Go/workspace/cms/router/BannerRouter.go&#10;ue&#9;FILE&#9;file://D:/Go/workspace/cms/router/Ueditor.go&#10;footer&#9;FILE&#9;file://D:/Go/workspace/cms/templates/layout/footer.html&#10;header.html&#9;FILE&#9;file://D:/Go/workspace/cms/templates/layout/header.html&#10;admin-colu&#9;FILE&#9;file://D:/Go/workspace/cms/webpack/js/module/admin/admin-column.js&#10;admin-&#9;FILE&#9;file://D:/Go/workspace/cms/webpack/js/module/admin/admin-tile.js&#10;admin-tile.js&#9;FILE&#9;file://D:/Go/workspace/cms/webpack/js/module/admin/admin-tile.js&#10;newstype&#9;FILE&#9;file://D:/Go/workspace/cms/db/NewsType.go&#10;index.go&#9;FILE&#9;file://D:/Go/workspace/cms/router/Index.go&#10;index.html&#9;FILE&#9;file://D:/Go/workspace/cms/templates/index.html&#10;main&#9;FILE&#9;file://D:/Go/workspace/cms/webpack/js/module/main.js&#10;tile&#9;FILE&#9;file://D:/Go/workspace/cms/db/Tile.go&#10;bann&#9;FILE&#9;file://D:/Go/workspace/cms/router/BannerRouter.go&#10;ued&#9;FILE&#9;file://D:/Go/workspace/cms/router/Ueditor.go&#10;uedi&#9;FILE&#9;file://D:/Go/workspace/cms/router/Ueditor.go&#10;common.go&#9;FILE&#9;file://D:/Go/workspace/cms/router/Common.go&#10;ueditor&#9;FILE&#9;file://D:/Go/workspace/cms/router/Ueditor.go&#10;bannerrou&#9;FILE&#9;file://D:/Go/workspace/cms/router/BannerRouter.go&#10;ngapp&#9;FILE&#9;file://D:/Go/workspace/cms/webpack/js/ngapp.js&#10;loginu&#9;null&#9;null&#10;main.js&#9;FILE&#9;file://D:/Go/workspace/cms/webpack/js/module/main.js&#10;main.&#9;FILE&#9;file://D:/Go/workspace/cms/webpack/js/module/main.js&#10;index&#9;FILE&#9;file://D:/Go/workspace/cms/templates/index.html&#10;inde&#9;FILE&#9;file://D:/Go/workspace/cms/templates/index.html&#10;column&#9;FILE&#9;file://D:/Go/workspace/cms/router/ColumnRouter.go&#10;news.html&#9;FILE&#9;file://D:/Go/workspace/cms/templates/admin/news.html&#10;newshtml&#9;FILE&#9;file://D:/Go/workspace/cms/templates/admin/news.html&#10;newsrout&#9;FILE&#9;file://D:/Go/workspace/cms/router/NewsRouter.go&#10;login&#9;FILE&#9;file://D:/Go/workspace/cms/templates/login.html&#10;server&#9;FILE&#9;file://D:/Go/workspace/cms/server.go&#10;banner.html&#9;FILE&#9;file://D:/Go/workspace/cms/templates/admin/banner.html&#10;LoginUser&#9;FILE&#9;file://D:/Go/workspace/cms/db/LoginUser.go&#10;style.css&#9;FILE&#9;file://D:/Go/workspace/cms/webpack/css/style.css&#10;User&#9;FILE&#9;file://D:/Go/workspace/cms/db/LoginUser.go&#10;news.go&#9;FILE&#9;file://D:/Go/workspace/cms/db/News.go&#10;newstypedao&#9;null&#9;null&#10;layoutw&#9;FILE&#9;file://D:/Go/workspace/cms/router/LayoutWapper.go&#10;colu&#9;FILE&#9;file://D:/Go/workspace/cms/router/ColumnRouter.go&#10;Layout&#9;FILE&#9;file://D:/Go/workspace/cms/router/LayoutWapper.go&#10;Server&#9;FILE&#9;file://D:/Go/workspace/cms/server.go&#10;LayoutW&#9;FILE&#9;file://D:/Go/workspace/cms/router/LayoutWapper.go&#10;main.c&#9;FILE&#9;file://D:/Go/workspace/cms/webpack/css/main.css" />
+    <property name="SearchEverywhereHistoryKey" value="ngapp&#9;FILE&#9;file://D:/Go/workspace/cms/webpack/js/ngapp.js&#10;tileRou&#9;FILE&#9;file://D:/Go/workspace/cms/router/TileRouter.go&#10;tile.html&#9;FILE&#9;file://D:/Go/workspace/cms/webpack/js/module/admin/tile.html&#10;tile.js&#9;FILE&#9;file://D:/Go/workspace/cms/webpack/js/module/admin/tile.js&#10;layout&#9;FILE&#9;file://D:/Go/workspace/cms/templates/layout/admin/layout.html&#10;main.css&#9;FILE&#9;file://D:/Go/workspace/cms/webpack/css/main.css&#10;header&#9;FILE&#9;file://D:/Go/workspace/cms/templates/layout/header.html&#10;newslist&#9;FILE&#9;file://D:/Go/workspace/cms/templates/admin/newslist.html&#10;server.go&#9;FILE&#9;file://D:/Go/workspace/cms/server.go&#10;news&#9;FILE&#9;file://D:/Go/workspace/cms/db/News.go&#10;banner&#9;FILE&#9;file://D:/Go/workspace/cms/router/BannerRouter.go&#10;ue&#9;FILE&#9;file://D:/Go/workspace/cms/router/Ueditor.go&#10;footer&#9;FILE&#9;file://D:/Go/workspace/cms/templates/layout/footer.html&#10;header.html&#9;FILE&#9;file://D:/Go/workspace/cms/templates/layout/header.html&#10;admin-colu&#9;FILE&#9;file://D:/Go/workspace/cms/webpack/js/module/admin/admin-column.js&#10;admin-&#9;FILE&#9;file://D:/Go/workspace/cms/webpack/js/module/admin/admin-tile.js&#10;admin-tile.js&#9;FILE&#9;file://D:/Go/workspace/cms/webpack/js/module/admin/admin-tile.js&#10;newstype&#9;FILE&#9;file://D:/Go/workspace/cms/db/NewsType.go&#10;index.go&#9;FILE&#9;file://D:/Go/workspace/cms/router/Index.go&#10;index.html&#9;FILE&#9;file://D:/Go/workspace/cms/templates/index.html&#10;main&#9;FILE&#9;file://D:/Go/workspace/cms/webpack/js/module/main.js&#10;tile&#9;FILE&#9;file://D:/Go/workspace/cms/db/Tile.go&#10;bann&#9;FILE&#9;file://D:/Go/workspace/cms/router/BannerRouter.go&#10;ued&#9;FILE&#9;file://D:/Go/workspace/cms/router/Ueditor.go&#10;uedi&#9;FILE&#9;file://D:/Go/workspace/cms/router/Ueditor.go&#10;common.go&#9;FILE&#9;file://D:/Go/workspace/cms/router/Common.go&#10;ueditor&#9;FILE&#9;file://D:/Go/workspace/cms/router/Ueditor.go&#10;bannerrou&#9;FILE&#9;file://D:/Go/workspace/cms/router/BannerRouter.go&#10;loginu&#9;null&#9;null&#10;main.js&#9;FILE&#9;file://D:/Go/workspace/cms/webpack/js/module/main.js&#10;main.&#9;FILE&#9;file://D:/Go/workspace/cms/webpack/js/module/main.js&#10;index&#9;FILE&#9;file://D:/Go/workspace/cms/templates/index.html&#10;inde&#9;FILE&#9;file://D:/Go/workspace/cms/templates/index.html&#10;column&#9;FILE&#9;file://D:/Go/workspace/cms/router/ColumnRouter.go&#10;news.html&#9;FILE&#9;file://D:/Go/workspace/cms/templates/admin/news.html&#10;newshtml&#9;FILE&#9;file://D:/Go/workspace/cms/templates/admin/news.html&#10;newsrout&#9;FILE&#9;file://D:/Go/workspace/cms/router/NewsRouter.go&#10;login&#9;FILE&#9;file://D:/Go/workspace/cms/templates/login.html&#10;server&#9;FILE&#9;file://D:/Go/workspace/cms/server.go&#10;banner.html&#9;FILE&#9;file://D:/Go/workspace/cms/templates/admin/banner.html&#10;LoginUser&#9;FILE&#9;file://D:/Go/workspace/cms/db/LoginUser.go&#10;style.css&#9;FILE&#9;file://D:/Go/workspace/cms/webpack/css/style.css&#10;User&#9;FILE&#9;file://D:/Go/workspace/cms/db/LoginUser.go&#10;news.go&#9;FILE&#9;file://D:/Go/workspace/cms/db/News.go&#10;newstypedao&#9;null&#9;null&#10;layoutw&#9;FILE&#9;file://D:/Go/workspace/cms/router/LayoutWapper.go&#10;colu&#9;FILE&#9;file://D:/Go/workspace/cms/router/ColumnRouter.go&#10;Layout&#9;FILE&#9;file://D:/Go/workspace/cms/router/LayoutWapper.go&#10;Server&#9;FILE&#9;file://D:/Go/workspace/cms/server.go&#10;LayoutW&#9;FILE&#9;file://D:/Go/workspace/cms/router/LayoutWapper.go" />
     <property name="list.type.of.created.stylesheet" value="CSS" />
     <property name="go.libraries.notification.had.been.shown" value="true" />
     <property name="GO_FMT" value="false" />
@@ -817,7 +787,7 @@
       <workItem from="1473249687555" duration="26137000" />
       <workItem from="1473412613032" duration="45890000" />
       <workItem from="1474104025333" duration="36024000" />
-      <workItem from="1474276266956" duration="79412000" />
+      <workItem from="1474276266956" duration="93265000" />
     </task>
     <task id="LOCAL-00001" summary="daoclound">
       <created>1473337048637</created>
@@ -872,7 +842,7 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="439963000" />
+    <option name="totallyTimeSpent" value="453816000" />
   </component>
   <component name="TodoView" selected-index="2">
     <todo-panel id="selected-file">
@@ -892,20 +862,20 @@
       <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3294509" sideWeight="0.4969651" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Analysis" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.3294509" sideWeight="0.5091047" order="8" side_tool="true" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.3294509" sideWeight="0.5151745" order="8" side_tool="true" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32890365" sideWeight="0.45447648" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Version Control" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.3294509" sideWeight="0.4908953" order="9" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.327787" sideWeight="0.47875568" order="10" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.3294509" sideWeight="0.4848255" order="9" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.327787" sideWeight="0.4757208" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.24962063" sideWeight="0.4902439" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.327787" sideWeight="0.4939302" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.327787" sideWeight="0.4908953" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.37603992" sideWeight="0.40895295" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.37603992" sideWeight="0.39984825" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.24962178" sideWeight="0.5097561" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
@@ -962,37 +932,6 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/templates/admin/ngadmin.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/assets/tile.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/assets/ngapp.css">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/assets/ngapp.bundle.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="209">
-          <caret line="33578" column="0" selection-start-line="33578" selection-start-column="0" selection-end-line="33578" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/webpack/webpack.config.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="186">
@@ -1108,14 +1047,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="76">
           <caret line="22" column="23" selection-start-line="22" selection-start-column="23" selection-end-line="22" selection-end-column="23" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/db/Tile.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="794">
-          <caret line="48" column="39" selection-start-line="48" selection-start-column="39" selection-end-line="48" selection-end-column="39" />
           <folding />
         </state>
       </provider>
@@ -1285,16 +1216,8 @@
         <state relative-caret-position="190">
           <caret line="19" column="0" selection-start-line="19" selection-start-column="0" selection-end-line="19" selection-end-column="0" />
           <folding>
-            <element signature="e#16#240#0" expanded="true" />
+            <element signature="e#16#240#0" expanded="false" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/router/TileRouter.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="190">
-          <caret line="35" column="34" selection-start-line="35" selection-start-column="34" selection-end-line="35" selection-end-column="34" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1314,18 +1237,76 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/webpack/js/module/admin/tile.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="57">
-          <caret line="9" column="77" selection-start-line="9" selection-start-column="77" selection-end-line="9" selection-end-column="77" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/webpack/css/main.css">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="185">
           <caret line="299" column="0" selection-start-line="299" selection-start-column="0" selection-end-line="299" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/router/MenuRouter.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="175">
+          <caret line="50" column="56" selection-start-line="50" selection-start-column="56" selection-end-line="50" selection-end-column="56" />
+          <folding>
+            <element signature="e#16#196#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/assets/ngapp.bundle.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="209">
+          <caret line="38316" column="12" selection-start-line="38316" selection-start-column="12" selection-end-line="38316" selection-end-column="12" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/webpack/node_modules/angular-resource/angular-resource.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="190">
+          <caret line="336" column="37" selection-start-line="336" selection-start-column="37" selection-end-line="336" selection-end-column="37" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../../MyGO/src/github.com/go-martini/martini/logger.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="232">
+          <caret line="17" column="36" selection-start-line="17" selection-start-column="36" selection-end-line="17" selection-end-column="36" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../../app/src/builtin/builtin.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="106">
+          <caret line="180" column="14" selection-start-line="180" selection-start-column="14" selection-end-line="180" selection-end-column="14" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/db/Menu.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="190">
+          <caret line="22" column="34" selection-start-line="22" selection-start-column="34" selection-end-line="22" selection-end-column="34" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/webpack/js/module/admin/menu.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="228">
+          <caret line="18" column="74" selection-start-line="18" selection-start-column="74" selection-end-line="18" selection-end-column="74" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/webpack/js/module/admin/menu.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="247">
+          <caret line="16" column="27" selection-start-line="16" selection-start-column="27" selection-end-line="16" selection-end-column="27" />
           <folding />
         </state>
       </provider>
@@ -1340,44 +1321,34 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/webpack/js/module/admin/menu.html">
+    <entry file="file://$PROJECT_DIR$/db/Tile.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="228">
-          <caret line="18" column="74" selection-start-line="18" selection-start-column="74" selection-end-line="18" selection-end-column="74" />
+        <state relative-caret-position="77">
+          <caret line="39" column="42" selection-start-line="39" selection-start-column="42" selection-end-line="39" selection-end-column="42" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/router/MenuRouter.go">
+    <entry file="file://$PROJECT_DIR$/router/TileRouter.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="209">
-          <caret line="49" column="22" selection-start-line="49" selection-start-column="22" selection-end-line="49" selection-end-column="22" />
-          <folding>
-            <element signature="e#16#196#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="77">
+          <caret line="34" column="5" selection-start-line="34" selection-start-column="5" selection-end-line="34" selection-end-column="5" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/webpack/js/module/admin/tile.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="114">
+          <caret line="9" column="9" selection-start-line="9" selection-start-column="9" selection-end-line="9" selection-end-column="9" />
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/webpack/js/module/admin/tile.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="171">
-          <caret line="46" column="22" selection-start-line="46" selection-start-column="22" selection-end-line="46" selection-end-column="22" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/webpack/js/module/admin/menu.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="194">
-          <caret line="43" column="36" selection-start-line="43" selection-start-column="36" selection-end-line="43" selection-end-column="36" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/db/Menu.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="118">
-          <caret line="70" column="8" selection-start-line="70" selection-start-column="8" selection-end-line="70" selection-end-column="8" />
+        <state relative-caret-position="323">
+          <caret line="62" column="42" selection-start-line="62" selection-start-column="42" selection-end-line="62" selection-end-column="42" />
           <folding />
         </state>
       </provider>

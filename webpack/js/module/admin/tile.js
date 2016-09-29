@@ -7,7 +7,7 @@ app.config(["$routeProvider",function($routeProvider){
     $routeProvider.when('/tile',{template:require("./tile.html")})
 }])
 app.factory('Tiles', ['$resource', function($resource) {
-    return $resource('/admin/tile/:Index', null, {
+    return $resource('/admin/tile/item/:index', null, {
         update: { method:'PUT' }
     })
 }])
@@ -15,7 +15,9 @@ app.controller('tileController',["$scope","$http","Tiles","Upload",function($sco
     $scope.tile = {
         Items:[]
     }
+    $scope.addEnable = true
     $scope.add = function () {
+        $scope.addEnable = false
         var tile = new Tiles({
             Title       :     "磁贴" + $scope.tile.Items.length,
             Memo        :     "描述",
@@ -24,7 +26,9 @@ app.controller('tileController',["$scope","$http","Tiles","Upload",function($sco
         })
         tile.$save().then(function(result){
             $scope.tile.Items.push(tile)
+            $scope.addEnable = true
         },function (error) {
+            $scope.addEnable = true
         })
     }
     $scope.upload = function (file,index) {
@@ -36,14 +40,13 @@ app.controller('tileController',["$scope","$http","Tiles","Upload",function($sco
         })
     }
     $scope.$watch("tile.Items",function(val,old){
-        for(var i = 0; i < val.length || i < old.length; i++){
+        if(val.length != old.length) return
+        for(var i = 0; i < val.length; i++){
             var ni = val[i]
             var oi = old[i]
             if(!ni || !oi) return
-            console.log(ni,oi)
             if(ni.Title != oi.Title || ni.Memo != oi.Memo || ni.ImgPath != oi.ImgPath || ni.Url != oi.Url){
                 ni.$update().then(function(e,e1){
-                    console.log(e,e1)
                 },function () {
                     $scope.tile.Itmes[i].Title = oi.Title
                     $scope.tile.Itmes[i].Memo = oi.Memo
@@ -56,7 +59,9 @@ app.controller('tileController',["$scope","$http","Tiles","Upload",function($sco
     Tiles.query(function(tiles,header){
         $scope.tile.Items = tiles
     })
-    //$http.get("/admin/tile/list").success(function(res){
-     //   $scope.tile = res
-    //})
+    $scope.removeTile = function (index){
+        Tiles.delete({index:index},{},function(){
+            $scope.tile.Items.splice(index,1)
+        })
+    }
 }])

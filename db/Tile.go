@@ -29,6 +29,7 @@ type TileDao interface {
 	Upload(item TileItem) error
 	Insert(item TileItem) (TileItem,error)
 	Get() (Tile,error)
+	RemoveItem(index int) error
 }
 
 type tileDao struct {
@@ -61,4 +62,25 @@ func (td *tileDao) Get() (Tile,error){
 		err = td.d.C("Plugin").Insert(tile)
 	}
 	return tile,err
+}
+func (td *tileDao) RemoveItem(index int) error{
+	tile,err := td.Get()
+	if(err != nil){
+		td.logger.Println("remove tile item error", err)
+		return err
+	}
+	var newItems = make([]TileItem,0)
+	for i,item := range tile.Items {
+		if(index == i){
+			continue
+		}
+		newItems = append(newItems, item)
+	}
+	tile.Items = newItems
+	err = td.d.C("Plugin").UpdateId("Tile", tile)
+	if(err != nil){
+		td.logger.Println("remove tile item error", err)
+		return err
+	}
+	return err
 }
